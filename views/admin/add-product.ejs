@@ -1,0 +1,205 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+    <body class="g-sidenav-show  bg-gray-200">
+
+
+        <%- include('../layouts/admin/sidebar.ejs') %>
+
+            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+                <%- include('../layouts/admin/navbar.ejs') %>
+
+                    <div class="container-fluid py-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card my-4">
+                                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                            <h6 class="text-white text-capitalize ps-3">
+                                                <%= message %>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body px-0 pb-2">
+                                        <div class="container-fluid">
+                                            <form class="form-sample" action="/admin/add-product"
+                                                enctype="multipart/form-data" method="post">
+                                                <div class="row">
+                                                    <div class="col py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label">Product Name</div>
+                                                            <input class="w-30" id="productName" type="text" name="name"
+                                                                placeholder="product name" required>
+                                                            <div id="productNameError"
+                                                                class="error-message text-danger"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col md-3 py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label rounded">Category</div>
+                                                            <select id="category" name="category" required>
+                                                                <option value="" disabled selected>Choose Category
+                                                                </option>
+                                                                <% category.forEach(cat=> { %>
+                                                                    <option>
+                                                                        <%= cat.categoryName %>
+                                                                    </option> 32
+                                                                    <% }); %>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col md-3 py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label">Price</div>
+                                                            <input type="text" id="price" name="price"
+                                                                placeholder="Price" value="100" required>
+                                                            <div id="priceError" class="error-message text-danger">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col md-3 py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label">Brand</div>
+                                                            <select id="brand" name="brandName" required>
+                                                                <option value="" disabled selected>Choose Brand</option>
+                                                                <% brandData.forEach(brand=> { %>
+                                                                    <option>
+                                                                        <%= brand.brandName %>
+                                                                    </option>
+                                                                    <% }); %>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col md-3 py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label">Quantity</div>
+                                                            <input type="number" name="qty" placeholder="Quantity"
+                                                                id="quantity" value="2" required>
+                                                            <div id="quantityError" class="error-message text-danger">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col md-8 py-4">
+                                                        <label for="exampleFormControlTextarea1">Description</label>
+                                                        <div class="form-group">
+                                                            <textarea class="w-50" id="exampleFormControlTextarea1"
+                                                                name="description" rows="3" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col md-3 py-4">
+                                                        <label for="exampleFormControlTextarea1">Upload Images</label>
+                                                        <div class="form-group">
+                                                            <input type="file" name="image" id="image" multiple
+                                                                accept="image/*" required>
+                                                            <div class="image-preview-container mt-2"
+                                                                style="width: 100px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col md-3 py-4">
+                                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <%- include('../layouts/admin/footer.ejs') %>
+
+                    </div>
+
+
+
+                    <script>
+                        function validateProductName() {
+                            const productName = document.getElementById('productName').value.trim();
+                            const productNameError = document.getElementById('productNameError');
+                            productNameError.textContent = '';
+
+                            if (productName.length < 3) {
+                                productNameError.textContent = "Product name must be at least 3 characters long.";
+                            }
+                        }
+
+                        function validatePrice() {
+                            const price = document.getElementById('price').value;
+                            const priceError = document.getElementById('priceError');
+                            priceError.textContent = '';
+
+                            if (isNaN(price) || price < 0) {
+                                priceError.textContent = "Price must be a non-negative numeric value.";
+                            }
+                        }
+
+                        function validateQuantity() {
+                            const quantity = document.getElementById('quantity').value;
+                            const quantityError = document.getElementById('quantityError');
+                            quantityError.textContent = '';
+
+
+                            // const numericQuantity = parseFloat(quantity);
+
+                            if (isNaN(quantity) || quantity < 5) {
+                                quantityError.textContent = "Quantity must be a numeric value of at least 5.";
+                            }
+                        }
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const inputImage = document.getElementById('image');
+                            const previewContainer = document.querySelector('.image-preview-container');
+
+                            inputImage.addEventListener('change', function () {
+                                previewContainer.innerHTML = '';
+
+                                Array.from(inputImage.files).forEach(function (file) {
+                                    const reader = new FileReader();
+
+                                    reader.onload = function () {
+                                        const imagePreview = document.createElement('div');
+                                        imagePreview.classList.add('image-preview');
+
+                                        const image = document.createElement('img');
+                                        image.src = reader.result;
+                                        image.classList.add('img-fluid');
+
+                                        const removeButton = document.createElement('button');
+                                        removeButton.type = 'button';
+                                        removeButton.classList.add('remove-button');
+                                        removeButton.textContent = 'Remove';
+                                        removeButton.addEventListener('click', function () {
+                                            imagePreview.remove();
+                                            // Remove corresponding file from input
+                                            const dt = new DataTransfer();
+                                            Array.from(inputImage.files).forEach(function (existingFile) {
+                                                if (existingFile !== file) {
+                                                    dt.items.add(existingFile);
+                                                }
+                                            });
+                                            inputImage.files = dt.files;
+                                        });
+
+                                        imagePreview.appendChild(image);
+                                        imagePreview.appendChild(removeButton);
+                                        previewContainer.appendChild(imagePreview);
+                                    }
+
+                                    reader.readAsDataURL(file);
+                                });
+                            });
+
+                            document.getElementById('productName').addEventListener('blur', validateProductName);
+                            document.getElementById('price').addEventListener('blur', validatePrice);
+                            document.getElementById('quantity').addEventListener('blur', validateQuantity);
+                        });
+                    </script>
+            </main>

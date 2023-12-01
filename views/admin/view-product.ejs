@@ -1,0 +1,258 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+    <body class="g-sidenav-show  bg-gray-200">
+
+
+        <%- include('../layouts/admin/sidebar.ejs') %>
+
+
+            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+                <%- include('../layouts/admin/navbar.ejs') %>
+
+                    <style>
+                        .btn-outline-secondary {
+                            width: 160px;
+                            margin-top: 30px;
+                            margin-right: 10px;
+                            /* background-color: #FFCA2C; */
+                        }
+
+                        .form-control {
+                            width: 350px;
+                            height: 40px;
+                            /* padding-top: 50px; */
+                            /* margin-top: 50px; */
+                            /* background-color:aliceblue; */
+                            border: 1px solid #ced4da;
+                        }
+
+                        .b,
+                        strong {
+                            margin-left: 50px;
+                        }
+
+                        .element.style {
+                            margin-top: 50px;
+                        }
+                    </style>
+
+                    <div class="container-fluid py-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card my-4">
+                                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                        <div class="bg-gradient-primary shadow-primary border-radius-lg ">
+                                            <div
+                                                class="row justify-content-lg-between align-items-center margin-0 py-0">
+                                                <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
+                                                    <h6 class="text-white text-capitalize ps-3">  <%=message%></h6>
+                                                </div>
+                                                <div class="col-md-12 col-lg-6">
+                                                    <div class="d-flex justify-content-end">
+                                                        <a class="nav-link text-white " href="/admin/add-product">
+                                                            <button type="button"
+                                                                class="btn bg-gradient-success ms-3 mt-2">
+                                                                <i class="material-icons opacity-10">add</i> Add Product
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search and filter -->
+
+                                    <div class="row mb-4 " style="margin-top: 50px;">
+                                        <div class="col-md-6 " style="margin-left: 50px;">
+                                            <!-- Centered Search Form -->
+                                            <form action="/admin/view-product" method="GET" class="d-inline-flex">
+                                                <input type="text" name="search" class="form-control me-2"
+                                                    placeholder="&nbsp;&nbsp;&nbsp;Search..."
+                                                    value="<%= searchQuery %>"> 
+                                                <input type="hidden" name="page" value="<%= pagination.page %>">
+                                                <input type="hidden" name="limit" value="<%= pagination.limit %>">
+                                                <button type="submit" class="btn btn-primary">Search</button>
+                                            </form>
+
+
+                                        </div>
+                                        <div class="col-md-6" style="margin-top: 20px;">
+                                            <% if (searchQuery) { %>
+                                                <p class="mb-3"><strong>Search Results for:</strong>
+                                                    <%= searchQuery %>
+                                                </p>
+
+                                                <% } %>
+
+                                                    <p class="mb-3"><strong>Total Products:</strong>
+                                                        <%= product.length %>
+                                                    </p>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- End Search and filter -->
+
+
+                                    <div class="card-body px-0 pb-2">
+                                        <div class="table-responsive p-0">
+                                            <table class="table align-items-center">
+                                                <thead>
+                                                    <tr style="background-color: rgb(227, 225, 225);">
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">No</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Product Name</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Category</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Brand</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Quantity</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Description</th>
+                                                        <th class="text-center text-uppercase text-xxs font-weight-bolder "
+                                                            style="color: black;">Price</th>
+                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Image</th>
+                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Update</th>
+                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Status</th>
+                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
+                                                            style="color: black;">Action</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% let counter=1; %>
+                                                        <% product.forEach(products=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%= counter %>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%=products.name%>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%=products.category%>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%=products.brandName%>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%=products.qty%>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0">
+                                                                        <%=products.description%>
+                                                                    </p>
+                                                                </td>
+
+                                                                <td class="align-middle text-center">
+                                                                    <p class="text-xs font-weight-bold mb-0">&#x20B9;
+                                                                        <%=products.price%>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <img src="/public/userImages/<%=products.image[0] %>"
+                                                                        class="avatar avatar-sm me-3 border-radius-lg"
+                                                                        alt="">
+                                                                </td>
+                                                                <td>
+                                                                    <p class="text-xs font-weight-bold mb-0"><a
+                                                                            href="/admin/edit-product?id=<%=products._id%>">Edit</a>
+                                                                    </p>
+                                                                </td>
+
+                                                                <!-- Stock/Out of Stock -->
+                                                                <% if(products.qty<=0){%>
+                                                                    <td>
+                                                                        <p
+                                                                            class="text-xs text-danger font-weight-bold mb-0">
+                                                                            Out of Stock</p>
+                                                                    </td>
+                                                                    <%}else{%>
+                                                                        <td>
+                                                                            <p
+                                                                                class="text-xs text-success font-weight-bold mb-0">
+                                                                                Stock</p>
+                                                                        </td>
+                                                                        <%}%>
+
+                                                                            <!-- product List/Unlist -->
+                                                                            <% if(products.is_active===true){%>
+                                                                                <td class=" text-sm">
+                                                                                    <a
+                                                                                        href="/admin/is_activeProduct?id=<%= products._id %>">
+                                                                                        <span
+                                                                                            class="badge badge-sm bg-gradient-success">List</span></a>
+                                                                                </td>
+
+                                                                                <% }else{ %>
+
+                                                                                    <td class=" text-sm">
+                                                                                        <a
+                                                                                            href="/admin/is_activeProduct?id=<%= products._id %>">
+                                                                                            <span
+                                                                                                class="badge badge-sm bg-gradient-danger">Unlist</span></a>
+                                                                                    </td>
+                                                                                    <% } %>
+
+                                                                                        <% counter++; %>
+
+                                                            </tr>
+                                                            <% }); %>
+                                                </tbody>
+                                            </table>
+                                             <!-- star pagination -->
+
+            <div class="d-flex justify-content-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <% if (pagination.page > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>">Previous</a>
+                            </li>
+                        <% } %>
+            
+                        <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                            <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>"><%= i %></a>
+                            </li>
+                        <% } %>
+            
+                        <% if (pagination.page < pagination.totalPages) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>">Next</a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+              </div>
+  
+              <!-- End pagination -->
+
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <%- include('../layouts/admin/footer.ejs') %>
+
+                    </div>
+            </main>

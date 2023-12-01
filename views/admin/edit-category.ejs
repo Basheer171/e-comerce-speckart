@@ -1,0 +1,93 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+  <body class="g-sidenav-show  bg-gray-200">
+
+
+    <%- include('../layouts/admin/sidebar.ejs') %>
+
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+        <%- include('../layouts/admin/navbar.ejs') %>
+
+
+
+          <div class="container-fluid py-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="card my-4">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3">
+                        <%=message%>
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="card-body px-0 pb-2">
+                    <div class="container-fluid">
+                      <form action="/admin/edit-category" enctype="multipart/form-data" method="post">
+                        <div class="row">
+                          <div class="col-md-3 py-4">
+                            <div class="form-group">
+                                <div class="form-label rounded">Category Name</div>
+                                <input type="text" value="<%=categoryData.categoryName%>" name="category" placeholder="Category Name" required>
+                            </div>
+                        </div>
+                         
+                          <div class="row">
+                            <div class="col md-3 py-4">
+                              <div class="form-group">  
+                                <div class="form-label rounded">Category Specification</div>
+                                <input type="text" value="<%=categoryData.description%>" name="description"
+                                  placeholder="description" required>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <!-- Old images -->
+                            <div class="col md-3 py-4">
+                              <div class="form-group">
+                                <div class="form-label rounded">Images</div>
+                                <img src="/public/userImages/<%= categoryData.image %>" alt="Old Image"
+                                  style="width: 100px;">
+                                <div class="image-preview-container mt-2"></div>
+                              </div>
+                            </div>
+
+                            <!-- <div class="col md-3 py-4"> -->
+                            <div class="form-group">
+                              <div class="form-label rounded">New Image</div>
+                              <input type="file" name="image" id="image" required>
+                              <div class="image-preview-container mt-2"></div>
+                            </div>
+                            <!-- </div> -->
+                            <!-- <div class="form-check py-4">
+                              <div class="form-label rounded">Action</div>
+                              <input class="form-check-input" type="radio" name="is_block" value="1" <%
+                                if(categoryData.is_block==true){%> checked <%}%> >
+                                <label class="form-check-label" for="listOption">List</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="is_block" value="0" <%
+                                if(categoryData.is_block==false){%> checked <%}%> >
+                                <label class="form-check-label" for="unlistOption">Unlist</label>
+                            </div> -->
+                          </div>
+                          <div class="row">
+                            <div class="col md-3 py-4">
+                              <input type="hidden" name="id" value="<%=categoryData._id %>">
+                              <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%- include('../layouts/admin/footer.ejs') %>
+            </div>
+
+      </main>

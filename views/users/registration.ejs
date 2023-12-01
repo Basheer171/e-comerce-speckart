@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- molla/login.html  22 Nov 2019 10:04:03 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Brand Kicks! Step into Style with Confidence</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Brand Kicks! ">
+    <meta name="author" content="shabil">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="manifest" href="/public/userAssets/assets/images/icons/site.html">
+    <link rel="mask-icon" href="/public/userAssets/assets/images/BRAND KICKS! black.png" color="#666666">
+    <link rel="shortcut icon" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <meta name="apple-mobile-web-app-title" content="Brand Kicks!">
+    <meta name="application-name" content="Brand Kicks!">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="/public/userAssets/assets/images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="/public/assets/css/bootstrap.min.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="/public/assets/css/style.css">
+</head>
+<body>
+
+<main class="main">
+    <a href="/">
+        <img src="/public/userAssets/assets/images/BRAND KICKS! white.png" class="md-5" style="height: 60px; position: absolute; top: 20px; left: 20px;" alt="">
+    </a>
+    <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('/public/assets/images/backgrounds/bg-2.jpg')">
+        <div class="container">
+            <div class="form-box">
+                <div class="form-tab">
+                    <ul class="nav nav-pills nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#" role="tab">Sign Up</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                            <form action="/register" method="post" novalidate>
+                                <% if (typeof message !== 'undefined') { %>
+                                    <p style="color: red; font-size: 19px; font-weight: 300;">
+                                        <%= message %>
+                                    </p>
+                                <% } %>
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label for="register-firstName">First Name *</label>
+                                        <input type="text" class="form-control" id="register-firstName" name="firstName" required pattern="^[a-zA-Z]+$" title="First Name must contain only letters.">
+                                        <div class="error-message" id="firstName-error" style="color: rgb(255, 3, 3);"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="register-secondName">Second Name *</label>
+                                        <input type="text" class="form-control" id="register-secondName" name="secondName" required pattern="^[a-zA-Z]+$" title="Second Name must contain only letters.">
+                                        <div class="error-message" id="secondName-error" style="color: rgb(255, 3, 3);"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="register-email-2">Email address *</label>
+                                    <input type="email" class="form-control" id="register-email-2" name="email" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$" title="Please enter a valid email address.">
+                                    <div class="error-message" id="email-error" style="color: rgb(255, 3, 3);"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="register-mobile">Mobile No: *</label>
+                                    <input type="tel" class="form-control" id="register-mobile" name="mobile" required pattern="^[0-9]{10}$" title="Please enter a valid 10-digit mobile number.">
+                                    <div class="error-message" id="mobile-error" style="color: rgb(255, 3, 3);"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password">Password *</label>
+                                    <input type="password" class="form-control" id="password" name="password" required minlength="8" pattern="^\S{8,}$" title="Password must be at least 8 characters long and cannot contain spaces.">
+                                    <div class="error-message" id="password-error" style="color: rgb(255, 3, 3);"></div>
+                                    <small class="form-text text-muted">
+                                        Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cpassword">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="cpassword" name="cpassword" required minlength="8" pattern="^\S{8,}$" title="Confirm Password must be at least 8 characters long and cannot contain spaces.">
+                                    <div class="error-message" id="cpassword-error" style="color: rgb(255, 3, 3);"></div>
+                                    <div id="password-mismatch" class="alert alert-danger mt-2" style="display: none;">
+                                        Passwords do not match. Please try again.
+                                    </div>
+                                </div>
+
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <span>SIGN UP</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                </div>
+
+                                <div id="component" class="container-fluid py-3 text-center">
+                                    <p class=" m-0 px-3 py-2">
+                                        <span class="text-secondary fs-6 fw-normal font-family-Poppins">
+                                            Already Have An Account?
+                                        </span>
+                                        <a class="text-black fs-6 fw-normal font-family-Poppins text-decoration-underline" href="/login">
+                                            Login
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../layouts/user/footer.ejs') -%>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function (event) {
+            let valid = true;
+
+            // First Name and Second Name validation
+            const firstName = document.getElementById("register-firstName");
+            const secondName = document.getElementById("register-secondName");
+            const firstNameError = document.getElementById("firstName-error");
+            const secondNameError = document.getElementById("secondName-error");
+            const namePattern = /^[a-zA-Z]+$/;
+
+            if (!namePattern.test(firstName.value)) {
+                valid = false;
+                firstNameError.textContent = "First Name must contain only letters.";
+                event.preventDefault();
+            } else {
+                firstNameError.textContent = "";
+            }
+
+            if (!namePattern.test(secondName.value)) {
+                valid = false;
+                secondNameError.textContent = "Second Name must contain only letters.";
+                event.preventDefault();
+            } else {
+                secondNameError.textContent = "";
+            }
+
+            // Email validation
+            const email = document.getElementById("register-email-2");
+            const emailError = document.getElementById("email-error");
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,5}$/;
+
+            if (!emailPattern.test(email.value)) {
+                valid = false; 
+                emailError.textContent = "Please enter a valid email address.";
+                event.preventDefault();
+            } else {
+                emailError.textContent = "";
+            }
+
+            // Mobile No validation
+            const mobile = document.getElementById("register-mobile");
+            const mobileError = document.getElementById("mobile-error");
+            const mobilePattern = /^(?!.*(\d)\1{2,})^\d{10}$/;
+
+            if (!mobilePattern.test(mobile.value)) {
+                valid = false;
+                mobileError.textContent = "Please enter a valid 10-digit mobile number.";
+                event.preventDefault();
+            } else {
+                mobileError.textContent = "";
+            }
+
+            // Password and Confirm Password validation
+            const password = document.getElementById("password");
+            const cpassword = document.getElementById("cpassword");
+            const passwordError = document.getElementById("password-error");
+            const cpasswordError = document.getElementById("cpassword-error");
+            const passwordPattern = /^\S{8,}$/; // This pattern enforces at least 8 non-space characters.
+
+            if (!passwordPattern.test(password.value)) {
+                valid = false;
+                passwordError.textContent = "Password must be at least 8 characters long and cannot contain spaces.";
+                event.preventDefault();
+            } else {
+                passwordError.textContent = "";
+            }
+
+            if (!passwordPattern.test(cpassword.value)) {
+                valid = false;
+                cpasswordError.textContent = "Confirm Password must be at least 8 characters long and cannot contain spaces.";
+                event.preventDefault();
+            } else {
+                cpasswordError.textContent = "";
+            }
+
+            if (password.value !== cpassword.value) {
+                valid = false;
+                cpasswordError.textContent = "Passwords do not match. Please try again.";
+                document.getElementById("password-mismatch").style.display = "block";
+                event.preventDefault();
+            } else {
+                cpasswordError.textContent = "";
+                document.getElementById("password-mismatch").style.display = "none";
+            }
+
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+

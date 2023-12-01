@@ -1,0 +1,118 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+
+  <body class="g-sidenav-show  bg-gray-200">
+
+    <%- include('../layouts/admin/sidebar.ejs') %>
+
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+        <%- include('../layouts/admin/navbar.ejs') %>
+          <div class="container-fluid py-4">
+            <div class="row">
+              <div class="col-12">
+                <div class="card my-4">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3"> <%=message%></h6>
+                    </div>
+                  </div>
+                  <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                      <table class="table align-items-center mb-4">
+                        <thead>
+                          <tr style="background-color: rgb(227, 225, 225);">
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">No</th>
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">First Name  
+                              <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Last Name  
+
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Email
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Mobile
+                            </th>
+                            <!-- <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Image -->
+                            </th>
+                            <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Update</th> -->
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Status
+                            </th>
+                            <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Action
+                            </th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% let counter=1; %>
+                            <% userData.forEach(user=>{%>
+                              <tr>
+                                <td>
+                                  <p class="text-xs font-weight-bold mb-0">
+                                    <%= counter %>
+                                  </p>
+                                </td>
+                                <td>
+                                  <p class="text-xs font-weight-bold mb-0">
+                                    <%=user. firstName%>
+                                  </p>
+                                </td>
+                                <td>
+                                  <p class="text-xs font-weight-bold mb-0">
+                                    <%=user. secondName%>
+                                  </p>
+                                </td>
+                                <td>
+                                  <p class="text-xs font-weight-bold mb-0">
+                                    <%=user.email%>
+                                  </p>
+                                </td>
+                                <td>
+                                  <p class="text-xs font-weight-bold mb-0">
+                                    <%=user.mobile%>
+                                  </p>
+                                </td>
+                                  <!-- <td>
+                                    <img src="/public/userImages/<%=user.image %>" class="avatar avatar-sm me-3 border-radius-lg"
+                                      alt="">
+                                  </td> -->
+
+                                <!-- Verified/Not Verified -->
+                                <% if(user.is_varified==0){%>
+                                  <td>
+                                    <p class="text-xs text-danger font-weight-bold mb-0">Not Verified</p>
+                                  </td>
+                                  <%}else{%>
+                                    <td>
+                                      <p class="text-xs text-success font-weight-bold mb-0">Verified</p>
+                                    </td>
+                                    <%}%>
+
+                                      <!-- User Active/Blocked -->
+                                      <% if(user.is_block===true){%>
+                                        <td class=" text-sm">
+                                          <a href="/admin/is_blockUser?id=<%= user._id %>">
+                                            <span class="badge badge-sm bg-gradient-danger">Blocked</span></a>
+                                        </td>
+
+                                        <% }else{ %>
+
+                                          <td class=" text-sm">
+                                            <a href="/admin/is_blockUser?id=<%= user._id %>">
+                                              <span class="badge badge-sm bg-gradient-success">Active</span></a>
+                                          </td>
+                                          <% } %>
+
+                                            <% counter++; %>
+                                              <%});%>
+                              </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <%- include('../layouts/admin/footer.ejs') %>
+          </div>
+      </main>

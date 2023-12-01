@@ -1,0 +1,117 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+    <body class="g-sidenav-show  bg-gray-200">
+
+        <%- include('../layouts/admin/sidebar.ejs') %>
+
+        <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+
+            <%- include('../layouts/admin/navbar.ejs') %>
+
+            <div class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card my-4">
+                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                <div class="bg-gradient-primary shadow-primary border-radius-lg">
+                                    <div class="row justify-content-lg-between align-items-center margin-0 py-0">
+                                        <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
+                                            <h6 class="text-white text-capitalize ps-3">
+                                                <%=message%>
+                                            </h6>
+                                        </div>
+                                        <div class="col-md-12 col-lg-6">
+                                            <div class="d-flex justify-content-end">
+                                                <a class="nav-link text-white " href="/admin/add-brand">
+                                                    <button type="button" class="btn bg-gradient-success ms-3 mt-2">
+                                                        <i class="material-icons opacity-10">add</i> Add Brand</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-4">
+                                        <thead>
+                                            <tr style="background-color: rgb(227, 225, 225);">
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">No</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">Brand Name</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">Description</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">Image</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">Update</th>
+                                                <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
+                                                    style="color: black;">Status</th>
+                                                <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Action</th> -->
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% let counter=1; %>
+                                                <% if (brandData.length>0){%>
+                                                    <% brandData.forEach((brand)=>{%>
+                                                        <tr>
+                                                            <td>
+                                                                <p class="text-xs font-weight-bold mb-0">
+                                                                    <%= counter %>
+                                                                </p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="text-xs font-weight-bold mb-0">
+                                                                    <%=brand.brandName%>
+                                                                </p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="text-xs font-weight-bold mb-0">
+                                                                    <%=brand.specification%>
+                                                                </p>
+                                                            </td>
+                                                            <td>
+                                                                <img src="/public/userImages/<%=brand.image%>"
+                                                                    class="avatar avatar-sm me-3 border-radius-lg"
+                                                                    alt="">
+                                                            </td>
+                                                            <td>
+                                                                <p class="text-xs font-weight-bold mb-0"><a
+                                                                        href="/admin/edit-brand?id=<%= brand._id %>">Edit</a>
+                                                                </p>
+                                                            </td>
+                                                            <!-- <td>
+                      <p class="text-xs font-weight-bold mb-0">Stock</p>
+                    </td> -->
+                                                            <% if (brand.is_block==false){%>
+                                                                <td class=" text-sm">
+                                                                    <a href="/admin/is_blockBrand?id=<%= brand._id %>">
+                                                                        <span
+                                                                            class="badge badge-sm bg-gradient-success">List</span></a>
+                                                                </td>
+                                                                <%}else{%>
+                                                                    <td class=" text-sm">
+                                                                        <a
+                                                                            href="/admin/is_blockBrand?id=<%= brand._id %>">
+                                                                            <span
+                                                                                class="badge badge-sm bg-gradient-danger">Unlist</span></a>
+                                                                    </td>
+                                                                    <% } %>
+                                                                        <% counter++; %>
+                                                                            <%});%>
+
+                                                                                <% } %>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%- include('../layouts/admin/footer.ejs') %>
+            </div>
+        </main>

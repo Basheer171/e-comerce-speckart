@@ -1,0 +1,73 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+    <body class="g-sidenav-show  bg-gray-200">
+
+
+        <%- include('../layouts/admin/sidebar.ejs') %>
+
+            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+                <%- include('../layouts/admin/navbar.ejs') %>
+
+
+                    <div class="container-fluid py-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card my-4">
+                                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                            <h6 class="text-white text-capitalize ps-3">
+                                                <%=message%>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body px-0 pb-2">
+                                        <div class="container-fluid">
+                                            <form action="/admin/add-category" enctype="multipart/form-data"
+                                                method="post">
+
+                                                <div class="row">
+                                                    <div class="col-md-3 py-4">
+                                                        <div class="form-group">
+                                                            <div class="form-label rounded">Category Name</div>
+                                                            <input type="text" name="categoryName"
+                                                                placeholder="Category" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col md-3 py-4">
+                                                            <div class="form-group">
+                                                                <div class="form-label rounded">Category Specification
+                                                                </div>
+                                                                <input type="text" name="description"
+                                                                    placeholder="description" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col md-3 py-4">
+                                                            <div class="form-group">
+                                                                <input type="file" name="image" id="image" required>
+                                                                <div class="image-preview-container mt-2"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col md-3 py-4">
+                                                            <button type="submit" class="btn btn-primary">Add
+                                                                Category</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <%- include('../layouts/admin/footer.ejs') %>
+                    </div> 
+
+                </main>

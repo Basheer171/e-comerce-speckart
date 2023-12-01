@@ -1,0 +1,37 @@
+<%- include('../layouts/header') %>
+
+<div class="login-page">
+    <div class="form">
+
+<h1 class="head">Login</h1>
+
+<% if (typeof message !== 'undefined') { %>
+    <div class="alert alert-primary text-center" id="errorDisplay">
+      <%= message %>
+    </div>
+  <% } %>  
+
+<form action="/login" method="post" id="myForm" onsubmit="return validateForm()">
+    <!-- <div class="input-container"> -->
+    <input type="email" name="email" placeholder="Enter email" id="email">
+    <p id="email-error" class="error-message"></p>
+    
+
+    <div class="input-container">
+        <input type="password" name="password" required placeholder="Enter password" id="password">
+        <p id="password-error" class="error-message"></p>
+    </div>    
+    <br>
+    <button type="submit"  value="Login">Login</button>
+    <p class="message">Not registered? <a href="/register">Registeration</a></p>
+
+    
+</form>
+<a href="/forget">Forget Password</a>
+<br>
+<!-- <a href="/verification">Verification</a> -->
+ </div>
+
+
+
+<%- include('../layouts/footer') %> 
