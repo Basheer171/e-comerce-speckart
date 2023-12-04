@@ -1,85 +1,102 @@
-<%- include('../layouts/header') %>
-
-<div class="login-page">
-    <div class="form">   
-
-        <h1>Admin Login</h1>
-
-        <% if (typeof message !== 'undefined') { %>
-          <div class="alert alert-primary text-center" id="errorDisplay">
-            <%= message %>
-          </div>
-        <% } %>
-
-        <form action="/admin" method="POST"  id="myForm">
-            <div class="mb-3">
-                <input type="email" class="form-control" name="email" placeholder="Enter Email" id="email">
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" name="password" placeholder="Enter password" id="password">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <br>
-        <!-- <a href="/admin/forget">Forget Password</a> -->
-    </div>    
-</div>
+<!DOCTYPE html>
+<html lang="en">
 
 
+<!-- molla/login.html  22 Nov 2019 10:04:03 GMT -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Brand Kicks! Step into Style with Confidence</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Brand Kicks! ">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <link rel="manifest" href="/public/userAssets/assets/images/icons/site.html">
+    <link rel="mask-icon" href="/public/userAssets/assets/images/BRAND KICKS! black.png" color="#666666">
+    <link rel="shortcut icon" href="/public/userAssets/assets/images/BRAND KICKS! white.png">
+    <meta name="apple-mobile-web-app-title" content="Brand Kicks!">
+    <meta name="application-name" content="Brand Kicks!">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="/public/userAssets/assets/images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="/public/assets/css/bootstrap.min.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="/public/assets/css/style.css">
+</head>
+<body>
+<main class="main">
+    <!-- <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Login</li>
+            </ol>
+        </div> End .container -->
+    </nav>
 
 
+    <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('/public/assets/images/backgrounds/bg-2.jpg')">
+        <div class="container">
+            <div class="form-box">
+                <div class="form-tab">
+                    <ul class="nav nav-pills nav-fill" role="tablist">
 
-<!-- <div class="login-page">
-    <div class="form">
-  
-      <h2 class="head">ADMIN LOGIN</h2>
-  
-      <%
-  
-      if(typeof message !== 'undefined'){
-        %>
-          <h4 style="color:red"><%= message %></h4>
-        <%
-      }
-      
-      %>
-  
-      <form action="" method="post" class="login-form" onsubmit="return validateForm()">
-        <div class="input-container">
-          <input type="email" name="email" placeholder="Enter your email" id="email">
-          <p id="email-error" class="error-message"></p>
-        </div>
-        <div class="input-container">
-          <input type="password" name="password" placeholder="Enter your password" id="password">
-          <p id="password-error" class="error-message"></p>
-        </div>
-        <button type="submit" value="Login">Login</button>
-      </form>
-    </div>
-  </div> -->
+                        <li class="nav-item">
+                            <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#" role="tab" >Admin Login </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                            <form action="" method="post" novalidate>
+                                <% if (typeof message !== 'undefined') { %>
+                                <p style="color: red; font-size: 19px; font-weight: 300;">
+                                    <%= message %>
+                                </p>
+                                <% } %>
+                            <form action="" method="post" id="form">
+                                <div class="form-group">
+                                    <label for="register-email-2"> email address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div><!-- End .form-group -->
 
-<script>const form = document.getElementById('myForm');
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
-  const errorDisplay = document.getElementById('errorDisplay'); 
+                                <div class="form-group">
+                                    <label for="register-password-2">Password *</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div><!-- End .form-group -->
 
-  form.addEventListener('submit', (event) => {
-      let hasError = false;
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>LOG IN</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                    <!-- <a href="#" class="forgot-link">Forgot Your Password?</a> -->
+                                </div><!-- End .form-footer -->
+                                <div id="component" class="container-fluid py-3 text-center">
+                                    <p class=" m-0 px-3 py-2">
+                                        <!-- <span class="text-secondary fs-6 fw-normal font-family-Poppins">
+                                        Dont Have Account?
+                                        </span> -->
+                                        <!-- <a class="text-black fs-6 fw-normal font-family-Poppins text-decoration-underline " href="/signup" >
+                                        Signup -->
+                                        </a>
+                                    </p>
+                                </div>
+                            </form>
+                            
+                        </div><!-- .End .tab-panel -->
+                            </form> 
+                        </div><!-- .End .tab-pane -->
+                    </div><!-- End .tab-content -->
+                </div><!-- End .form-tab -->
+            </div><!-- End .form-box -->
+        </div><!-- End .container -->
+    </div><!-- End .login-page section-bg -->
+</main><!-- End .main -->
 
-      if (!email.value || !password.value) {
-          hasError = true;
-          errorDisplay.innerHTML = "All fields are required";
-      } else if (!email.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)) {
-          hasError = true;
-          errorDisplay.innerHTML = "Please enter a valid email.";
-      } else if (password.value.length < 5) {
-          hasError = true;
-          errorDisplay.innerHTML = "Password must contain atleast 6 characters";
-      }
-
-      if (hasError) {
-          event.preventDefault();
-      }
-
-  });</script>
-<%- include('../layouts/footer') %>
+<%- include('../layouts/user/footer.ejs') -%>

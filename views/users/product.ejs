@@ -141,28 +141,21 @@
                                                     <span>Out of Stock</span>
                                                 </button>
                                                 <% } else { %>
-                                                    <button onclick="addCart('<%= product._id %>','<%= user %>')"
+                                                    <button 
                                                         class="btn-product btn-cart">
                                                         <span>Add to Cart</span>
                                                     </button>
                                                     <% } %>
                                                         <div class="details-action-wrapper">
                                                             <a href="#" class="btn-product btn-wishlist"
-                                                                onclick="addtoWishList('<%= product._id %>','<%= user %>')"
+                                                                
                                                                 title="Wishlist"><span>Add to Wishlist</span></a>
                                                         </div>
                                                         <!-- End .details-action-wrapper -->
                                         </div>
                                         <!-- End .product-details-action -->
 
-                                        <div class="product-details-footer">
-                                            <div class="product-cat">
-                                                <span>Gender:</span>
-                                                <a>
-                                                    <%= product.gender %>
-                                                </a>
-                                            </div>
-                                            <!-- End .product-cat -->
+                                        
 
                                             <div class="social-icons social-icons-sm">
                                                 <span class="social-label">Share:</span>

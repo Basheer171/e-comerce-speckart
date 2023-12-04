@@ -340,45 +340,80 @@ const loginLoad = async(req,res)=>{
 
 //verify login in email
 
-const verifyLogin = async(req,res)=>{
+// const verifyLogin = async(req,res)=>{
 
   
-    try {
+//     try {
 
-        const email = req.body.email;
-        const password = req.body.password;
-       const userData = await User.findOne({email:email});
+//         const email = req.body.email;
+//         const password = req.body.password;
+//        const userData = await User.findOne({email:email});
 
-        if(userData){
+//         if(userData){
 
-          const passwordMatch = await bcrypt.compare(password,userData.password);
-          if(passwordMatch){
-                if(userData.is_verified === 0){
-                    res.render('login',{message:"Please verify your email."});
-                }
-                else{
-                    req.session.user_id = userData._id;
-                    res.redirect('/');
-                }
+//           const passwordMatch = await bcrypt.compare(password,userData.password);
+//           if(passwordMatch){
+//                 if(userData.is_verified === 0){
+//                     res.render('login',{message:"Please verify your email."});
+//                 }
+//                 else{
+//                     req.session.user_id = userData._id;
+//                     res.redirect('/');
+//                 }
 
-            }
+//             }
 
-            else{
-                res.render('login',{message:"Email and password is incorrect"});
-            }
+//             else{
+//                 res.render('login',{message:"Email and password is incorrect"});
+//             }
 
+//         }
+//         else{
+//             res.render('login',{message:"Email and password is incorrect"});
+//         }
+        
+        
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send('Server error');
+        
+//     }
+// }
+
+//==========================code for verifying the login===============================================================//
+
+const verifyLogin = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    const userData = await User.findOne({ email: email });
+    if (userData) {
+      if (userData.is_block === false) {
+        const passwordMatch = await bcrypt.compare(password, userData.password);
+
+        if (passwordMatch) {
+          if (userData.is_verified == 0) {
+            req.session.user_id = userData._id;
+            res.render("login", { message: "please verify your mail" });
+          } else {
+            req.session.user_id = userData._id;
+            res.redirect("/");
+          }
+        } else {
+          res.render("login", { message: "Email and  password is incorrect" });
         }
-        else{
-            res.render('login',{message:"Email and password is incorrect"});
-        }
-        
-        
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send('Server error');
-        
+      } else if (userData.is_block ){
+        res.render("login", { message: "This User is blocked" });
+      }
+    } else {
+      res.render("login", { message: "Email and  password is incorrect" });
     }
-}
+  } catch (err) {
+    next(err);
+  }
+};
+
           
 //load home
 
@@ -391,7 +426,7 @@ const loadHome = async(req,res)=>{
         
         res.render('home',{ 
             user:req.session.user_id,
-            products : productData, 
+            products : productData,   
             categoryData
             });
             
@@ -605,7 +640,7 @@ module.exports = {
     verifyOTP,
     resendOTP,
     showverifyOTPPage,
-    // verifyMail,
+    // verifyMail,  
     loginLoad,
     verifyLogin,
     loadHome, 

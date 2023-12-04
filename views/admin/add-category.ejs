@@ -29,6 +29,10 @@
                                                 <div class="row">
                                                     <div class="col-md-3 py-4">
                                                         <div class="form-group">
+                                                            <% if (typeof message !== 'undefined') { %>
+                                                                <p style="color: red;"><%= message %></p>
+                                                              <% } %>
+                                                              
                                                             <div class="form-label rounded">Category Name</div>
                                                             <input type="text" name="categoryName"
                                                                 placeholder="Category" required>
