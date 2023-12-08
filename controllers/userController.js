@@ -412,7 +412,7 @@ const verifyLogin = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
+};  
 
           
 //load home
@@ -631,10 +631,13 @@ const loadShop = async (req, res) => {
       });
     } catch (error) {
       console.log(error);
-    }
+    }   
   };
+
+
   
-module.exports = {
+  
+module.exports = {  
     loadRegister,
     insertUser,
     verifyOTP,

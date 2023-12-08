@@ -39,6 +39,8 @@ const upload = multer({storage:storage});
 
 const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
+const cartController = require('../controllers/cartController');
+
 
 
 
@@ -87,6 +89,18 @@ user_route.post('/edit',upload.single('image'),userController.updateProfile);
 user_route.get('/shop',userController.loadShop);
 
 
-user_route.get('/product',productController.loadProductPageLoad);
+user_route.get('/product',auth.isLogin,productController.loadProductPageLoad);
+
+
+// ========================  cart   ==========================
+
+user_route.post('/addToCart',auth.isLogin,cartController.addToCart);
+user_route.get('/cart',auth.isLogin,cartController.loadCart );
+user_route.post('/cart-quantity',auth.isLogin,cartController.cartQuantity )
+user_route.post('/remove-product',auth.isLogin,cartController.removeProduct )
+
+
+
+
 
 module.exports = user_route;   

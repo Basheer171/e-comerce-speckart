@@ -38,7 +38,7 @@
                                     </div>
                                     <div class="card-body px-0 pb-2">
                                         <div class="table-responsive p-0">
-                                            <table class="table align-items-center mb-4">
+                                            <table class="table align-items-center mb-4" id="user-table">
                                                 <thead>
                                                     <tr>
                                                         <th
@@ -127,6 +127,17 @@
                                 </div>
                             </div>
                         </div>
+                        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+                        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+                        <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+                        
+                        <script>
+                            $('#user-table').DataTable({
+                                responsive: true,
+                                
+                            });
+                            </script>
                         <%- include('../layouts/admin/footer.ejs') %>
                     </div>
             </main>

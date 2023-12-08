@@ -41,71 +41,71 @@
 
                           </tr>
                         </thead>
-                        <tbody>
-                          <% let counter=1; %>
-                            <% userData.forEach(user=>{%>
-                              <tr>
-                                <td>
-                                  <p class="text-xs font-weight-bold mb-0">
-                                    <%= counter %>
-                                  </p>
-                                </td>
-                                <td>
-                                  <p class="text-xs font-weight-bold mb-0">
-                                    <%=user. firstName%>
-                                  </p>
-                                </td>
-                                <td>
-                                  <p class="text-xs font-weight-bold mb-0">
-                                    <%=user. secondName%>
-                                  </p>
-                                </td>
-                                <td>
-                                  <p class="text-xs font-weight-bold mb-0">
-                                    <%=user.email%>
-                                  </p>
-                                </td>
-                                <td>
-                                  <p class="text-xs font-weight-bold mb-0">
-                                    <%=user.mobile%>
-                                  </p>
-                                </td>
-                                  <!-- <td>
-                                    <img src="/public/userImages/<%=user.image %>" class="avatar avatar-sm me-3 border-radius-lg"
-                                      alt="">
-                                  </td> -->
-
-                                <!-- Verified/Not Verified -->
-                                <% if(user.is_varified==0){%>
+                          <tbody>
+                            <% let counter=1; %>
+                              <% userData.forEach(user=>{%>
+                                <tr>
                                   <td>
-                                    <p class="text-xs text-danger font-weight-bold mb-0">Not Verified</p>
+                                    <p class="text-xs font-weight-bold mb-0">
+                                      <%= counter %>
+                                    </p>
                                   </td>
-                                  <%}else{%>
+                                  <td>
+                                    <p class="text-xs font-weight-bold mb-0">
+                                      <%=user. firstName%>
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <p class="text-xs font-weight-bold mb-0">
+                                      <%=user. secondName%>
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <p class="text-xs font-weight-bold mb-0">
+                                      <%=user.email%>
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <p class="text-xs font-weight-bold mb-0">
+                                      <%=user.mobile%>
+                                    </p>
+                                  </td>
+                                    <!-- <td>
+                                      <img src="/public/userImages/<%=user.image %>" class="avatar avatar-sm me-3 border-radius-lg"
+                                        alt="">
+                                    </td> -->
+
+                                  <!-- Verified/Not Verified -->
+                                  <% if(user.is_varified==0){%>
                                     <td>
-                                      <p class="text-xs text-success font-weight-bold mb-0">Verified</p>
+                                      <p class="text-xs text-danger font-weight-bold mb-0">Not Verified</p>
                                     </td>
-                                    <%}%>
+                                    <%}else{%>
+                                      <td>
+                                        <p class="text-xs text-success font-weight-bold mb-0">Verified</p>
+                                      </td>
+                                      <%}%>
 
-                                      <!-- User Active/Blocked -->
-                                      <% if(user.is_block===true){%>
-                                        <td class=" text-sm">
-                                          <a href="/admin/is_blockUser?id=<%= user._id %>">
-                                            <span class="badge badge-sm bg-gradient-danger">Blocked</span></a>
-                                        </td>
-
-                                        <% }else{ %>
-
+                                        <!-- User Active/Blocked -->
+                                        <% if(user.is_block===true){%>
                                           <td class=" text-sm">
                                             <a href="/admin/is_blockUser?id=<%= user._id %>">
-                                              <span class="badge badge-sm bg-gradient-success">Active</span></a>
+                                              <span class="badge badge-sm bg-gradient-danger">Blocked</span></a>
                                           </td>
-                                          <% } %>
 
-                                            <% counter++; %>
-                                              <%});%>
-                              </tr>
+                                          <% }else{ %>
 
-                        </tbody>
+                                            <td class=" text-sm">
+                                              <a href="/admin/is_blockUser?id=<%= user._id %>">
+                                                <span class="badge badge-sm bg-gradient-success">Active</span></a>
+                                            </td>
+                                            <% } %>
+
+                                              <% counter++; %>
+                                                <%});%>
+                                </tr>
+
+                          </tbody>
                       </table>
                     </div>
                   </div>

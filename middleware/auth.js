@@ -1,39 +1,32 @@
-
-//login middleware
-const isLogin = async(req,res,next)=>{
-
+const isLogin = async (req, res, next) => {
+    
     try {
-        
-        if(req.session.user_id){}
-        else{
-            res.redirect('/'); 
+        if (req.session.user_id) {
+             next(); // Proceed to the next middleware or route
+        } else {
+            res.redirect('/login')
         }
-        next();
-
     } catch (error) {
         console.log(error.message);
-        
+        res.redirect('/login'); // Handle errors by redirecting
     }
 }
 
-//logout middleware
-
-const isLogout = async(req,res,next)=>{
-
+const isLogout = async (req, res, next) => {
     try {
-
-        if(req.session.user_id){
-            res.redirect('/home');
+        if (req.session.user_id) {
+            res.redirect('/');
+        } else {
+             next(); // Proceed to the next middleware or route
         }
-        next();
-        
     } catch (error) {
         console.log(error.message);
-        
+        res.redirect('/'); // Handle errors by redirecting
     }
 }
 
-module.exports = {
+
+module.exports ={
     isLogin,
     isLogout
 }

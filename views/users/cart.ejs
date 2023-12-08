@@ -1,236 +1,216 @@
 <%- include('../layouts/user/header.ejs') %>
 
-
-
-<div class="dropdown cart-dropdown">
-    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-        <i class="icon-shopping-cart"></i>
-        <span class="cart-count">2</span>
-    </a>
-
-    <div class="dropdown-menu dropdown-menu-right">
-        <div class="dropdown-cart-products">
-            <div class="product">
-                <div class="product-cart-details">
-                    <h4 class="product-title">
-                        <a href="product.html">Beige knitted elastic runner shoes</a>
-                    </h4>
-
-                    <span class="cart-product-info">
-                        <span class="cart-product-qty">1</span>
-                        x $84.00
-                    </span>
-                </div><!-- End .product-cart-details -->
-
-                <figure class="product-image-container">
-                    <a href="product.html" class="product-image">
-                        <img src="assets/images/products/cart/product-1.jpg" alt="product">
-                    </a>
-                </figure>
-                <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-            </div><!-- End .product -->
-
-            <div class="product">
-                <div class="product-cart-details">
-                    <h4 class="product-title">
-                        <a href="product.html">Blue utility pinafore denim dress</a>
-                    </h4>
-
-                    <span class="cart-product-info">
-                        <span class="cart-product-qty">1</span>
-                        x $76.00
-                    </span>
-                </div><!-- End .product-cart-details -->
-
-                <figure class="product-image-container">
-                    <a href="product.html" class="product-image">
-                        <img src="assets/images/products/cart/product-2.jpg" alt="product">
-                    </a>
-                </figure>
-                <a href="#" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
-            </div><!-- End .product -->
-        </div><!-- End .cart-product -->
-
-        <div class="dropdown-cart-total">
-            <span>Total</span>
-
-            <span class="cart-total-price">$160.00</span>
-        </div><!-- End .dropdown-cart-total -->
-
-        <div class="dropdown-cart-action">
-            <a href="cart.html" class="btn btn-primary">View Cart</a>
-            <a href="checkout.html" class="btn btn-outline-primary-2"><span>Checkout</span><i class="icon-long-arrow-right"></i></a>
-        </div><!-- End .dropdown-cart-total -->
-    </div><!-- End .dropdown-menu -->
-</div><!-- End .cart-dropdown -->
-</div><!-- End .header-right -->
-</div><!-- End .container -->
-</div><!-- End .header-middle -->
-</header><!-- End .header -->
-
 <main class="main">
-<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-<div class="container">
-<h1 class="page-title">Shopping Cart<span>Shop</span></h1>
-</div><!-- End .container -->
-</div><!-- End .page-header -->
-<nav aria-label="breadcrumb" class="breadcrumb-nav">
-<div class="container">
-<ol class="breadcrumb">
-<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-<li class="breadcrumb-item"><a href="#">Shop</a></li>
-<li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
-</ol>
-</div><!-- End .container -->
-</nav><!-- End .breadcrumb-nav -->
+    <div class="page-content">
+        <div class="cart">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9" >
+                        <table class="table table-cart table-mobile" id="reloadDiv">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
 
-<div class="page-content">
-<div class="cart">
-<div class="container">
-<div class="row">
-    <div class="col-lg-9">
-        <table class="table table-cart table-mobile">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
+                            <tbody>
+                                <% let counter = 1; %>
+                                <% if (cart && cart.products && cart.products.length > 0) { %>
+                                    <% cart.products.forEach((data) => { %>
+                                        <tr>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    <%= counter %>
+                                                </p>
+                                            </td>
+                                            <td class="product-row">
+                                                <div class="product">
+                                                    <a href="/product?id=<%= data.productId._id %>">
+                                                        <img src="/public/userImages/<%= data.productId.image %>"
+                                                            alt="Product image" class="img-fluid"
+                                                            style="width: 100px; height: 100px">
+                                                    </a>
+                                                    <h3 class="product-title">
+                                                        <a href="/product?id=<%= data.productId._id %>">
+                                                            <%= data.productId.name %>
+                                                        </a>
+                                                    </h3><!-- End .product-title -->
+                                                </div><!-- End .product -->
+                                            </td>
+                                            <td class="price-col">&#x20B9;<%= data.productId.price %></td>
 
-            <tbody>
-                <tr>
-                    <td class="product-col">
-                        <div class="product">
-                            <figure class="product-media">
-                                <a href="#">
-                                    <img src="assets/images/products/table/product-1.jpg" alt="Product image">
+                                            <!-- Cart Count -->
+                                            <td class="quantity-col">
+                                                <% if (data.quantity != 0) { %>
+                                                    <div class="d-flex flex-column align-items-center m-l-auto m-r-4">
+                                                        <button type="button" class="btn btn-light mb-1" onclick="cartCount('<%= data.productId._id %>','<%= user %>',-1)">-</button>
+                                                        <span class="mtext-104 cl3 num-product text-center" id="<%= data.productId._id %>">
+                                                            <%= data.quantity %>
+                                                        </span>
+                                                        <button class="btn btn-light mt-1" onclick="cartCount('<%= data.productId._id %>','<%= user %>', 1)">+</button>
+                                                    </div>
+                                                    
+                                                    
+                                                <% } %>
+                                            </td><!-- Cart Count -->
+
+                                            <td class="total-col">&#x20B9;<%= data.totalPrice %></td>
+
+                                            <td>
+                                                <button class="btn-danger"
+                                                    onclick="removeProduct('<%= data.productId._id %>')">
+                                                    <i class="material-icons-round">delete</i>
+                                                    <!-- Remove -->
+                                                </button>
+                                            </td>   
+                                        </tr>
+                                        <% counter++; %>
+                                    <% }) %>
+                                <% } else { %>  
+                                    <tr>
+                                        <td colspan="6" class="text-center empty-cart-message">
+                                            <p class="mb-0" style="color: #3498db; font-weight: bold;">Your cart is currently empty.</p>
+                                            <p class="mt-2" style="color: #e74c3c; font-weight: bold;">Explore our products and start adding items to your cart!</p>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+
+                        <div class="cart-bottom">
+                            <div class="cart-discount">
+                                <form action="#">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" required placeholder="coupon code">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary-2" type="submit"><i
+                                                    class="icon-long-arrow-right"></i></button>
+                                        </div><!-- .End .input-group-append -->
+                                    </div><!-- End .input-group -->
+                                </form>
+                            </div><!-- End .cart-discount -->
+
+                            <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i
+                                    class="icon-refresh"></i></a>
+                        </div><!-- End .cart-bottom -->
+                    </div><!-- End .col-lg-9 -->
+
+                    <aside class="col-lg-3">
+                        <div class="summary summary-cart">
+                            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+                    
+                            <table class="table table-summary">
+                                <!-- ... Your existing code for displaying cart items ... -->
+                            </table><!-- End .table table-summary -->
+                    
+                            <div class="text-center mt-3">
+                                <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                            </div>
+                    
+                            <div class="text-center mt-3">
+                                <a href="/shop" class="btn btn-outline-dark-2 btn-block mb-3">
+                                    <span>CONTINUE SHOPPING</span><i class="icon-refresh"></i>
                                 </a>
-                            </figure>
-
-                            <h3 class="product-title">
-                                <a href="#">Beige knitted elastic runner shoes</a>
-                            </h3><!-- End .product-title -->
-                        </div><!-- End .product -->
-                    </td>
-                    <td class="price-col">$84.00</td>
-                    <td class="quantity-col">
-                        <div class="cart-product-quantity">
-                            <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                        </div><!-- End .cart-product-quantity -->
-                    </td>
-                    <td class="total-col">$84.00</td>
-                    <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-                </tr>
-                <tr>
-                    <td class="product-col">
-                        <div class="product">
-                            <figure class="product-media">
-                                <a href="#">
-                                    <img src="assets/images/products/table/product-2.jpg" alt="Product image">
-                                </a>
-                            </figure>
-
-                            <h3 class="product-title">
-                                <a href="#">Blue utility pinafore denim dress</a>
-                            </h3><!-- End .product-title -->
-                        </div><!-- End .product -->
-                    </td>
-                    <td class="price-col">$76.00</td>
-                    <td class="quantity-col">
-                        <div class="cart-product-quantity">
-                            <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                        </div><!-- End .cart-product-quantity -->                                 
-                    </td>
-                    <td class="total-col">$76.00</td>
-                    <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-                </tr>
-            </tbody>
-        </table><!-- End .table table-wishlist -->
-
-        <div class="cart-bottom">
-            <div class="cart-discount">
-                <form action="#">
-                    <div class="input-group">
-                        <input type="text" class="form-control" required placeholder="coupon code">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-                        </div><!-- .End .input-group-append -->
-                    </div><!-- End .input-group -->
-                </form>
-            </div><!-- End .cart-discount -->
-
-            <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
-        </div><!-- End .cart-bottom -->
-    </div><!-- End .col-lg-9 -->
-    <aside class="col-lg-3">
-        <div class="summary summary-cart">
-            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
-
-            <table class="table table-summary">
-                <tbody>
-                    <tr class="summary-subtotal">
-                        <td>Subtotal:</td>
-                        <td>$160.00</td>
-                    </tr><!-- End .summary-subtotal -->
-                    <tr class="summary-shipping">
-                        <td>Shipping:</td>
-                        <td>&nbsp;</td>
-                    </tr>
-
-                    <tr class="summary-shipping-row">
-                        <td>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
-                                <label class="custom-control-label" for="free-shipping">Free Shipping</label>
-                            </div><!-- End .custom-control -->
-                        </td>
-                        <td>$0.00</td>
-                    </tr><!-- End .summary-shipping-row -->
-
-                    <tr class="summary-shipping-row">
-                        <td>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="standart-shipping" name="shipping" class="custom-control-input">
-                                <label class="custom-control-label" for="standart-shipping">Standart:</label>
-                            </div><!-- End .custom-control -->
-                        </td>
-                        <td>$10.00</td>
-                    </tr><!-- End .summary-shipping-row -->
-
-                    <tr class="summary-shipping-row">
-                        <td>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="express-shipping" name="shipping" class="custom-control-input">
-                                <label class="custom-control-label" for="express-shipping">Express:</label>
-                            </div><!-- End .custom-control -->
-                        </td>
-                        <td>$20.00</td>
-                    </tr><!-- End .summary-shipping-row -->
-
-                    <tr class="summary-shipping-estimate">
-                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-                        <td>&nbsp;</td>
-                    </tr><!-- End .summary-shipping-estimate -->
-
-                    <tr class="summary-total">
-                        <td>Total:</td>
-                        <td>$160.00</td>
-                    </tr><!-- End .summary-total -->
-                </tbody>
-            </table><!-- End .table table-summary -->
-
-            <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
-        </div><!-- End .summary -->
-
-        <a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-    </aside><!-- End .col-lg-3 -->
-</div><!-- End .row -->
-</div><!-- End .container -->
-</div><!-- End .cart -->
-</div><!-- End .page-content -->
+                            </div>
+                        </div><!-- End .summary -->
+                    </aside><!-- End .col-lg-3 -->
+                    
+                
+                
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cart -->
+    </div><!-- End .page-content -->
 </main><!-- End .main -->
+
+
+
+<!-- link for ajax -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- CDN link for sweetalert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function cart count
+    function cartCount(productId, user, count) {
+        const quantityElement = document.getElementById(productId);
+
+        const quantity = parseInt(quantityElement.innerHTML);
+
+        if (count === -1 && quantity === 1) {
+            return;
+        }
+
+        $.ajax({
+            url: '/cart-quantity',
+            method: 'post', 
+            data: {
+                product: productId,
+                user: user,
+                count: count,
+            }
+        }).done(data => {
+            console.log(' data', data);
+
+            if (data.changeSuccess) {
+                const newQuantity = quantity + count;
+
+                $('#reloadDiv').load('/cart #reloadDiv');
+            } else if (data.check) {
+                swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Out of stock",
+                });
+            } else {
+                swal.fire({
+                    position: "center",
+                    icon: "warning",
+                    text: data.message,
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            }
+        });
+    }
+    
+    // remove product from cart
+
+    function removeProduct(productId){
+
+$.ajax({
+    url:'/remove-product',
+    method:'post',
+    data:{
+        product:productId
+    },
+}).done(data=>{
+    if(data){
+
+        $('#reloadDiv').load('/cart #reloadDiv')
+
+        Swal.fire({
+            
+            icon:'success',
+            title:'Item Romoved Successfully',
+            showConfirmButton:false,
+            timer:1500
+        });
+
+
+
+    }else{
+        console.log('Item remove failed')
+    }
+})
+}
+
+</script>
 
 <%- include('../layouts/user/footer.ejs') %>
