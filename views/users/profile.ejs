@@ -1,0 +1,301 @@
+<%- include('../layouts/user/header.ejs') -%>
+
+<main class="main">
+
+    <div class="page-header text-center" style="background-image: url('/public/assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">My Account<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>  
+                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Account</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+                    <aside class="col-md-4 col-lg-3">
+                        <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">My Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Edit Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders" role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads" role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Add Adresses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-addres-link" data-toggle="tab" href="#tab-addres" role="tab" aria-controls="tab-addres" aria-selected="false">Adresses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Sign Out</a>
+                            </li>
+                        </ul>
+                    </aside><!-- End .col-lg-3 -->
+
+                    <div class="col-md-8 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
+                                <h1 class="text-center">My Profile</h1>
+                                <p style="color: #000; font-weight: 500;">Full Name    : <%= user.firstName %> <%= user.secondName %></p>
+                                <p style="color: #000; font-weight: 500;">Email Address      : <%= user.email %></p>
+                                <p style="color: #000; font-weight: 500;">Phone Number : <%= user.mobile %> </p>
+                                <p style="color: #000; font-weight: 500;">Country: India</p>
+                            </div><!-- .End .tab-pane -->
+
+                            <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
+                                <p>No order has been made yet.</p>
+                                <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+                            </div><!-- .End .tab-pane -->
+
+                            <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
+                                <p>No downloads available yet.</p>
+                                <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
+                            </div><!-- .End .tab-pane -->
+
+                            <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+                                <form action="/addAddress" method="post" onsubmit="return validAddress()">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-9 m-t-90">
+                                                <h2 class="checkout-title mb-3">Address</h2>
+                                                <div class="form-group">
+                                                    <label for="company-name">Full Name</label>
+                                                    <input type="text" class="form-control" id="fullName" name="fullName">
+                                                    <p id="name-error" style="color: red;"></p>
+                                                </div>
+                                
+                                                <div class="form-group">
+                                                    <label for="phone">Mobile Number</label>
+                                                    <input type="tel" class="form-control" id="phone" name="mobile">
+                                                    <p id="mobile-error" style="color: red;"></p>
+                                                </div>
+                                
+                                                <div class="row">
+                                                  <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="state-county">State</label>
+                                                            <select class="form-control" id="state" name="state">
+                                                                <option value="">Select State</option>
+                                                            </select>
+                                                            <p id="state-error" style="color: red;"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="country">District</label>
+                                                            <input type="text" class="form-control" id="district" name="district">
+                                                            <p id="district-error" style="color: red;"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="town-city">City</label>
+                                                            <input type="text" class="form-control" id="city" name="city">
+                                                            <p id="city-error" style="color: red;"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="postcode">Pincode</label>
+                                                            <input type="text" class="form-control" id="pinCode" name="pincode">
+                                                            <p id="pincode-error" style="color: red;"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 text-center mb-3">
+                                                        <button type="submit" class="btn btn-outline-primary-2">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                            </div><!-- .End .tab-pane -->
+
+                             <!-- MANAGE ADDRESS -->
+                             <div class="tab-pane fade" id="tab-addres" role="tabpanel"
+                             aria-labelledby="tab-addres-link"> 
+
+                             <!-- <a href="">
+                                 <div class="card col-md-5 col-10 m-2 shadow-sm" id="addressDiv"
+                                     style="border-radius: 7px; background: #F3F3F9; cursor: pointer;  height: 86px;">
+                                     <div class="card-body" style="height: 190px;">
+                                         <div class="d-flex justify-content-center mt-1 py-4">
+
+                                             <h5 class="m-0 align-self-center" style="font-weight: 300;">Add New
+                                                 Address</h5>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </a> -->
+
+                             <div class="row">
+                                 <% if (address) { %>
+                                     <% for (let i=0; i < address.address.length; i++) { %>
+                                         <div class="col-md-6 col-12 mb-3 mt-3">
+                                             <div class="card p-4"
+                                                 style="background: #F3F3F9; border-radius: 10px;">
+                                                 <div class="card-body">
+                                                     <h6 class="card-title" style="font-size: 15px;">
+                                                         <%= address.address[i].fullName %>
+                                                     </h6>
+                                                     <p class="card-text mt-3">
+                                                         Number: <%= address.address[i].mobile %>
+                                                     </p>
+                                                     <p class="card-text">
+                                                         Location: <%= address.address[i].state %>, <%=
+                                                                 address.address[i].district %>, <%=
+                                                                     address.address[i].city %>
+                                                     </p>
+                                                     <p class="card-text">
+                                                         Pincode: <%= address.address[i].pincode %>
+                                                     </p>
+
+                                                     <hr class="my-3">
+                                                     <div class="d-flex justify-content-between">
+                                                         <a href="/editAddress?id=<%= address.address[i]._id %>">
+                                                             <button class="btn btn-outline-primary-2"
+                                                                 type="button" id="editBTN"
+                                                                 data-bs-toggle="modal" data-bs-target="">
+                                                                 Edit
+                                                             </button>
+                                                         </a>
+                                                         <a
+                                                             onclick="removeAddress('<%=address.address[i]._id%>')">
+                                                             <button class="btn btn-outline-primary-2"
+                                                                 type="button" data-bs-toggle="modal"
+                                                                 data-bs-target="">
+                                                                 Remove
+                                                             </button>
+                                                         </a>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         <% } %>
+                                             <% } else { %>
+                                                 <% } %>
+                             </div>
+                         </div><!-- END MANAGE ADDRESS -->
+
+                            <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
+                                <form id="editProfileForm" action="/updateuser" method="post" novalidate>
+                                    <input type="hidden" name="user_id" value="<%= user._id %>">
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>First Name *</label>
+                                            <input type="text" class="form-control" required name="firstName"  value="<%= user.firstName %>">
+                                        </div><!-- End .col-sm-6 -->
+
+                                        <div class="col-sm-6">
+                                            <label>Last Name *</label>
+                                            <input type="text" class="form-control" required name="secondName"  value="<%= user.secondName %>">
+                                        </div><!-- End .col-sm-6 -->
+                                    </div><!-- End .row -->
+
+                                    
+                                    <label>Mobile No *</label>
+                                    <input type="tel" name="mobile" value="<%= user.mobile %>" class="form-control" required>
+
+                                    
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>SAVE CHANGES</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                </form>
+
+                                <hr>
+
+                                <h4>Change Password</h4>
+              
+                                <form id="changePasswordForm" action="/changepassword" method="post" novalidate>
+                                    <div class="form-group">
+                                      <div class="row">
+                                        <div class="col-sm-6">
+                                          <label for="oldPassword">Current Password</label>
+                                          <input type="password" name="oldPassword" id="oldPassword" class="form-control" required>
+                                          <div class="error-message alert-danger" id="oldPasswordError"></div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <label for="newPassword">New Password</label>
+                                          <input type="password" name="newPassword" id="newPassword" class="form-control" required>
+                                          <div class="error-message text-danger font-weight" id="newPasswordError"></div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                          <label for="cnewPassword">Confirm Password</label>
+                                          <input type="password" name="cnewPassword" id="cnewPassword" class="form-control" required>
+                                          <div class="error-message text-danger font-weight" id="cnewPasswordError"></div>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline-primary-2">
+                                          <span>CHANGE PASSWORD</span>
+                                          <i class="icon-long-arrow-right"></i>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </form>
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+<script>
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('cnewPassword').value;
+
+        // Check for strong password criteria (e.g., minimum length, no spaces)
+        if (!isStrongPassword(newPassword)) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('newPasswordError').innerHTML = 'Password must be strong.';
+        } else {
+            document.getElementById('newPasswordError').innerHTML = '';
+        }
+
+        // Check if New Password and Confirm Password match
+        if (newPassword !== confirmPassword) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('confirmPasswordError').innerHTML = 'Passwords do not match.';
+        } else {
+            document.getElementById('confirmPasswordError').innerHTML = '';
+        }
+    });
+
+    // Function to check if a password is strong
+    function isStrongPassword(password) {
+        // Add your criteria for a strong password (e.g., minimum length, no spaces)
+        const minLength = 8;
+        const noSpaces = !/\s/.test(password);
+
+        return password.length >= minLength && noSpaces;
+    }
+</script>
+
+<script src="/public/assets/js/validationaddress.js"></script>
+
+<%- include('../layouts/user/footer.ejs') -%>

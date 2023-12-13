@@ -101,7 +101,7 @@ const updateCategory = async (req, res) => {
             }
         );
 
-        console.log(categoryData);
+        // console.log(categoryData);
         if (categoryData) {
             res.redirect('/admin/view-category');
         } else {

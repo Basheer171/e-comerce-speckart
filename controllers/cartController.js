@@ -56,49 +56,32 @@ const addToCart = async (req, res) => {
 
 const loadCart = async (req, res) => {
     try {
-
         const id = req.session.user_id;
         const userData = await userDb.findById({ _id: id });
         const userId = userData._id;
 
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
+
         if (req.session.user_id) {
-
             if (cartData && cartData.products.length > 0) {
-                let Total;
-
-                const total = await cartDb.aggregate([
-                    { $match: { user: userId } },
-                    { $unwind: '$products' },
-                    {
-                        $project: {
-                            price: '$products.price',
-                            quantity: '$products.quantity'
-                        }
-                    },
-                    { $group: { _id: null, sum: { $sum: { $multiply: ['$price', '$quantity'] } } } }
-                ]);
-
-                if (total.length > 0) {
-                    Total = total[0].sum;
-                } else {
-                    Total = 0;
-                }
+                
+                const Total = cartData.products.reduce((acc, product) => {
+                    return acc + product.price * product.quantity;
+                }, 0);
 
                 res.render('cart', { user: userId, cart: cartData, Total });
             } else {
                 res.render('cart', { user: userId, cart: [], Total: 0 });
             }
-
         } else {
             res.redirect('/login'); // Redirect to a login page
         }
-
     } catch (error) {
         console.log(error.message);
         res.status(500).render('error', { error: 'An error occurred' });
     }
 };
+
 
 
     // Cart Quantity
@@ -137,17 +120,18 @@ const loadCart = async (req, res) => {
             const updatedProduct = updateCartData.products.find((product)=>product.productId==productId);
             // console.log('updatedProduct', updatedProduct);
 
-            const updatedQuantity = x.quantity
+            const updatedQuantity = updatedProduct.quantity
             // console.log('updateedquantity',updatedQuantity);
             const productPrice = stockAvailable.price;
             // console.log('Product Price',productPrice);
             const productTotal = productPrice*updatedQuantity
             // console.log('Product Total', productTotal);
+             
 
             const updateTotalProduct = await cartDb.updateOne({user:userId,"products.productId":productId},
             {$set:{"products.$.totalPrice":productTotal}})
 
-            // console.log('updateTotalProduct',updateTotalProduct);
+            // console.log('productTotal',productTotal);
 
         } catch (error) {
             console.log(error);

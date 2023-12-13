@@ -99,6 +99,17 @@ user_route.get('/cart',auth.isLogin,cartController.loadCart );
 user_route.post('/cart-quantity',auth.isLogin,cartController.cartQuantity )
 user_route.post('/remove-product',auth.isLogin,cartController.removeProduct )
 
+// ========================  profile   ==========================
+
+user_route.get('/profile',auth.isLogin,userController.profileLoad );
+user_route.post('/updateuser',auth.isLogin,userController.editProfile );
+user_route.get('/profile',auth.isLogin,userController.viewAddress );
+user_route.post('/changepassword',auth.isLogin,userController.updatePassword)
+user_route.post('/addAddress',auth.isLogin,userController.addAddress)
+
+
+
+
 
 
 

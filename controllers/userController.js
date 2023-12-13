@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const Product = require('../models/productModel')
 const category = require('../models/categoryModel')
+const addressModel = require('../models/addressModel')
 
 const nodemailer = require("nodemailer");
 
@@ -634,6 +635,134 @@ const loadShop = async (req, res) => {
     }   
   };
 
+const profileLoad = async (req,res)=>{
+  try {
+    const userId = req.session.user_id
+    const userData = await User.findById(userId) ;
+    const addressData = await addressModel.findOne({userId : req.session.user_id})
+      res.render('profile',{ user: userData,address:addressData})
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+const editProfile = async (req,res)=>{
+  try {
+
+    const userData = req.body.user_id;
+    // console.log('userData',userData);
+
+   
+    const userDataChange = await User.findByIdAndUpdate({_id:userData},{$set:{firstName:req.body.firstName, secondName:req.body.secondName, mobile:req.body.mobile}})
+    res.redirect('/profile')
+    // console.log('userDataChange',userDataChange);
+
+
+
+
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const updatePassword = async (req, res)=>{
+
+  try {
+    
+    const userData = await User.findOne ({_id: req.session.user_id})
+
+    // console.log('userData',userData);
+
+    const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, userData.password)
+    // console.log('isPasswordMatch',isPasswordMatch);
+
+    if(isPasswordMatch){
+
+      const newCreatePassword =await bcrypt.hash(req.body.newPassword,10);
+      // console.log('newCreatePassword',newCreatePassword);
+
+      const newPasswordSet = await User.updateOne({_id:userData},{$set:{password: newCreatePassword}});
+      // console.log('newPasswordSet',newPasswordSet);
+
+      res.redirect('/profile')
+
+    }else{
+      return res.status(400)
+    }
+
+  } catch (error) {
+    
+    console.log(error);
+
+  }
+}
+
+ const viewAddress = async (req,res)=>{
+  try {
+    
+    const userId = req.session.user_id
+    const userData = await User.findById(userId) ;
+
+      res.render('address',{ user: userData})
+
+  } catch (error) {
+
+    console.log(error);
+  }
+ }
+
+ const addAddress = async (req, res, next) => {
+  try {
+    
+    const  userAddress = await addressModel.findOne({userId : req.session.user_id})
+
+    let userAddresscreat;
+
+    if(!userAddress){
+
+        userAddresscreat = new addressModel ({
+
+        userId : req.session.user_id,
+        address:[
+          {
+            fullName : req.body.fullName,
+            mobile   : req.body.mobile,
+              state  : req.body.state,
+             district:req.body.district,
+              city   : req.body.city,
+              pincode: req.body.pincode
+        }]
+
+      })
+
+    }else {
+
+      userAddresscreat = userAddress
+
+      userAddresscreat.address.push({
+        fullName : req.body.fullName,
+        mobile   : req.body.mobile,
+          state  : req.body.state,
+         district:req.body.district,
+          city   : req.body.city,
+          pincode: req.body.pincode
+      })
+    }
+
+    const result = userAddresscreat.save();
+
+    res.redirect('/profile')
+
+  } catch (error) {
+    console.log(error);
+    // Handle the error appropriately, you might want to send an error response or call the 'next' middleware
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
   
   
@@ -656,5 +785,10 @@ module.exports = {
     sentVerificationLink,
     editLoad,
     updateProfile,
-    loadShop
+    loadShop,
+    profileLoad,
+    editProfile,
+    updatePassword,
+    viewAddress,
+    addAddress,
 }

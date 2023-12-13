@@ -71,7 +71,7 @@
                                         </tr>
                                         <% counter++; %>
                                     <% }) %>
-                                <% } else { %>  
+                                 <% } else { %>  
                                     <tr>
                                         <td colspan="6" class="text-center empty-cart-message">
                                             <p class="mb-0" style="color: #3498db; font-weight: bold;">Your cart is currently empty.</p>
@@ -95,15 +95,51 @@
                                 </form>
                             </div><!-- End .cart-discount -->
 
-                            <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i
+                            <a href="/cart" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i
                                     class="icon-refresh"></i></a>
                         </div><!-- End .cart-bottom -->
                     </div><!-- End .col-lg-9 -->
 
-                    <aside class="col-lg-3">
+                     <aside class="col-lg-3">
                         <div class="summary summary-cart">
                             <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
-                    
+                            <table class="table table-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <% if (cart && cart.products && cart.products.length > 0) { %>
+                                        <% cart.products.forEach((data) => { %>
+                                            <tr>
+                                                <td><a href="/product?id=<%= data.productId._id %>">
+                                                    <%= data.productId.name %>
+                                                </a></td>
+                                                <td><%= data.totalPrice %></td>
+                                            </tr>
+                                        <% }) %>
+                                
+                                        <tr class="summary-subtotal">
+                                            <td>Subtotal:</td>
+                                            <td><%= Total %></td>
+                                        </tr><!-- End .summary-subtotal -->
+                        
+                                        <tr class="summary-total">
+                                            <td>Total:</td>
+                                            <td><%= Total %></td>
+                                        </tr><!-- End .summary-total -->
+                                    <% } %>
+                                </tbody>
+                                
+                            </table><!-- End .table table-summary -->
+
+                                            
+
+
+                              
                             <table class="table table-summary">
                                 <!-- ... Your existing code for displaying cart items ... -->
                             </table><!-- End .table table-summary -->
