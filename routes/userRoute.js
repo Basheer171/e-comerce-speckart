@@ -104,7 +104,6 @@ user_route.post('/remove-product',auth.isLogin,cartController.removeProduct )
 
 user_route.get('/profile',auth.isLogin,userController.profileLoad );
 user_route.post('/updateuser',auth.isLogin,userController.editProfile );
-user_route.get('/profile',auth.isLogin,userController.viewAddress );
 user_route.post('/changepassword',auth.isLogin,userController.updatePassword)
 user_route.post('/addAddress',auth.isLogin,userController.addAddress)
 user_route.get('/editAddress',auth.isLogin,userController.editAddressLoad );

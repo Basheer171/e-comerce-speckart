@@ -700,19 +700,7 @@ const updatePassword = async (req, res)=>{
   }
 }
 
- const viewAddress = async (req,res)=>{
-  try {
-    
-    const userId = req.session.user_id
-    const userData = await User.findById(userId) ;
 
-      res.render('address',{ user: userData})
-
-  } catch (error) {
-
-    console.log(error);
-  }
- }
 
  const addAddress = async (req, res, next) => {
   try {
@@ -863,7 +851,6 @@ module.exports = {
     profileLoad,
     editProfile,
     updatePassword,
-    viewAddress,
     addAddress,
     editAddressLoad,
     editAddress,
