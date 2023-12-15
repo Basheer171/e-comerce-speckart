@@ -252,7 +252,7 @@
 
 
  <script>
-       function addToCart(id) {
+      function addToCart(id) {
     $.ajax({
         url: "/addTocart",
         method: "post", 
@@ -260,7 +260,8 @@
             id: id
         },
     }).done((data) => {
-        if (data) {
+        if (data.success) {
+            // Product added successfully
             Swal.fire({
                 position: 'center', 
                 icon: 'success',
@@ -268,8 +269,24 @@
                 showConfirmButton: false,
                 timer: 1000
             });
+        } else if (data.alreadyInCart) {
+            // Product is already in the cart
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Product is already in the cart please check the cart',
+                showConfirmButton: false,
+                timer: 1500
+            });
         } else {
-            swal("Fail to add");
+            // Failed to add the product
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Failed to add the product',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     });
 }

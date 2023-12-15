@@ -763,6 +763,80 @@ const updatePassword = async (req, res)=>{
   }
 };
 
+const editAddressLoad = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const addressId = req.query.id;
+
+    // Find the user by userId and retrieve the specific address using its id
+    const user = await addressModel.findOne({ userId });
+    const addressToEdit = user.address.id(addressId); 
+
+    // Render the 'editAddress' template and pass the user and specific address
+    res.render('editAddress', { user, address: addressToEdit });
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+const editAddress = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    const id = req.body.id;
+
+    const editAddress = await addressModel.updateOne(
+      { userId, "address._id": id },
+      {
+        $set: {
+          "address.$.fullName": req.body.fullName,
+          "address.$.mobile": req.body.mobile,
+          "address.$.state": req.body.state,
+          "address.$.district": req.body.district,
+          "address.$.city": req.body.city,
+          "address.$.pincode": req.body.pincode,
+        },
+      }
+    );
+
+    res.redirect('/profile');
+    console.log('editAddress', editAddress);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  const userId = req.session.user_id; // Assuming you have user information in the request object
+  const addressId = req.body.id; // Assuming you're sending the address ID in the request body
+
+  try {
+    // Find the user by ID
+    const user = await addressModel.findOne({ userId: userId });
+
+    // Find the index of the address with the given ID
+    const addressIndex = user.address.findIndex(addr => addr._id == addressId);
+
+    if (addressIndex !== -1) {
+      // Remove the address from the array
+      user.address.splice(addressIndex, 1);
+
+      // Save the updated user object
+      await user.save();
+
+      // Respond with a success message
+      return res.json({ remove: 1 });
+    } else {
+      // Address not found
+      return res.status(404).json({ error: 'Address not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting address:', error);
+    // Respond with an error message
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
   
   
@@ -791,4 +865,8 @@ module.exports = {
     updatePassword,
     viewAddress,
     addAddress,
+    editAddressLoad,
+    editAddress,
+    deleteAddress
+
 }

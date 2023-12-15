@@ -7,10 +7,8 @@ const { ObjectId } = require('mongoose').Types
 
 
 
-
 const addToCart = async (req, res) => {
     try {
-        // Check if the user is logged in
         if (req.session.user_id) {
             const productId = req.body.id;
             const name = req.session.user_id;
@@ -23,28 +21,24 @@ const addToCart = async (req, res) => {
             const userCart = await cartDb.findOne({ user: userId });
 
             if (userCart) {
-                const productExist = await userCart.products.findIndex(element => element.productId == productId);
+                const productExist = userCart.products.some(product => product.productId.equals(productId));
 
-                if (productExist !== -1) {
-                    const cartData = await cartDb.findOne({ user: userId, "products.productId": productId });
-
-                    const [{ quantity: quantity }] = cartData.products;
-
-                    if (productData.quantity <= quantity) {
-                        res.json({ outofstock: true });
-                    } else {
-                        await cartDb.findOneAndUpdate({ user: userId, "products.productId": productId }, { $inc: { "products.$.quantity": 1 } });
-                    }
+                if (productExist) {
+                    // Product is already in the cart
+                    res.json({ alreadyInCart: true });
                 } else {
+                    // Product is not in the cart, add it
                     await cartDb.findOneAndUpdate({ user: userId }, { $push: { products: { productId: productId, price: productData.price } } });
+                    res.json({ success: true });
                 }
-            } else if (!userCart) {
+            } else {
+                // User has no cart, create a new one
                 const data = new cartDb({ user: userId, products: [{ productId: productId, price: productData.price }] });
                 const result = await data.save();
+                res.json({ success: true });
             }
-
-            res.json({ success: true });
         } else {
+            // User not logged in
             res.json({ loginRequired: true });
         }
     } catch (error) {
@@ -61,7 +55,6 @@ const loadCart = async (req, res) => {
         const userId = userData._id;
 
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-
         if (req.session.user_id) {
             if (cartData && cartData.products.length > 0) {
                 

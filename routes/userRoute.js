@@ -40,6 +40,7 @@ const upload = multer({storage:storage});
 const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
+const orderController = require('../controllers/orderController');
 
 
 
@@ -106,6 +107,14 @@ user_route.post('/updateuser',auth.isLogin,userController.editProfile );
 user_route.get('/profile',auth.isLogin,userController.viewAddress );
 user_route.post('/changepassword',auth.isLogin,userController.updatePassword)
 user_route.post('/addAddress',auth.isLogin,userController.addAddress)
+user_route.get('/editAddress',auth.isLogin,userController.editAddressLoad );
+user_route.post('/editAddress',auth.isLogin,userController.editAddress);
+user_route.delete('/deleteAddress',auth.isLogin,userController.deleteAddress)
+
+
+// ========================  checkout   ==========================
+
+user_route.get('/checkout',auth.isLogin,orderController.loadCheckout );
 
 
 
