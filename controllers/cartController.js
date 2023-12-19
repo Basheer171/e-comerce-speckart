@@ -78,60 +78,40 @@ const loadCart = async (req, res) => {
 
 
     // Cart Quantity
-    const cartQuantity = async(req, res)=>{
+    const cartQuantity = async (req, res) => {
         try {
             const userId = req.session.user_id;
             const productId = req.body.product;
-            // console.log('product id',productId);
-            // console.log('product id',userId);
-
             const count = parseInt(req.body.count);
-            // console.log('Count',count);
-
+    
             const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-                
-            //  console.log("cartData",cartData);
-            const [{quantity:quantity}]=cartData.products;
-            // console.log('Quantity:', quantity);
-
-
-            const stockAvailable = await productDb.findById({_id:productId})
-            // console.log('stock Available',stockAvailable);
-
-            if(stockAvailable.qty < quantity + count){
-                return res.json({changeSuccess:false, message:'Insufficient stock'});
-
-            }else{
-
-                await cartDb.updateOne({user:userId,"products.productId":productId},
-                {$inc:{"products.$.quantity":count}});
-                res.json({changeSuccess:true}); 
+    
+            const productToUpdate = cartData.products.find(product => product.productId.equals(productId));
+    
+            if (!productToUpdate) {
+                return res.json({ changeSuccess: false, message: 'Product not found in the cart' });
             }
-            
-            const updateCartData = await cartDb.findOne({user:userId});
-            // console.log('updateCartData',updateCartData);
-            const updatedProduct = updateCartData.products.find((product)=>product.productId==productId);
-            // console.log('updatedProduct', updatedProduct);
-
-            const updatedQuantity = updatedProduct.quantity
-            // console.log('updateedquantity',updatedQuantity);
-            const productPrice = stockAvailable.price;
-            // console.log('Product Price',productPrice);
-            const productTotal = productPrice*updatedQuantity
-            // console.log('Product Total', productTotal);
-             
-
-            const updateTotalProduct = await cartDb.updateOne({user:userId,"products.productId":productId},
-            {$set:{"products.$.totalPrice":productTotal}})
-
-            // console.log('productTotal',productTotal);
-
+    
+            const stockAvailable = await productDb.findById({ _id: productId });
+    
+            if (stockAvailable.qty < productToUpdate.quantity + count) {
+                return res.json({ changeSuccess: false, message: 'Insufficient stock' });
+            }
+    
+            // Update the quantity and calculate the new total price
+            productToUpdate.quantity += count;
+            productToUpdate.totalPrice = productToUpdate.price * productToUpdate.quantity;
+    
+            // Save the updated cart
+            await cartData.save();
+    
+            res.json({ changeSuccess: true, updatedQuantity: productToUpdate.quantity });
         } catch (error) {
             console.log(error);
-            res.json({changeSuccess:false, message:'An error occurred'});
+            res.json({ changeSuccess: false, message: 'An error occurred' });
         }
-    }
-
+    };
+    
     // Cart Remove
 const removeProduct = async(req,res)=>{
     try {
