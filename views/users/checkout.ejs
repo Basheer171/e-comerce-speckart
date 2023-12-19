@@ -82,7 +82,7 @@
                         <input type="radio" id="showAddressForm" name="addressOption" data-toggle="collapse" data-target="#addressForm">
                         <label for="showAddressForm">Use a different shipping address</label>
                         
-                        <form action="/addAddress" method="post" onsubmit="return validAddress()" class="collapse" id="addressForm">
+                        <form action="/shipAddAddress" method="post" onsubmit="return validAddress()" class="collapse" id="addressForm">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-9 m-t-90">
@@ -169,28 +169,32 @@
                                     </tr>
                                 </thead>
 
-                                <tbody>
-                                    <tr>
-                                        <td><a href="#">Beige knitted elastic runner shoes</a></td>
-                                        <td>$84.00</td>
-                                    </tr>
+                                 <tbody>
+                                    <% if (cart && cart.products && cart.products.length > 0) { %>
+                                        <% cart.products.forEach((data) => { %>
+                                            <tr>
+                                                <td><a href="/product?id=<%= data.productId._id %>">
+                                                    <%= data.productId.name %>
+                                                </a></td>
+                                                <td><%= data.totalPrice %></td>
+                                            </tr>
+                                        <% }) %>
 
-                                    <tr>
-                                        <td><a href="#">Blue utility pinafore denimdress</a></td>
-                                        <td>$76,00</td>
-                                    </tr>
-                                    <tr class="summary-subtotal">
-                                        <td>Subtotal:</td>
-                                        <td>$160.00</td>
-                                    </tr><!-- End .summary-subtotal -->
-                                    <tr>
-                                        <td>Shipping:</td>
-                                        <td>Free shipping</td>
-                                    </tr>
-                                    <tr class="summary-total">
-                                        <td>Total:</td>
-                                        <td>$160.00</td>
-                                    </tr><!-- End .summary-total -->
+                                        <tr>
+                                            <td>Shipping:</td>
+                                            <td>Free shipping</td>
+                                        </tr>
+                                
+                                        <tr class="summary-subtotal">
+                                            <td>Subtotal:</td>
+                                            <td><%= Total %></td>
+                                        </tr><!-- End .summary-subtotal -->
+                        
+                                        <tr class="summary-total">
+                                            <td>Total:</td>
+                                            <td><%= Total %></td>
+                                        </tr><!-- End .summary-total -->
+                                    <% } %>
                                 </tbody>
                             </table><!-- End .table table-summary -->
 
