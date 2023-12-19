@@ -758,7 +758,9 @@ const editAddressLoad = async (req, res) => {
 
     // Find the user by userId and retrieve the specific address using its id
     const user = await addressModel.findOne({ userId });
-    const addressToEdit = user.address.id(addressId); 
+    console.log('user',user);
+    const addressToEdit = user.address.id(addressId);
+    console.log('addressToEdit',addressToEdit); 
 
     // Render the 'editAddress' template and pass the user and specific address
     res.render('editAddress', { user, address: addressToEdit });
@@ -796,18 +798,16 @@ const editAddress = async (req, res) => {
 };
 
 const deleteAddress = async (req, res) => {
-  const userId = req.session.user_id; // Assuming you have user information in the request object
-  const addressId = req.body.id; // Assuming you're sending the address ID in the request body
+  const userId = req.session.user_id; 
+  const addressId = req.body.id; 
 
   try {
-    // Find the user by ID
-    const user = await addressModel.findOne({ userId: userId });
+    const user = await addressModel.findOne({ userId});
 
-    // Find the index of the address with the given ID
-    const addressIndex = user.address.findIndex(addr => addr._id == addressId);
+    const addressIndex = user.address.id(addressId);
 
     if (addressIndex !== -1) {
-      // Remove the address from the array
+
       user.address.splice(addressIndex, 1);
 
       // Save the updated user object

@@ -10,7 +10,7 @@ const userAddressSchema = new mongoose.Schema({
     address: [
       {
         fullName: {
-          type: String,
+          type: String, 
           required: true,
         },
         mobile: {
