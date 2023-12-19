@@ -31,41 +31,29 @@
                         <h2 class="checkout-title">Billing Details</h2>
 
                         <div class="row">
-                            <% if (address) { %>
-                                <% for (let i=0; i < address.address.length; i++) { %>
+                            <% if (address && address.address.length > 0) { %>
+                                <% address.address.forEach((addressItem, index) => { %>
                                     <div class="col-md-6 col-12 mb-3 mt-3">
-                                        <div class="card p-4"
-                                            style="background: #F3F3F9; border-radius: 10px;">
+                                        <div class="card p-4" style="background: #F3F3F9; border-radius: 10px;">
+                                            <!-- Display a checkbox for each address -->
+                                            <input type="checkbox" class="address-checkbox" id="address<%= index %>" value="<%= addressItem._id %>">
                                             <div class="card-body">
-                                                <h6 class="card-title" style="font-size: 15px;">
-                                                    <%= address.address[i].fullName %>
-                                                </h6>
-                                                <p class="card-text mt-3">
-                                                    Number: <%= address.address[i].mobile %>
-                                                </p>
-                                                <p class="card-text">
-                                                    Location: <%= address.address[i].state %>, <%=
-                                                            address.address[i].district %>, <%=
-                                                                address.address[i].city %>
-                                                </p>
-                                                <p class="card-text">
-                                                    Pincode: <%= address.address[i].pincode %>
-                                                </p>
-        
+                                                <!-- Display address details -->
+                                                <h6 class="card-title" style="font-size: 15px;"><%= addressItem.fullName %></h6>
+                                                <p class="card-text mt-3">Number: <%= addressItem.mobile %></p>
+                                                <p class="card-text">Location: <%= addressItem.state %>, <%= addressItem.district %>, <%= addressItem.city %></p>
+                                                <p class="card-text">Pincode: <%= addressItem.pincode %></p>
+
                                                 <hr class="my-3">
                                                 <div class="d-flex justify-content-between">
-                                                    <a href="/editCheckout?id=<%= address.address[i]._id %>">
-                                                        <button class="btn btn-outline-primary-2"
-                                                            type="button" id="editBTN"
-                                                            data-bs-toggle="modal" data-bs-target="">
+                                                    <!-- Edit and Remove buttons for each address -->
+                                                    <a href="/editCheckout?id=<%= addressItem._id %>">
+                                                        <button class="btn btn-outline-primary-2" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
                                                             Edit
                                                         </button>
                                                     </a>
-                                                    <a
-                                                        onclick="removeAddress('<%=address.address[i]._id%>')">
-                                                        <button class="btn btn-outline-primary-2"
-                                                            type="button" data-bs-toggle="modal"
-                                                            data-bs-target="">
+                                                    <a onclick="removeAddress('<%= addressItem._id %>')">
+                                                        <button class="btn btn-outline-primary-2" type="button" data-bs-toggle="modal" data-bs-target="">
                                                             Remove
                                                         </button>
                                                     </a>
@@ -73,15 +61,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <% } %>
-                                        <% } else { %>
-                                            <% } %>
-                        </div>  
+                                <% }) %>
+                            <% } else { %>
+                                <!-- Display a message if there are no addresses -->
+                                <p>No addresses available.</p>
+                            <% } %>
+                        </div>
 
-                       <!-- Add a radio button to trigger the collapse of the form -->
+                        <!-- Checkbox to show/hide the shipping address form -->
                         <input type="radio" id="showAddressForm" name="addressOption" data-toggle="collapse" data-target="#addressForm">
                         <label for="showAddressForm">Use a different shipping address</label>
-                        
+
+                        <!-- Shipping address form (hidden by default) -->
                         <form action="/shipAddAddress" method="post" onsubmit="return validAddress()" class="collapse" id="addressForm">
                             <div class="container">
                                 <div class="row">
@@ -142,7 +133,8 @@
                             </div>
                         </form>
 
-                        <!-- ... other existing code ... -->
+                        <!-- ... (other existing code) ... -->
+
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
                             <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
@@ -156,6 +148,8 @@
                         <label>Order notes (optional)</label>
                         <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
                     </div><!-- End .col-lg-9 -->
+
+                    <!-- ... (other existing code) ... -->
 
                     <aside class="col-lg-3">
                         <div class="summary">
@@ -198,86 +192,42 @@
                                 </tbody>
                             </table><!-- End .table table-summary -->
 
-                            <div class="accordion-summary" id="accordion-payment">
-                                <div class="card">
-                                    <div class="card-header" id="heading-1">
-                                        <h2 class="card-title">
-                                            <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-                                                Direct bank transfer
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-                                        <div class="card-body">
-                                            Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
+                            <div id="paymentAccordion">
+                                <!-- Online Payment -->
+                                <div>
+                                    <input type="radio" name="paymentMethod" value="online" id="onlinePayment">
+                                    <label for="onlinePayment" data-toggle="collapse" data-target="#onlinePaymentCollapse" aria-expanded="true" aria-controls="onlinePaymentCollapse">
+                                        Online Payment
+                                    </label>
+                                </div>
+                                <div id="onlinePaymentCollapse" class="collapse" aria-labelledby="onlinePayment" data-parent="#paymentAccordion"></div>
+                            
+                                <!-- Cash on delivery -->
+                                <div>
+                                    <input type="radio" name="paymentMethod" value="COD" id="cashOnDelivery">
+                                    <label for="cashOnDelivery" data-toggle="collapse" data-target="#cashOnDeliveryCollapse" aria-expanded="false" aria-controls="cashOnDeliveryCollapse">
+                                        Cash on Delivery
+                                    </label>
+                                </div>
+                                <div id="cashOnDeliveryCollapse" class="collapse" aria-labelledby="cashOnDelivery" data-parent="#paymentAccordion"></div>
+                            
+                                <!-- Wallet -->
+                                <div>
+                                    <input type="radio" name="paymentMethod" value="wallet" id="walletPayment">
+                                    <label for="walletPayment" data-toggle="collapse" data-target="#walletPaymentCollapse" aria-expanded="false" aria-controls="walletPaymentCollapse">
+                                        Wallet
+                                    </label>
+                                </div>
+                                <div id="walletPaymentCollapse" class="collapse" aria-labelledby="walletPayment" data-parent="#paymentAccordion"></div>
+                            </div>
+                            
 
-                                <div class="card">
-                                    <div class="card-header" id="heading-2">
-                                        <h2 class="card-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-                                                Check payments
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
-                                        <div class="card-body">
-                                            Ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. 
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
+                            <!-- Place Order button -->
+<button type="button" class="btn btn-outline-primary-2 btn-order btn-block" id="placeOrderBtn">
+    <span class="btn-text">Place Order</span>
+    <span class="btn-hover-text">Proceed to Checkout</span>
+</button>
 
-                                <div class="card">
-                                    <div class="card-header" id="heading-3">
-                                        <h2 class="card-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-                                                Cash on delivery
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                        <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
-
-                                <div class="card">
-                                    <div class="card-header" id="heading-4">
-                                        <h2 class="card-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-                                                PayPal <small class="float-right paypal-link">What is PayPal?</small>
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-                                        <div class="card-body">
-                                            Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
-
-                                <div class="card">
-                                    <div class="card-header" id="heading-5">
-                                        <h2 class="card-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
-                                                Credit Card (Stripe)
-                                                <img src="assets/images/payments-summary.png" alt="payments cards">
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
-                                        <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
-                            </div><!-- End .accordion -->
-
-                            <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
-                                <span class="btn-text">Place Order</span>
-                                <span class="btn-hover-text">Proceed to Checkout</span>
-                            </button>
                         </div><!-- End .summary -->
                     </aside><!-- End .col-lg-3 -->
                 </div><!-- End .row -->
@@ -339,5 +289,50 @@ function removeAddress(id) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+   $(document).ready(function() {
+    // Event listener for Place Order button
+    $('#placeOrderBtn').on('click', function() {
+        // Get the selected address ID
+        var selectedAddress = $('.address-checkbox:checked').val();
+
+        // Get the selected payment method
+        var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+        // Get the total amount
+        var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
+
+        // Log the values to check
+        console.log('Selected Address:', selectedAddress);
+        console.log('Selected Payment Method:', selectedPaymentMethod);
+        console.log('Total Amount:', totalAmount);
+    
+            // Prepare the data to be sent
+            var dataToSend = {
+                address: selectedAddress,
+                paymentMethod: selectedPaymentMethod,
+                totalAmount: totalAmount
+            };
+            console.log('jkbbjhhhihj',dataToSend    );
+    
+            // Send the AJAX request
+            $.ajax({
+                url: '/placeOrder', // Replace with your server-side endpoint
+                method: 'post',
+                data: dataToSend,
+                success: function(response) {
+                    // Handle the success response from the server
+                    console.log('Order placed successfully:', response);
+                    // You can redirect the user to a confirmation page or perform other actions
+                },
+                error: function(error) {
+                    // Handle errors, if any
+                    console.error('Error placing order:', error);
+                }
+            });
+        });
+    });
+    </script>
+    
 
 <%- include('../layouts/user/footer.ejs') %>

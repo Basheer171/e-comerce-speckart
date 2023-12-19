@@ -116,14 +116,11 @@ user_route.delete('/deleteAddress',auth.isLogin,userController.deleteAddress)
 user_route.get('/checkout',auth.isLogin,orderController.loadCheckout );
 user_route.get('/editCheckout',auth.isLogin,orderController.editAddressLoad );
 user_route.delete('/deleteAddress',auth.isLogin,orderController.deleteAddress)
-user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress)
+user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);
 
 
 
-
-
-
-
+user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 
 
 

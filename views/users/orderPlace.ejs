@@ -1,0 +1,53 @@
+<%- include('../layouts/user/header.ejs') %>
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+  <!-- container -->
+  <div class="container">
+      <!-- row -->
+      <div class="row">
+          <div class="col-md-12">
+              <h3 class="breadcrumb-header">Order Placed</h3>
+              <ul class="breadcrumb-tree">
+                  <li><a href="/home">Home</a></li>
+                  <li class="active">Order Placed</li>
+              </ul>
+          </div>
+      </div>
+      <!-- /row -->
+  </div>
+  <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<section class="p-4">
+  <div class="container" style="margin-top: 100px; margin-bottom: 100px;">
+    <div class="row mt-5 mb-5">
+      <div class="col-md-12 text-center pt-5">
+        <span class="d-flex justify-content-center">
+          <dotlottie-player
+            src="https://lottie.host/59ba5ff8-4a81-4cc9-b2dd-3d8a10a11617/jaGRynaRuK.json"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px;"
+            loop
+            autoplay
+          ></dotlottie-player>
+        </span>
+        <h3 class="text-black">Thank you!</h3>
+        <% if(user){%>
+        <h5 class="text-success" style="text-transform: uppercase;">
+          
+          <%=user.name%>
+        </h5>
+        <% } %>
+        <p class="lead mb-5">You order was successfuly completed.</p>
+        <a href="/orders"
+          ><button class="btn primary-btn">Check Your Orders</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../layouts/user/footer.ejs') %>

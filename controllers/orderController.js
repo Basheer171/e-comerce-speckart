@@ -1,7 +1,9 @@
 const userDb = require('../models/userModel')
 const addressDb = require('../models/addressModel');
 const addressModel = require('../models/addressModel');
-const cartDb = require('../models/cartModel')
+const cartDb = require('../models/cartModel');
+const productDb = require('../models/productModel');
+const orderDb  = require ('../models/orderModels')
 
 
 
@@ -124,11 +126,95 @@ const deleteAddress = async (req, res) => {
     }
   };
   
-  
+  const placeOrder = async (req, res) => {
+    try {
+
+        const userId = req.session.user_id;
+        // console.log('userId',userId);
+        const address = req.body.address; 
+        // console.log('address',address);
+        const cartData = await cartDb.findOne({ user: userId });
+        // console.log('cartData',cartData);
+        const total = parseInt(req.body.totalAmount);
+        // console.log('total',total);
+        const paymentMethod = req.body.payment;
+        // console.log('userId',userId);
+        const userData = await userDb.findOne({ _id: userId });
+        // console.log('userData',userData);
+        const name = userData.firstName;
+        // console.log('name',name);
+
+        const uniNum = Math.floor(Math.random() * 900000) + 100000;
+        // console.log('uniNum',uniNum);
+        const status = paymentMethod === 'COD' ? 'placed' : 'pending';
+        // console.log('status',status);
+        const statusLevel = status === 'placed' ? 1 : 0;
+        // console.log('statusLevel',statusLevel);
+
+        const today = new Date();
+        // console.log('today',today);
+        const deliveryDate = new Date(today);
+        // console.log('deliveryDate',deliveryDate);
+        deliveryDate.setDate(today.getDate() + 7);
+
+        const cartProducts = cartData.products.map((productItem) => ({
+            productId: productItem.productId,
+            quantity: productItem.quantity,
+            orderStatus: 'Placed',
+            statusLevel: 1,
+            paymentStatus: 'Pending',
+        }));
+        // console.log('cartProducts',cartProducts);
+
+
+        const order = new orderDb({
+          deliveryDetails: address,
+            uniqueId: uniNum,
+            userId: userId,
+            userName: name,
+            paymentMethod: paymentMethod,
+            products: cartProducts,
+            totalAmount: total,
+            date: new Date(),
+            expectedDelivery: deliveryDate,
+        });
+
+        const orderData = await order.save();
+        // console.log('orderData',orderData);
+        const orderid = order._id;
+        // console.log('orderid',orderid);
+
+        if (orderData) {
+            if (paymentMethod === 'COD') {
+                for (const item of cartData.products) {
+                    const productId = item.productId._id;
+                    const quantity = parseInt(item.quantity, 10);
+                    const result = await productDb.updateOne(
+                        { _id: productId },
+                        { $inc: { qty: -quantity } }
+                    );
+                }
+                res.json({ success: true, orderid });
+            }
+
+            // Clear the user's cart after placing the order
+            await cartDb.findOneAndUpdate({ userId: userId }, { $set: { products: [] } });
+        } else {
+            // Handle the case when orderData is not available
+            res.status(400).send('Failed to place the order');
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
 
 module.exports = {
     loadCheckout,
     editAddressLoad,
     deleteAddress,
     shipaddAddress,
+    placeOrder
 }

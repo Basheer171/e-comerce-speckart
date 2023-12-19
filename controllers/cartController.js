@@ -54,7 +54,6 @@ const loadCart = async (req, res) => {
 
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
 
-        console.log('cartData',cartData);
         if (req.session.user_id) {
             if (cartData && cartData.products.length > 0) {
                 
