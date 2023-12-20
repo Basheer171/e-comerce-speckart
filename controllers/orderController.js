@@ -137,8 +137,8 @@ const deleteAddress = async (req, res) => {
         // console.log('cartData',cartData);
         const total = parseInt(req.body.totalAmount);
         // console.log('total',total);
-        const paymentMethod = req.body.payment;
-        // console.log('userId',userId);
+        const paymentMethod = req.body.paymentMethod;
+        // console.log('paymentMethod',paymentMethod);
         const userData = await userDb.findOne({ _id: userId });
         // console.log('userData',userData);
         const name = userData.firstName;
@@ -209,12 +209,48 @@ const deleteAddress = async (req, res) => {
     }
 };
 
+const loadPlaceOrder = async (req, res)=>{
+  try {
 
+    const id  = req.session.user_id;
+    // console.log('id',id);
+    const userData = await userDb.findOne({_id:id})
+    // console.log('userData',userData);
+
+    res.render('orderPlace',{user: userData})
+    
+  } catch (error) {
+    
+
+    console.log(error);
+
+  }
+}
+
+const loadOrderPage = async (req, res) =>{
+  try {
+    
+    const id = req.session.user_id;
+    const userData = await userDb.findById({_id: id});  
+console.log('userData',userData);
+    const orderData = await orderDb.findOne({userId: id})
+    console.log('orderData',orderData);
+
+    res.render('orders',{user: userData, orderData})
+
+  } catch (error) {
+    
+    console.log(error);
+
+  }
+}
 
 module.exports = {
     loadCheckout,
     editAddressLoad,
     deleteAddress,
     shipaddAddress,
-    placeOrder
+    placeOrder,
+    loadPlaceOrder,
+    loadOrderPage,
 }

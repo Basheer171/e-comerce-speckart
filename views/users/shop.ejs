@@ -121,8 +121,10 @@
                         </div><!-- End .product-price -->
                       </div><!-- End .product-body -->
                       <div class="product-action">
-                        <a  class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')"><span>add to cart</span></a>
-                    </div><!-- End .product-action --> 
+                        <a class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')" id="addToCartBtn_<%= products[i]._id %>">
+                            <span>add to cart</span>
+                        </a>
+                    </div><!-- End .product-action -->
                     </div><!-- End .product -->
                   </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
 
@@ -418,34 +420,56 @@
   <%- include('../layouts/user/footer.ejs') -%>
 
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="/path/to/script.js"></script>
-    <!-- Include SweetAlert library -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+   
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="/path/to/script.js"></script>
+  <!-- Include SweetAlert library -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
-    <script>
+  <script>
       function addToCart(id) {
-        $.ajax({
-          url: "/addTocart",
-          method: "post",
-          data: {
-            id: id
-          },
-        }).done((data) => {
-          if (data) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Item has been added to Cart',
-              showConfirmButton: false,
-              timer: 1000
-            });
-          } else {
-            swal("Fail to add");
+          // Check if the button has the 'disabled' class
+          if ($(`#addToCartBtn_${id}`).hasClass('disabled')) {
+              // If it has, the button is disabled, so you can display a message or take other actions
+              console.log('Product already in the cart');
+              return;
           }
-        });
+  
+          // Add the 'disabled' class to the button to disable it
+          $(`#addToCartBtn_${id}`).addClass('disabled');
+  
+          $.ajax({
+              url: "/addTocart",
+              method: "post",
+              data: {
+                  id: id
+              },
+          }).done((data) => {
+              if (data.success) {
+                  // Product added successfully
+                  Swal.fire({
+                      position: 'center',
+                      icon: 'success',
+                      title: 'Item has been added to Cart',
+                      showConfirmButton: false,
+                      timer: 1000
+                  });
+              } else {
+                  // Failed to add the product
+                  Swal.fire({
+                      position: 'center',
+                      icon: 'error',
+                      title: 'Failed to add the product',
+                      showConfirmButton: false,
+                      timer: 1500
+                  });
+  
+                  // Remove the 'disabled' class to re-enable the button for future attempts
+                  $(`#addToCartBtn_${id}`).removeClass('disabled');
+              }
+          });
       }
+  </script>
+  
 
-
-    </script>

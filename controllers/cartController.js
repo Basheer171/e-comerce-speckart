@@ -18,6 +18,14 @@ const addToCart = async (req, res) => {
         const { id: productId } = req.body;
         const { _id: userId } = await userDb.findById(user_id);
 
+        // Check if the product is already in the cart
+        const cartData = await cartDb.findOne({ user: userId, 'products.productId': productId });
+
+        if (cartData) {
+            // Product is already in the cart
+            return res.json({ alreadyInCart: true });
+        }
+
         const productData = await productDb.findById(productId);
         if (!productData) {
             return res.status(404).json({ error: 'Product not found' });
@@ -43,6 +51,7 @@ const addToCart = async (req, res) => {
         res.status(500).json({ error: 'An error occurred' });
     }
 };
+
 
 
 

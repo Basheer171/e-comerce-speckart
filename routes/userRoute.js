@@ -121,6 +121,10 @@ user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);
 
 
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
+user_route.get('/orderPlace',auth.isLogin,orderController.loadPlaceOrder );
+user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
+
+
 
 
 

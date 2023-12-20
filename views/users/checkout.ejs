@@ -223,7 +223,7 @@
                             
 
                             <!-- Place Order button -->
-<button type="button" class="btn btn-outline-primary-2 btn-order btn-block" id="placeOrderBtn">
+<button type="button" class="btn btn-outline-primary-2 btn-order btn-block" id="placeOrderBtn" >
     <span class="btn-text">Place Order</span>
     <span class="btn-hover-text">Proceed to Checkout</span>
 </button>
@@ -312,9 +312,7 @@ function removeAddress(id) {
                 address: selectedAddress,
                 paymentMethod: selectedPaymentMethod,
                 totalAmount: totalAmount
-            };
-            console.log('jkbbjhhhihj',dataToSend    );
-    
+            };    
             // Send the AJAX request
             $.ajax({
                 url: '/placeOrder', // Replace with your server-side endpoint
@@ -332,6 +330,12 @@ function removeAddress(id) {
             });
         });
     });
+    </script>
+    <script>
+        document.getElementById('placeOrderBtn').addEventListener('click', function () {
+            // Set the desired URL in the href
+            window.location.href = '/orderPlace';  // Replace '/checkout' with the actual URL you want to navigate to
+        });
     </script>
     
 

@@ -230,9 +230,18 @@
                                                 ₹<%= products[i].price %>
                                             </div><!-- End .product-price -->   
                                         </div><!-- End .product-body -->
+                                        <%if(products[i].qty>0){%>
+                                            <div class="product-action">
+                                                <a class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')" id="addToCartBtn_<%= products[i]._id %>">
+                                                    <span>add to cart</span>
+                                                </a>
+                                            </div><!-- End .product-action -->
+                                            
+                                    <%}else{%>
                                         <div class="product-action">
-                                            <a  class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->  
+                                            <a  class="btn-product btn-cart" ><span>OUT OF STOCK</span></a>
+                                        </div><!-- End .product-action --> 
+                                    <%}%>
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
 
@@ -251,48 +260,51 @@
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
- <script>
-      function addToCart(id) {
-    $.ajax({
-        url: "/addTocart",
-        method: "post", 
-        data: {
-            id: id
-        },
-    }).done((data) => {
-        if (data.success) {
-            // Product added successfully
-            Swal.fire({
-                position: 'center', 
-                icon: 'success',
-                title: 'Item has been added to Cart',
-                showConfirmButton: false,
-                timer: 1000
-            });
-        } else if (data.alreadyInCart) {
-            // Product is already in the cart
-            Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: 'Product is already in the cart please check the cart',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        } else {
-            // Failed to add the product
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Failed to add the product',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        }
-    });
-}
-
-
- </script>
+                <script>
+                    function addToCart(id) {
+                        // Remove the 'disabled' class from the button to enable it
+                        $(`#addToCartBtn_${id}`).removeClass('disabled');
+                
+                        $.ajax({
+                            url: "/addTocart",
+                            method: "post",
+                            data: {
+                                id: id
+                            },
+                        }).done((data) => {
+                            if (data.success) {
+                                // Product added successfully
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: 'success',
+                                    title: 'Item has been added to Cart',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                            } else if (data.alreadyInCart) {
+                                // Product is already in the cart
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: 'warning',
+                                    title: 'Product is already in the cart please check the cart',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            } else {
+                                // Failed to add the product
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: 'error',
+                                    title: 'Failed to add the product',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    }
+                </script>
+                
+                
 
              
 

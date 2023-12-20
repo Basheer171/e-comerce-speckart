@@ -202,7 +202,7 @@ const loadProductPageLoad = async (req,res)=>{
       const productID = req.query.id;
       
       let product=await Product.findOne({_id:productID})
-    //   console.log(product);
+    //   console.log('product',product);
 
       res.render('product',{
         product:product,
