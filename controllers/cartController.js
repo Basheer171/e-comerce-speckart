@@ -58,18 +58,16 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const id = req.session.user_id;
-        const userData = await userDb.findById({ _id: id });
+        const userData = await userDb.findById({ _id: id });        
         const userId = userData._id;
 
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-
         if (req.session.user_id) {
             if (cartData && cartData.products.length > 0) {
                 
                 const Total = cartData.products.reduce((acc, product) => {
                     return acc + product.price * product.quantity;
                 }, 0);
-
                 res.render('cart', { user: userId, cart: cartData, Total });
             } else {
                 res.render('cart', { user: userId, cart: [], Total: 0 });

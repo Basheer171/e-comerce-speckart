@@ -1,0 +1,257 @@
+
+<%- include('../layouts/user/header.ejs') %>
+
+
+<!-- <link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+rel="stylesheet"
+/> -->
+
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">Order Details</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/home">Home</a></li>
+                    <li class="active">Order Details</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<style type="text/css">
+    body {
+      background: #eee;
+    }
+    .card {
+      box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+    }
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid rgba(0, 0, 0, 0.125);
+      border-radius: 1rem;
+    }
+    .text-reset {
+      --bs-text-opacity: 1;
+      color: inherit !important;
+    }
+    a {
+      color: #5465ff;
+      text-decoration: none;
+    }
+  </style>
+
+    <div class="container-fluid">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center py-3" style="margin-left: 5px;">
+          <h2 class="h4 mb-0">
+            <a href="" class="text-muted"> Your tracking ID is: #<%=orders.uniqueId%></a>
+          </h2>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card mb-4" style="padding: 20px; margin-bottom: 20px;">
+              <div class="card-body">
+                <div class="mb-3 d-flex justify-content-between" style="display: flex; justify-content: space-between; align-items: center; margin: 10px;">
+                  <div>
+                    <span class="me-3"><%=orders.date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-')%>,</span>
+                    <!-- <span class="me-3">#16123222</span> -->
+                    <span class="me-3"><%=orders.paymentMethod%></span>
+                    <span class="badge rounded-pill bg-info">SHIPPING</span>
+                  </div>
+                  <div class="d-flex">
+                    <button
+                      class="btn btn-primary p-0 me-3 d-none d-lg-block btn-icon-text"
+                    >
+                      <i class="bi bi-download"></i>
+                      <span class="text">Invoice</span>
+                    </button>
+                    <!-- <div class="dropdown">
+                      <button
+                        class="btn btn-link p-0 text-muted"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            ><i class="bi bi-pencil"></i> Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            ><i class="bi bi-printer"></i> Print</a
+                          >
+                        </li>
+                      </ul>
+                    </div> -->
+                  </div>
+                </div>
+                
+                <table class="table table-borderless">
+                <% if(orders && orders.products && orders.products.length>0){%>
+                    <% orders.products.forEach((products)=>{%>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="d-flex mb-2" style="display: flex; align-items: center">
+                          <div class="flex-shrink-0" style="padding: 5px;">
+                            <img
+                              src="/public/userimages/<%=products.productId.image%>"
+                              alt
+                              width="50"
+                              class="img-fluid"
+                            />
+                          </div>
+                          <div class="flex-lg-grow-1 ms-3" style="padding: 5px;">
+                            <h5 class="align-middle">
+                              <a href="#" class="text-reset"><%=products.productId.name%></a>
+                            </h5>
+                            <!-- <span class="small">Color: Black</span> -->
+                          </div>
+                        </div>
+                      </td>
+                      <td style="font-weight: bold;"><%=products.quantity%></td>
+
+                      <td style="font-weight: bold;"><%=products.productId.price%></td>
+                    
+
+                      <td class="text-end" style="text-align: end;"><a href="/orderStatus?id=<%=products._id%>"><span class="badge bg-success rounded-pill"><%=products.orderStatus%></span></a></td>
+
+                      <!-- <% if(orders && orders.products && orders.products.length>0){%> -->
+                        <!-- <% orders.products.forEach((products)=>{%> -->
+                          <!-- <tr> -->
+                            <!-- <td> -->
+                        <!-- <% if(products.orderStatus !=='Returned'){%> -->
+                          <!-- <% if(products.orderStatus !=='Cancelled'){%> -->
+                            <!-- <% if(products.orderStatus !=='Delivered' || products.orderStatus !=='OutforDelivery'){%> -->
+                        <!-- <button class="btn btn-danger">Return</button> -->
+                        <!-- <% }else{%> -->
+                          <!-- <button class="btn btn-warning">Cancel</button>
+                          <% } %>
+                          <%} else {%>
+                            <p class="text-danger">Cancelled</p>
+                            <% } %>
+                            <%} else{%>
+                              <p class="text-danger">Returned</p>
+                              <% } %>
+                            </td> -->
+                      <!-- </tr> -->
+                      <!-- <% });%>
+                      <% } %> -->
+
+                      <td class="text-end" style="text-align: end font; font-weight: bold;">₹ <%=products.quantity*products.productId.price%></td>
+                    </tr>
+                    
+                  </tbody>
+                  <% }); %>
+                  <% } %>
+                  <tbody>
+                    <tr>
+                      <td colspan="3">Subtotal</td>
+                      <td class="text-end" style="text-align: end;">₹ <%=orders.totalAmount%></td>
+                    </tr>
+                    <tr>
+                      <td colspan="3">Shipping</td>
+                      <td class="text-end" style="text-align: end;">Free</td>
+                    </tr>
+                    <tr>
+                      <td colspan="3">Discount Coupon</td>
+                      <td class="text-danger text-end" style="text-align: end;">-₹00.00</td>
+                    </tr>
+                    <tr class="fw-bold" style="font-weight: bold;">
+                      <td colspan="3">TOTAL</td>
+                      <td class="text-end" style="text-align: end;">₹ <%=orders.totalAmount%></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card mb-4" style="border-radius: 1rem;padding: 20px; margin-bottom: 30px;">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <h3 class="h6">Payment Method</h3>
+                    <p>
+                      <%=orders.paymentMethod%> <br />
+                      Total: ₹<%=orders.totalAmount%>
+                      <% orders.products.forEach((data)=>{%>
+                      <span class="badge bg-success rounded-pill"><%=data.paymentStatus%></span>
+                      <% }); %>
+                    </p>
+                  </div>
+                  <div class="col-lg-6">
+                    <h3 class="h5">Billing address</h3>
+                    <address>
+                      <p><%=orders.deliveryDetails%></p>
+                    </address>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-lg-4"> -->
+            <!-- <div class="card mb-4" style="border-radius: 1rem; padding: 20px;">
+              <div class="card-body">
+                <h3 class="h6">Customer Notes</h3>
+                <p>
+                  Sed enim, faucibus litora velit vestibulum habitasse. Cras
+                  lobortis cum sem aliquet mauris rutrum. Sollicitudin. Morbi,
+                  sem tellus vestibulum porttitor.
+                </p>
+              </div>
+            </div> -->
+            <!-- <div class="card mb-4" style="border-radius: 1rem; padding: 20px;">
+              <div class="card-body">
+                <h3 class="h6">Shipping Information</h3>
+                <strong>FedEx</strong>
+                <span
+                  ><a href="#" class="text-decoration-underline" target="_blank"
+                    > Your tracking ID is: #<%=orders.uniqueId%></a
+                  >
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </span>
+                <hr />
+                <h3 class="h6">Address</h3>
+                <address>
+                  <p><%=orders.deliveryDetails%></p><br />
+                </address>
+              </div>
+            </div> -->
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+
+<script>    // function Cancel Button  
+    function cancelAction() {
+        
+        // document.getElementById("editAddress").reset();
+        window.history.back();
+        
+    }
+
+  </script>
+
+
+
+
+<%- include('../layouts/user/footer.ejs') %>

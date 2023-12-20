@@ -227,23 +227,41 @@ const loadPlaceOrder = async (req, res)=>{
   }
 }
 
-const loadOrderPage = async (req, res) =>{
+const loadOrderPage = async (req, res) => {
+  try {
+    const userId = req.session.user_id;
+    
+    // Find all orders for the user
+    const orderData = await orderDb.find({ userId: userId });
+
+    // Find user data for additional information
+    const userData = await userDb.findById(userId);
+
+    res.render('orders', { user: userData, orderData });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+const loadOrderDeatail = async (req, res)=>{
   try {
     
-    const id = req.session.user_id;
-    const userData = await userDb.findById({_id: id});  
-console.log('userData',userData);
-    const orderData = await orderDb.findOne({userId: id})
-    console.log('orderData',orderData);
-
-    res.render('orders',{user: userData, orderData})
-
+    const id = req.query.id;
+    const userid = req.session.user_id;
+    const userData = await userDb.findOne({_id: userid})
+// console.log('userData',userData);
+const orderData = await orderDb.findOne({_id:id}).populate("products.productId")
+// console.log('orderDat',orderData);
+res.render('orderDetails',{user:userData, orders:orderData})
   } catch (error) {
     
     console.log(error);
 
   }
 }
+
 
 module.exports = {
     loadCheckout,
@@ -253,4 +271,5 @@ module.exports = {
     placeOrder,
     loadPlaceOrder,
     loadOrderPage,
+    loadOrderDeatail
 }
