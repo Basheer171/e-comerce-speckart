@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const randomstring = require('randomstring');
 const config = require("../config/config");
 const nodemailer = require("nodemailer");
+const orderDb  = require ('../models/orderModels')
+const productDb = require('../models/productModel');
 
 
 
@@ -22,41 +24,7 @@ const securePassword = async (password) => {
 
 }
 
-//for reset password send mail
 
-const sendResetPasswordMail = async (name, email, token) => {
-
-    try {
-
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            requireTLS: true,
-            auth: {
-                user: config.emailUser,
-                pass: config.emailPassword
-            }
-        });
-        const mailOptions = {
-            from: config.emailUser,
-            to: email,
-            subject: 'For Reset Password',
-            html: '<p>Hii ' + name + ', please click here to <a href="http://127.0.0.1:3000/admin/forget-password?token=' + token + '"> Reset </a> your password.</p>'
-        }
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log("Email has been sent:- ", info.response);
-            }
-        })
-
-    } catch (error) {
-        console.log(error.message);
-    }
-}
 
 //for send mail 
 const addUserMail = async (name, email, password, user_id) => {
@@ -389,6 +357,111 @@ const userBlockorActive = async (req, res) => {
     }
 };
 
+ // Load View Orders Page
+const loadViewOrders = async(req, res)=>{
+    try {
+        const orderData = await orderDb.find();
+        // console.log('Order Data',orderData);
+
+        const productsArray=[];
+
+        for(let orders of orderData){
+            // console.log('orders', orders);
+            for(let productsValue of orders.products){
+                // console.log('productsValue', productsValue);
+                const productId = productsValue.productId;
+                // console.log('ProductId',productId);
+
+                const productData  = await productDb.findById(productId)
+console.log('productData',productData);
+                const userDetails = await User.findOne({firstName: orders.userName})
+                // console.log('userDetails..........',userDetails);
+
+                if(productData){
+                    
+                    productsArray.push({
+                        user:userDetails,
+                        product:productData,
+                        orderDetails:{
+                            _id:orders._id,
+                            userId:orders.userId,
+                            deliveryDetails:orders.deliveryDetails,
+                            date:orders.date,
+                            totalAmount:productsValue.quantity*orders.totalAmount,
+                            orderStatus:productsValue.orderStatus,
+                            paymentStatus:productsValue.paymentStatus,
+                            statusLevel:productsValue.statusLevel,
+                            paymentMethod:orders.paymentMethod,
+                            quantity:productsValue.quantity,
+
+                        }
+
+                    })
+                }
+                
+            }
+        }
+        // console.log('Product Array',productsArray);
+
+        res.render('view-orders',{
+            message:'View Orders',
+            orders:productsArray,
+        });
+        
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// View OrderDetails
+const viewOrderDetails = async(req, res)=>{
+    try {
+        const orderId = req.query.orderId
+        const productId = req.query.productId;
+        // console.log('orderId:', orderId);
+        // console.log('ProductId:', productId);
+        
+        if (!orderId || !productId) {
+            return res.status(400).send("orderId and productId are required");
+        }
+
+        const orderDetails = await orderDb.findById(orderId)
+        const productData = await productDb.findById(productId);
+        // console.log('Order Details',orderDetails);
+        // console.log('productData',productData);  
+      
+        const productDetails = orderDetails.products.find((product)=>product.productId.toString()===productId);
+
+        const productOrder={
+            orderId: orderDetails._id,
+            product: productData,
+            _id:productDetails._id,
+            orderStatus:productDetails.orderStatus,
+            statusLevel:productDetails.statusLevel,
+            paymentStatus:productDetails.paymentStatus,
+            totalAmount:orderDetails.totalAmount,
+            quantity:productDetails.quantity,
+            paymentMethod:orderDetails.paymentMethod,
+            deliveryDetails:orderDetails.deliveryDetails,
+            date:orderDetails.date,
+
+        }
+        // console.log('productOrder',productOrder);
+
+
+        res.render('view-ordersDetails',{
+            message:'View Order Details',
+            products:productOrder,
+            orderId,
+            productId
+        })
+        
+        
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 module.exports = {
     loadLogin,
@@ -406,5 +479,7 @@ module.exports = {
     updateUsers,
     deleteUser,
     viewUsers,
-    userBlockorActive
+    userBlockorActive,
+    loadViewOrders,
+    viewOrderDetails
 }

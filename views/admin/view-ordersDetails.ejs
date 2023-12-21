@@ -1,0 +1,300 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+
+
+    <style>
+      #progressbar {
+        display: flex;
+        justify-content: space-around;
+      }
+    </style>
+
+    <!-- saideNaveBar -->
+
+
+    <body class="g-sidenav-show  bg-gray-200">
+      <aside
+        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+        id="sidenav-main">
+        <div class="sidenav-header" style="margin: 15px;">
+          <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+            aria-hidden="true" id="iconSidenav"></i>
+          <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
+            target="_blank"></a>
+          <img src="/assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
+          <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
+          </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <!-- <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main"> -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/home">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">dashboard</i>
+              </div>
+              <span class="nav-link-text ms-1">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-users">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">group</i>
+              </div>
+              <span class="nav-link-text ms-1">Users</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-category">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">inventory_2</i>
+              </div>
+              <span class="nav-link-text ms-1">Product</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-product">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">branding_watermark</i>
+              </div>
+              <span class="nav-link-text ms-1">Brand</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-brand">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">category</i>
+              </div>
+              <span class="nav-link-text ms-1">Category</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-orders">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">wysiwyg</i>
+              </div>
+              <span class="nav-link-text ms-1">Orders</span>
+            </a>
+          </li>
+          <li class="nav-item mt-3">
+            <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white " href="./pages/profile.html">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <span class="nav-link-text ms-1">Profile</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/logout">
+              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10">logout</i>
+              </div>
+              <span class="nav-link-text ms-1">Log out</span>
+            </a>
+          </li>
+          <!-- <li class="nav-item">
+          <a class="nav-link text-white " href="./pages/sign-up.html">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">assignment</i>
+            </div>
+            <span class="nav-link-text ms-1">Sign Up</span>
+          </a>
+        </li> -->
+        </ul>
+        <!-- </div> -->
+        <!-- <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
+      </div>
+    </div> -->
+      </aside>
+      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+        <!-- endSaidNavBar -->
+
+        <%- include('../layouts/admin/navbar.ejs') %>
+
+
+        <div class="container-fluid py-4">
+          <div class="row">
+            <div class="col-12">
+              <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                  <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                    <h6 class="text-white text-capitalize ps-3">
+                      <%=message%>
+                    </h6>
+                  </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                  <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-4">
+                      <thead>
+                        <tr style="background-color: rgb(227, 225, 225);">
+                          <!-- <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">No</th> -->
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Product
+                            Name</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Quantity
+                          </th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Image</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Payment
+                            Method</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Price</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Total
+                            Amount</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Payment
+                            Status</th>
+                          <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Delivery
+                            Status</th>
+                          <!-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Action</th> -->
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">
+                              <%=products.product.name%>
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">
+                              <%= products.quantity %>
+                            </p>
+                          </td>
+                          <td>
+                            <img src="/public/userImage/<%=products.product.image%>"
+                              class="avatar avatar-sm me-3 border-radius-lg" alt="">
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">
+                              <%=products.paymentMethod%>
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">&#x20B9;<%=products.product.price%>
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">&#x20B9;<%=products.quantity *
+                                products.product.price%>
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">
+                              <%=products.paymentStatus%>
+                            </p>
+                          </td>
+                          <td>
+                            <p class="text-xs font-weight-bold mb-0">
+                              <%=products.orderStatus%>
+                            </p>
+                          </td>
+                          <!--                     
+                    <td class=" text-sm">
+                      <a href="#">
+                      <span class="badge badge-sm bg-gradient-success">List</span></a>
+                    </td>
+                    
+                      <td class=" text-sm">
+                        <a href="#">
+                        <span class="badge badge-sm bg-gradient-danger">Unlist</span></a>
+                      </td> -->
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Shipping Information -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card my-4">
+                <!-- <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <div class="bg-gradient-dark shadow-primary border-radius-lg pt-4 pb-3">
+              <h6 class="text-white text-capitalize ps-3">Order Status</h6>
+            </div>
+          </div> -->
+                <!-- <div class="card-body px-0 pb-2">
+              <div class="progress-track"> -->
+                <!-- <ul id="progressbar">
+                    <li class="step0 active " id="step1" style="color: #922121;">Order placed</li>
+                    <li class="step0 text-center  products.products[0].statusLevel >= 2 ? 'active' : '' " id="step2" style="color: #04860a;">Shipped</li>
+                    <li class="step0  text-right  products.products[0].statusLevel >= 3 ? 'active' : '' " id="step3" style="color: #420492;">Out for Delivery</li>
+                    <li class="step0 text-right  products.products[0].statusLevel >= 4 ? 'active' : '' " id="step4" style="color: #b10505;">Delivered</li>
+                    
+                </ul> -->
+                <!-- </div>
+          </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xl-3 col-sm-6">
+              <div class="card">
+                <div class="card-header p-3 pt-2">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3">Shipping Details</h6>
+                    </div>
+                  </div>
+                  <div class="text-start pt-1">
+                    <h6 class="mb-0">Address</h6>
+                    <p class="text-sm mb-0 text-capitalize" style="color: black;">
+                      <%=products.deliveryDetails%>
+                    </p>
+                  </div>
+                </div>
+                <!-- <hr class="dark horizontal my-0">
+        <div class="card-footer p-3">
+          <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than yesterday</p>
+        </div> -->
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <div class="card">
+                <div class="card-header p-3 pt-2">
+                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-success shadow-success border-radius-lg pt-4 pb-3">
+                      <h6 class="text-white text-capitalize ps-3">Change Order Status</h6>
+                    </div>
+                  </div>
+                  <div class="text-start pt-1">
+                    <!-- <h5 class="mb-0">Address</h5> -->
+                    <p class="text-sm mb-0 text-capitalize" style="color: black;"></p>
+                  </div>
+                </div>
+                <div class="position-relative mt-2 mx-3">
+                  <form action="/admin/view-ordersDetails/changeStatus" method="post">
+                    <select name="status" class="mb-3 mx-4" style="width: 10rem; color: black;" required>
+                      <option value="" disabled selected>Select Status</option>
+                      <option value="Shipped" style="color: #131212;">Shipped</option>
+                      <option value="OutforDelivery">Out for Delivery</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                    <input type="text" name="orderId" value="<%=orderId%>" hidden>
+                    <input type="text" name="productId" value="<%=productId%>" hidden>
+
+                    <button type="submit" class="btn btn-primary mx-1" style="width: 12rem;">Update Now</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%- include('../layouts/admin/footer.ejs') %>
+        </div>
+
+      </main>

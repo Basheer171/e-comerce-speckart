@@ -36,8 +36,8 @@
                                     <div class="col-md-6 col-12 mb-3 mt-3">
                                         <div class="card p-4" style="background: #F3F3F9; border-radius: 10px;">
                                             <!-- Display a checkbox for each address -->
-                                            <input type="checkbox" class="address-checkbox" id="address<%= index %>" value="<%= addressItem._id %>">
-                                            <div class="card-body">
+                                            <input type="checkbox" class="address-checkbox" id="address" value="<%= addressItem.fullName %>, <%= addressItem.city %>,<%= addressItem.state %>,<%= addressItem.country %>,<%= addressItem.pincode %>,<%= addressItem.mobile %>">    
+                                            <div class="card-body"> 
                                                 <!-- Display address details -->
                                                 <h6 class="card-title" style="font-size: 15px;"><%= addressItem.fullName %></h6>
                                                 <p class="card-text mt-3">Number: <%= addressItem.mobile %></p>

@@ -62,43 +62,12 @@
                                         </div>
                                     </div>
 
-                                    <!-- Search and filter -->
-
-                                    <div class="row mb-4 " style="margin-top: 50px;">
-                                        <div class="col-md-6 " style="margin-left: 50px;">
-                                            <!-- Centered Search Form -->
-                                            <form action="/admin/view-product" method="GET" class="d-inline-flex">
-                                                <input type="text" name="search" class="form-control me-2"
-                                                    placeholder="&nbsp;&nbsp;&nbsp;Search..."
-                                                    value="<%= searchQuery %>"> 
-                                                <input type="hidden" name="page" value="<%= pagination.page %>">
-                                                <input type="hidden" name="limit" value="<%= pagination.limit %>">
-                                                <button type="submit" class="btn btn-primary">Search</button>
-                                            </form>
-
-
-                                        </div>
-                                        <div class="col-md-6" style="margin-top: 20px;">
-                                            <% if (searchQuery) { %>
-                                                <p class="mb-3"><strong>Search Results for:</strong>
-                                                    <%= searchQuery %>
-                                                </p>
-
-                                                <% } %>
-
-                                                    <p class="mb-3"><strong>Total Products:</strong>
-                                                        <%= product.length %>
-                                                    </p>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- End Search and filter -->
+                                   
 
 
                                     <div class="card-body px-0 pb-2">
                                         <div class="table-responsive p-0">
-                                            <table class="table align-items-center">
+                                            <table class="table align-items-center" id="user-table">
                                                 <thead>
                                                     <tr style="background-color: rgb(227, 225, 225);">
                                                         <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
@@ -217,33 +186,7 @@
                                                             <% }); %>
                                                 </tbody>
                                             </table>
-                                             <!-- star pagination -->
-
-            <div class="d-flex justify-content-center">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <% if (pagination.page > 1) { %>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<%= pagination.page - 1 %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>">Previous</a>
-                            </li>
-                        <% } %>
-            
-                        <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-                            <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
-                                <a class="page-link" href="?page=<%= i %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>"><%= i %></a>
-                            </li>
-                        <% } %>
-            
-                        <% if (pagination.page < pagination.totalPages) { %>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<%= pagination.page + 1 %>&limit=<%= pagination.limit %>&search=<%= searchQuery %>">Next</a>
-                            </li>
-                        <% } %>
-                    </ul>
-                </nav>
-              </div>
-  
-              <!-- End pagination -->
+                                     
 
         
                                         </div>
@@ -251,7 +194,17 @@
                                 </div>
                             </div>
                         </div>
+                        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
+                        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+                        <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+                        
+                        <script>
+                            $('#user-table').DataTable({
+                                responsive: true,
+                                
+                            });
+                            </script>
                         <%- include('../layouts/admin/footer.ejs') %>
 
                     </div>

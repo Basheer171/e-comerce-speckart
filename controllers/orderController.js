@@ -132,7 +132,9 @@ const deleteAddress = async (req, res) => {
         const userId = req.session.user_id;
         // console.log('userId',userId);
         const address = req.body.address; 
-        // console.log('address',address);
+
+        console.log('address',address);
+
         const cartData = await cartDb.findOne({ user: userId });
         // console.log('cartData',cartData);
         const total = parseInt(req.body.totalAmount);

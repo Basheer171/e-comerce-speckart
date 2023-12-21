@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
 
     deliveryDetails:{
         type:String,
-        required:false
+        required:true
     },  
 
     user:{

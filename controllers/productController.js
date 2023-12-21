@@ -6,48 +6,20 @@ const Brand = require('../models/brandModel');
 // View Product page
 const viewProduct = async (req, res) => {
     try {
+        // Remove search-related code
 
-        //Pagination
-        let query = {};
-
-        // Check if there is a search query in the URL
-        if (req.query.search) {
-            const searchRegex = new RegExp(req.query.search, 'i');
-            query = {
-                $or: [
-                    { name: searchRegex },
-                    { category: searchRegex },
-                    { brandName: searchRegex },
-                    { description: searchRegex },
-                ]
-            };
-        }
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
-        const skip = (page - 1) * limit;
-
-        const product = await Product.find(query).skip(skip).limit(limit);
-        const totalCount = await Product.countDocuments(query);
-
-        const totalPages = Math.ceil(totalCount / limit);
+        const product = await Product.find();
 
         res.render('view-product', {
             message: 'Product Details',
             product,
-            searchQuery: req.query.search || '',
-            pagination: {
-                page,
-                limit,
-                totalCount,
-                totalPages
-            }
         });
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');
     }
 };
+
 
 // Load add Product
 const loadAddProduct = async(req,res)=>{
