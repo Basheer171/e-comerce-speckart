@@ -85,7 +85,7 @@ user_route.get('/edit',auth.isLogin,userController.editLoad);
 
 user_route.post('/edit',upload.single('image'),userController.updateProfile);
 
-
+    
 //================= to load the shop page =================
 user_route.get('/shop',userController.loadShop);
 

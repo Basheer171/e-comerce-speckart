@@ -182,7 +182,7 @@ const deleteAddress = async (req, res) => {
         });
 
         const orderData = await order.save();
-        // console.log('orderData',orderData);
+          // console.log('orderData',orderData);
         const orderid = order._id;
         // console.log('orderid',orderid);
 

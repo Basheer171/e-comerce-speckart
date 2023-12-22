@@ -20,7 +20,7 @@ const is_blocked = async(req, res, next)=>{
 
         const userData = await User.findById(req.session.user_id);
         // console.log('user data', userData);
-        if(userData.is_block===false){
+        if(userData.is_block===true){
 
             res.render('login',{message:'Blocked By Admin'});
         }else{

@@ -337,16 +337,16 @@ const userBlockorActive = async (req, res) => {
         // console.log(user_id);
         const userData = await User.findById({ _id: user_id });
         //    console.log(userData);
-        if (userData.is_block === false) {
+        if (userData.is_block === true) {
 
-            await User.updateOne({ _id: user_id }, { $set: { is_block: true } });
+            await User.updateOne({ _id: user_id }, { $set: { is_block: false } });
             if(req.session.user_id===user_id){
                 req.session.user_id=null;
               }
             res.redirect('/admin/view-users')
 
         } else {
-            await User.updateOne({ _id: user_id }, { $set: { is_block: false } });
+            await User.updateOne({ _id: user_id }, { $set: { is_block: true } });
             res.redirect('/admin/view-users');
         }
 
