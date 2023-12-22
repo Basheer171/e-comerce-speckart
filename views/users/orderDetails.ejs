@@ -108,59 +108,36 @@ rel="stylesheet"
                 <table class="table table-borderless">
                 <% if(orders && orders.products && orders.products.length>0){%>
                     <% orders.products.forEach((products)=>{%>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex mb-2" style="display: flex; align-items: center">
-                          <div class="flex-shrink-0" style="padding: 5px;">
-                            <img
-                              src="/public/userimages/<%=products.productId.image%>"
-                              alt
-                              width="50"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <div class="flex-lg-grow-1 ms-3" style="padding: 5px;">
-                            <h5 class="align-middle">
-                              <a href="#" class="text-reset"><%=products.productId.name%></a>
-                            </h5>
-                            <!-- <span class="small">Color: Black</span> -->
-                          </div>
-                        </div>
-                      </td>
-                      <td style="font-weight: bold;"><%=products.quantity%></td>
-
-                      <td style="font-weight: bold;"><%=products.productId.price%></td>
+                      <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex mb-2">
+                                    <div class="flex-shrink-0" style="padding: 5px;">
+                                        <img src="/public/userimages/<%=products.productId.image%>" alt="Product Image" width="50" class="img-fluid">
+                                    </div>
+                                    <div class="flex-lg-grow-1 ms-3" style="padding: 5px;">
+                                        <h5 class="align-middle">
+                                            <a href="#" class="text-reset"><%=products.productId.name%></a>
+                                        </h5>
+                                        <!-- <span class="small">Color: Black</span> -->
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-weight: bold; padding-right: 10px;"><%=products.quantity%></td>
+                            <td style="font-weight: bold;">₹ <%=products.productId.price%></td>
+                            
+                            <td class="text-end" style="text-align: end;">
+                              <a href="/orderStatus?id=<%=products._id%>" class="text-decoration-none">
+                                <span class="badge bg-success rounded-pill" style="font-size: 14px; padding: 8px 12px;">
+                                    <%=products.orderStatus%>
+                                </span>
+                            </a>
+                            
+                            </td>
+                            <td class="text-end font-weight-bold" style="text-align: end;">₹ <%=products.quantity * products.productId.price%></td>
+                        </tr>
+                    </tbody>
                     
-
-                      <td class="text-end" style="text-align: end;"><a href="/orderStatus?id=<%=products._id%>"><span class="badge bg-success rounded-pill"><%=products.orderStatus%></span></a></td>
-
-                      <!-- <% if(orders && orders.products && orders.products.length>0){%> -->
-                        <!-- <% orders.products.forEach((products)=>{%> -->
-                          <!-- <tr> -->
-                            <!-- <td> -->
-                        <!-- <% if(products.orderStatus !=='Returned'){%> -->
-                          <!-- <% if(products.orderStatus !=='Cancelled'){%> -->
-                            <!-- <% if(products.orderStatus !=='Delivered' || products.orderStatus !=='OutforDelivery'){%> -->
-                        <!-- <button class="btn btn-danger">Return</button> -->
-                        <!-- <% }else{%> -->
-                          <!-- <button class="btn btn-warning">Cancel</button>
-                          <% } %>
-                          <%} else {%>
-                            <p class="text-danger">Cancelled</p>
-                            <% } %>
-                            <%} else{%>
-                              <p class="text-danger">Returned</p>
-                              <% } %>
-                            </td> -->
-                      <!-- </tr> -->
-                      <!-- <% });%>
-                      <% } %> -->
-
-                      <td class="text-end" style="text-align: end font; font-weight: bold;">₹ <%=products.quantity*products.productId.price%></td>
-                    </tr>
-                    
-                  </tbody>
                   <% }); %>
                   <% } %>
                   <tbody>

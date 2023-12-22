@@ -199,8 +199,7 @@ const deleteAddress = async (req, res) => {
                 res.json({ success: true, orderid });
             }
 
-            // Clear the user's cart after placing the order
-            await cartDb.findOneAndUpdate({ userId: userId }, { $set: { products: [] } });
+            await cartDb.deleteOne({user:req.session.user_id})
         } else {
             // Handle the case when orderData is not available
             res.status(400).send('Failed to place the order');

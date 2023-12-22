@@ -19,7 +19,7 @@ const viewProduct = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
-
+    
 
 // Load add Product
 const loadAddProduct = async(req,res)=>{

@@ -22,7 +22,7 @@
                                     </div>
                                     <div class="card-body px-0 pb-2">
                                         <div class="container-fluid">
-                                            <form class="form-sample" action="/admin/add-product"
+                                            <form class="form-sample" id="productForm"action="/admin/add-product "
                                                 enctype="multipart/form-data" method="post">
                                                 <div class="row">
                                                     <div class="col py-4">
@@ -121,85 +121,68 @@
 
 
                     <script>
-                        function validateProductName() {
-                            const productName = document.getElementById('productName').value.trim();
-                            const productNameError = document.getElementById('productNameError');
-                            productNameError.textContent = '';
+     function validateProductName() {
+        const productName = document.getElementById('productName').value.trim();
+        const productNameError = document.getElementById('productNameError');
+        productNameError.textContent = '';
 
-                            if (productName.length < 3) {
-                                productNameError.textContent = "Product name must be at least 3 characters long.";
-                            }
-                        }
+        if (!/^[a-zA-Z\s]{3,}$/.test(productName)) {
+            productNameError.textContent = "Product name must contain only letters and be at least 3 characters long.";
+            return false;
+        }
+        return true;
+    }
 
-                        function validatePrice() {
-                            const price = document.getElementById('price').value;
-                            const priceError = document.getElementById('priceError');
-                            priceError.textContent = '';
+    function validatePrice() {
+        const price = document.getElementById('price').value;
+        const priceError = document.getElementById('priceError');
+        priceError.textContent = '';
 
-                            if (isNaN(price) || price < 0) {
-                                priceError.textContent = "Price must be a non-negative numeric value.";
-                            }
-                        }
+        if (isNaN(price) || price < 0) {
+            priceError.textContent = "Price must be a non-negative numeric value.";
+            return false;
+        }
+        return true;
+    }
 
-                        function validateQuantity() {
-                            const quantity = document.getElementById('quantity').value;
-                            const quantityError = document.getElementById('quantityError');
-                            quantityError.textContent = '';
+    function validateQuantity() {
+        const quantity = document.getElementById('quantity').value;
+        const quantityError = document.getElementById('quantityError');
+        quantityError.textContent = '';
 
+        const numericQuantity = parseInt(quantity);
 
-                            // const numericQuantity = parseFloat(quantity);
+        if (isNaN(numericQuantity) || numericQuantity < 0) {
+            quantityError.textContent = "Quantity must be a non-negative numeric value.";
+            return false;
+        }
+        return true;
+    }
 
-                            if (isNaN(quantity) || quantity < 5) {
-                                quantityError.textContent = "Quantity must be a numeric value of at least 5.";
-                            }
-                        }
+    function validateForm() {
+        return validateProductName() && validatePrice() && validateQuantity();
+    }
 
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const inputImage = document.getElementById('image');
-                            const previewContainer = document.querySelector('.image-preview-container');
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputImage = document.getElementById('image');
+        const previewContainer = document.querySelector('.image-preview-container');
 
-                            inputImage.addEventListener('change', function () {
-                                previewContainer.innerHTML = '';
+        inputImage.addEventListener('change', function () {
+            // Image preview code (if needed)
+        });
 
-                                Array.from(inputImage.files).forEach(function (file) {
-                                    const reader = new FileReader();
+        document.getElementById('productName').addEventListener('blur', validateProductName);
+        document.getElementById('price').addEventListener('blur', validatePrice);
+        document.getElementById('quantity').addEventListener('blur', validateQuantity);
 
-                                    reader.onload = function () {
-                                        const imagePreview = document.createElement('div');
-                                        imagePreview.classList.add('image-preview');
+        document.getElementById('productForm').addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                // You can display a general error message here if needed
+                // Example: document.getElementById('generalError').textContent = 'Please fix the errors.';
+            }
+        });
+    });
+</script>
 
-                                        const image = document.createElement('img');
-                                        image.src = reader.result;
-                                        image.classList.add('img-fluid');
-
-                                        const removeButton = document.createElement('button');
-                                        removeButton.type = 'button';
-                                        removeButton.classList.add('remove-button');
-                                        removeButton.textContent = 'Remove';
-                                        removeButton.addEventListener('click', function () {
-                                            imagePreview.remove();
-                                            // Remove corresponding file from input
-                                            const dt = new DataTransfer();
-                                            Array.from(inputImage.files).forEach(function (existingFile) {
-                                                if (existingFile !== file) {
-                                                    dt.items.add(existingFile);
-                                                }
-                                            });
-                                            inputImage.files = dt.files;
-                                        });
-
-                                        imagePreview.appendChild(image);
-                                        imagePreview.appendChild(removeButton);
-                                        previewContainer.appendChild(imagePreview);
-                                    }
-
-                                    reader.readAsDataURL(file);
-                                });
-                            });
-
-                            document.getElementById('productName').addEventListener('blur', validateProductName);
-                            document.getElementById('price').addEventListener('blur', validatePrice);
-                            document.getElementById('quantity').addEventListener('blur', validateQuantity);
-                        });
-                    </script>
             </main>

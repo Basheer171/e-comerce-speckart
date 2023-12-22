@@ -20,87 +20,96 @@
                   </div>
                   <div class="card-body px-0 pb-2">
                     <div class="container-fluid">
-                      <form action="/admin/edit-product" enctype="multipart/form-data" method="post">
+                      <form action="/admin/edit-product" enctype="multipart/form-data" method="post" id="editProductForm">
                         <div class="row">
                           <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">Product Name</div>
-                              <input type="text" value="<%=productData.name%>" name="productName"
+                              <input type="text" value="<%= productData.name %>" name="productName" id="productName"
                                 placeholder="Product Name" required>
+                              <div id="productNameError" class="error-message text-danger"></div>
                             </div>
                           </div>
-
+      
                           <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">Category Name</div>
                               <select id="category" name="category" required>
-                                <!-- <option disabled selected>Choose Category</option> -->
-
-                                <% category.forEach(cat=> { %>
-                                  <option value="<%=cat.categoryName%>">
-                                    <%= cat.categoryName %>
-                                  </option>
-                                  <% }); %>
+                                <% category.forEach(cat => { %>
+                                <option value="<%= cat.categoryName %>">
+                                  <%= cat.categoryName %>
+                                </option>
+                                <% }); %>
                               </select>
+                              <div id="categoryError" class="error-message text-danger"></div>
                             </div>
                           </div>
+      
                           <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">Brand</div>
                               <select id="brand" name="brand" required>
-                                <!-- <option disabled selected>Choose Category</option> -->
-                                <% brandData.forEach(brand=> { %>
-                                  <option value="<%=brand.brandName%>">
-                                    <%= brand.brandName %>
-                                  </option>
-                                  <% }); %>
+                                <% brandData.forEach(brand => { %>
+                                <option value="<%= brand.brandName %>">
+                                  <%= brand.brandName %>
+                                </option>
+                                <% }); %>
                               </select>
+                              <div id="brandError" class="error-message text-danger"></div>
                             </div>
                           </div>
+      
                           <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">Quantity</div>
-                              <input type="number" value="<%=productData.qty%>" name="qty" placeholder="Quantity"
-                                required>
+                              <input type="number" value="<%= productData.qty %>" name="qty" placeholder="Quantity" required>
+                              <div id="qtyError" class="error-message text-danger"></div>
                             </div>
                           </div>
-                          <div class="row">
-                            <div class="col md-3 py-4">
-                              <div class="form-group">
-                                <div class="form-label rounded">Specification</div>
-                                <input type="text" value="<%=productData.description%>" name="description"
-                                  placeholder="description" required>
-                              </div>
+                          
+      
+                          <div class="col-md-3 py-4">
+                            <div class="form-group">
+                              <div class="form-label rounded">Specification</div>
+                              <input type="text" value="<%= productData.description %>" name="description"
+                                placeholder="Description" required>
+                              <div id="descriptionError" class="error-message text-danger"></div>
                             </div>
                           </div>
+      
                           <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">Price</div>
-                              <input type="text" value="<%=productData.price%>" name="price" placeholder="Price"
-                                required>
+                              <input type="text" value="<%= productData.price %>" name="price" placeholder="Price" required>
+                              <div id="priceError" class="error-message text-danger"></div>
                             </div>
                           </div>
-                          <div class="row">
-                            <!-- Old images -->
-                            <div class="col md-3 py-4">
-                              <div class="form-group">
-                                <% if(productData.image.length>0){%>
-                                  <div class="form-label rounded">Images</div>
-                                  <% productData.image.forEach(img=>{ %>
-                                    <img type="file" src="/public/userImages/<%= img %>" alt="Old Image"
-                                      style="width: 100px;">
-                                    <% }); %>
-                                      <div class="image-preview-container mt-2"></div>
-                                      <% } %>
-                              </div>
-                            </div>
-                            <!-- <div class="col md-3 py-4"> -->
+      
+                          <div class="col-md-3 py-4">
                             <div class="form-group">
                               <div class="form-label rounded">New Image</div>
                               <input type="file" name="image" id="image" multiple accept="image/*" required>
-                              <div class="image-preview-container mt-2"></div>
+                              <div id="imageError" class="error-message text-danger"></div>
                             </div>
-                            <!-- </div> -->
+                          </div>
+      
+                          <!-- Additional form elements with corresponding IDs and error messages -->
+      
+                          <div class="col-md-3 py-4">
+                            <input type="hidden" name="id" value="<%= productData._id %>">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <%- include('../layouts/admin/footer.ejs') %>
+          </div>
+
+      <!-- </div> -->
                             <!-- <div class="form-check py-4">
                               <div class="form-label rounded">Action</div>
                               <input class="form-check-input" type="radio" name="is_active" value="1" <%
@@ -113,21 +122,94 @@
                                 <label class="form-check-label" for="flexRadioDefault2">Unlist</label>
                             </div>
                           </div> -->
-                          <div class="row">
-                            <div class="col md-3 py-4">
-                              <input type="hidden" name="id" value="<%=productData._id %>">
-                              <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <%- include('../layouts/admin/footer.ejs') %>
-          </div>
-
-
       </main>
+      <script>
+        function validateForm() {
+          return (
+            validateProductName() &&
+            validateCategory() &&
+            validateBrand() &&
+            validateQuantity() &&
+            validateDescription() &&
+            validatePrice() &&
+            validateImage()
+            // Add calls to other validation functions
+          );
+        }
+      
+        function validateProductName() {
+          const productName = document.getElementById('productName').value.trim();
+          const regex = /^[a-zA-Z\s]*$/; // Regular expression to match only letters and spaces
+      
+          if (!regex.test(productName)) {
+            document.getElementById('productNameError').textContent = 'Product name should contain only letters and spaces.';
+            return false;
+          }
+      
+          if (productName.length < 3) {
+            document.getElementById('productNameError').textContent = 'Product name must be at least 3 characters long.';
+            return false;
+          }
+      
+          return true;
+        }
+      
+        function validateCategory() {
+          const category = document.getElementById('category').value;
+          return validateField(category, 'categoryError', 'Please choose a category.');
+        }
+      
+        function validateBrand() {
+          const brand = document.getElementById('brand').value;
+          return validateField(brand, 'brandError', 'Please choose a brand.');
+        }
+      
+        function validateQuantity() {
+  const quantity = document.getElementsByName('qty')[0].value.trim();
+
+  if (isNaN(quantity) || parseInt(quantity) < 0) {
+    document.getElementById('qtyError').textContent = 'Quantity must be a non-negative numeric value.';
+    return false;
+  }
+
+  return validateField(quantity, 'qtyError', 'Quantity must be a numeric value.');
+}
+  
+
+      
+        function validateDescription() {
+          const description = document.getElementById('description').value.trim();
+          return validateField(description, 'descriptionError', 'Description cannot be empty.');
+        }
+      
+        function validatePrice() {
+          const price = document.getElementById('price').value;
+          return validateField(price, 'priceError', 'Price must be a numeric value.');
+        }
+      
+        function validateImage() {
+          const image = document.getElementById('image').value;
+          return validateField(image, 'imageError', 'Please upload an image.');
+        }
+      
+        function validateField(value, errorId, errorMessage) {
+          const errorElement = document.getElementById(errorId);
+          errorElement.textContent = '';
+      
+          if (!value) {
+            errorElement.textContent = errorMessage;
+            return false;
+          }
+      
+          return true;
+        }
+      
+        document.getElementById('editProductForm').addEventListener('submit', function(event) {
+          if (!validateForm()) {
+            event.preventDefault();
+          }
+        });
+      </script>
+      
+    
+    
