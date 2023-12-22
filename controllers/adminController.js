@@ -373,7 +373,7 @@ const loadViewOrders = async(req, res)=>{
                 // console.log('ProductId',productId);
 
                 const productData  = await productDb.findById(productId)
-console.log('productData',productData);
+// console.log('productData',productData);
                 const userDetails = await User.findOne({firstName: orders.userName})
                 // console.log('userDetails..........',userDetails);
 
@@ -462,6 +462,46 @@ const viewOrderDetails = async(req, res)=>{
     }
 };
 
+// Change Order Status
+const changeOrderStatus = async(req, res)=>{
+    try {
+        const {status, orderId, productId}=req.body;
+        // const orderId = req.body.orderId
+        // console.log('OrderId', orderId);
+        // console.log('Status',status);
+        const orderDetails = await orderDb.findById(orderId);
+        // console.log(orderDetails);
+        if(!orderDetails){
+            return res.status(404).send('Order not found.');
+        }
+
+        const statusMap={
+            Shipped:2,
+            OutforDelivery:3,
+            Delivered:4,
+        };
+
+        const selectedStatus=status
+        const statusLevel=statusMap[selectedStatus]
+
+        const productDetails = orderDetails.products.find((product)=>product.productId.toString()===productId);
+        // console.log(productDetails);
+
+        productDetails.statusLevel=statusLevel;
+        productDetails.orderStatus=status;
+        productDetails.updatedAt=Date.now();
+
+        const result = await orderDetails.save();
+        // console.log('Result',result);
+
+        res.redirect(`/admin/view-ordersDetails?orderId=${orderId}&productId=${productId}`);
+
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 module.exports = {
     loadLogin,
@@ -481,5 +521,6 @@ module.exports = {
     viewUsers,
     userBlockorActive,
     loadViewOrders,
-    viewOrderDetails
+    viewOrderDetails,
+    changeOrderStatus
 }

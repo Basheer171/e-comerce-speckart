@@ -89,14 +89,14 @@
                                         <!-- User Active/Blocked -->
                                         <% if(user.is_block===true){%>
                                           <td class=" text-sm">
-                                            <a href="/admin/is_blockUser?id=<%= user._id %>">
+                                            <a href="/admin/is_blockUser?id=<%= user._id %>"  class="block-unblock-link">
                                               <span class="badge badge-sm bg-gradient-danger">Blocked</span></a>
                                           </td>
 
                                           <% }else{ %>
 
                                             <td class=" text-sm">
-                                              <a href="/admin/is_blockUser?id=<%= user._id %>">
+                                              <a href="/admin/is_blockUser?id=<%= user._id %>"  class="block-unblock-link">
                                                 <span class="badge badge-sm bg-gradient-success">Active</span></a>
                                             </td>
                                             <% } %>
@@ -114,5 +114,62 @@
             </div>
 
             <%- include('../layouts/admin/footer.ejs') %>
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let blockUnblockList = document.querySelectorAll(".block-unblock-link");
+
+    for (let i = 0; i < blockUnblockList.length; i++) {
+      blockUnblockList[i].addEventListener("click", function (event) {
+        event.preventDefault();
+
+        let link = this;
+        let userId = link.href.split("=")[1]; // Extracting user ID from the link
+
+        const successAlert = Swal.mixin({
+          customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger",
+          },
+          buttonsStyling: false,
+        });
+        successAlert.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Blocke/Active!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true,
+
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = link.href;
+              
+              successAlert.fire({
+                title: "Blocked!",
+                text: "User has been blocked.",
+                icon: "success",
+                
+              });
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+              ) {
+                successAlert.fire({
+                  title: "Cancelled",
+                  text: "User safe :)",
+                  icon: "error",
+                });
+            }
+          });
+
+      });
+    }
+  });
+</script>
+
           </div>
       </main>

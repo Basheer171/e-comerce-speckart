@@ -96,25 +96,25 @@ user_route.get('/product',auth.isLogin,productController.loadProductPageLoad);
 // ========================  cart   ==========================
 
 user_route.post('/addToCart',auth.isLogin,cartController.addToCart);
-user_route.get('/cart',auth.isLogin,cartController.loadCart );
+user_route.get('/cart',auth.isLogin, auth.is_blocked, cartController.loadCart );
 user_route.post('/cart-quantity',auth.isLogin,cartController.cartQuantity )
 user_route.post('/remove-product',auth.isLogin,cartController.removeProduct )
 
 // ========================  profile   ==========================
 
-user_route.get('/profile',auth.isLogin,userController.profileLoad );
+user_route.get('/profile',auth.isLogin, auth.is_blocked,userController.profileLoad );
 user_route.post('/updateuser',auth.isLogin,userController.editProfile );
 user_route.post('/changepassword',auth.isLogin,userController.updatePassword)
 user_route.post('/addAddress',auth.isLogin,userController.addAddress)
-user_route.get('/editAddress',auth.isLogin,userController.editAddressLoad );
+user_route.get('/editAddress',auth.isLogin, auth.is_blocked, userController.editAddressLoad );
 user_route.post('/editAddress',auth.isLogin,userController.editAddress);
 user_route.delete('/deleteAddress',auth.isLogin,userController.deleteAddress)
 
 
 // ========================  checkout   ==========================
 
-user_route.get('/checkout',auth.isLogin,orderController.loadCheckout );
-user_route.get('/editCheckout',auth.isLogin,orderController.editAddressLoad );
+user_route.get('/checkout',auth.isLogin,  auth.is_blocked, orderController.loadCheckout );
+user_route.get('/editCheckout',auth.isLogin,  auth.is_blocked,orderController.editAddressLoad );
 user_route.delete('/deleteAddress',auth.isLogin,orderController.deleteAddress)
 user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);
 

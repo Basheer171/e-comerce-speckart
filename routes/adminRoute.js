@@ -107,6 +107,8 @@ admin_route.get('/is_activeProduct', admiauth.isLogin, productController.product
 
 admin_route.get('/view-orders', admiauth.isLogin, adminController.loadViewOrders);
 admin_route.get('/view-ordersDetails', admiauth.isLogin, adminController.viewOrderDetails);
+admin_route.post('/view-ordersDetails/changeStatus',adminController.changeOrderStatus)
+
 
 
 
