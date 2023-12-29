@@ -17,7 +17,10 @@ const disableBackButton = (req, res, next) => {
     next();
   };
 
-//for user routes
+  
+
+ 
+//for user routes 
 const userRoute = require('./routes/userRoute');
 app.use('/',disableBackButton,userRoute);
 
@@ -25,9 +28,6 @@ app.use('/',disableBackButton,userRoute);
 const adminRoute = require('./routes/adminRoute');
 app.use('/admin',disableBackButton, nocache(), adminRoute);  
 
-app.use('*', (req, res) => {
-  res.render('404')
-})
 
 const port=3000
 

@@ -7,7 +7,7 @@ const config = require("../config/config");
 user_route.use(session({secret:config.sessionSecret,resave: false,saveUninitialized: true,}));
 
 const auth = require("../middleware/auth");
-
+const fetchUserData = require("../middleware/userData")
 
 // view and model connecting in controller
 
@@ -26,12 +26,14 @@ user_route.use('/public',express.static('public'));
 
 
 
+
+
 const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const orderController = require('../controllers/orderController');
 
-
+user_route.use(fetchUserData)
 
 
 
@@ -114,6 +116,11 @@ user_route.get('/orderPlace',auth.isLogin,orderController.loadPlaceOrder );
 user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDeatail );
 user_route.post('/cancelOrder',orderController.cancelOrder)
+
+user_route.get('*',(req,res)=>{
+
+    res.render('404')
+  })
 
 
 
