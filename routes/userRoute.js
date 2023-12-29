@@ -19,21 +19,10 @@ const bodyParser = require('body-parser');
 user_route.use(bodyParser.json());
 user_route.use(bodyParser.urlencoded({extended:true}));
 
-const multer = require("multer");
-
 
 user_route.use('/public',express.static('public'));
 
-const storage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,path.join(__dirname, '../public/userImages'));
-    },
-    filename:function(req,file,cb){
-        const name = Date.now()+'-'+file.originalname;
-        cb(null,name);
-    }
-});
-const upload = multer({storage:storage});
+
 
 
 
@@ -48,7 +37,7 @@ const orderController = require('../controllers/orderController');
 
 user_route.get('/register',auth.isLogout, userController.loadRegister);
 
-user_route.post('/register', upload.single('image'), userController.insertUser);
+user_route.post('/register', userController.insertUser);
 
 user_route.get('/submit-otp', userController.showverifyOTPPage);
 user_route.post('/submit-otp', userController.verifyOTP)
@@ -83,7 +72,7 @@ user_route.post('/verification',userController.sentVerificationLink);
 
 user_route.get('/edit',auth.isLogin,userController.editLoad);
 
-user_route.post('/edit',upload.single('image'),userController.updateProfile);
+user_route.post('/edit',userController.updateProfile);
 
     
 //================= to load the shop page =================
@@ -124,10 +113,7 @@ user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 user_route.get('/orderPlace',auth.isLogin,orderController.loadPlaceOrder );
 user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDeatail );
-    
-
-
-
+user_route.post('/cancelOrder',orderController.cancelOrder)
 
 
 

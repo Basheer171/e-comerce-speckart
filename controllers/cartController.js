@@ -18,15 +18,17 @@ const addToCart = async (req, res) => {
         const { id: productId } = req.body;
         const { _id: userId } = await userDb.findById(user_id);
 
+
         // Check if the product is already in the cart
         const cartData = await cartDb.findOne({ user: userId, 'products.productId': productId });
 
-        if (cartData) {
+        if (cartData) { 
             // Product is already in the cart
             return res.json({ alreadyInCart: true });
         }
 
         const productData = await productDb.findById(productId);
+        // console.log('productData',productData);
         if (!productData) {
             return res.status(404).json({ error: 'Product not found' });
         }
@@ -58,15 +60,14 @@ const addToCart = async (req, res) => {
 const loadCart = async (req, res) => {
     try {
         const id = req.session.user_id;
-        const userData = await userDb.findById({ _id: id });        
+        const userData = await userDb.findById({ _id: id });                
         const userId = userData._id;
-
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
         if (req.session.user_id) {
             if (cartData && cartData.products.length > 0) {
                 
                 const Total = cartData.products.reduce((acc, product) => {
-                    return acc + product.price * product.quantity;
+                    return acc + product.price * product.quantity;  
                 }, 0);
                 res.render('cart', { user: userId, cart: cartData, Total });
             } else {
@@ -88,11 +89,13 @@ const loadCart = async (req, res) => {
     try {
         const userId = req.session.user_id;
         const productId = req.body.product;
+        // console.log('productId',productId);
         const count = parseInt(req.body.count);
 
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-
+// console.log('cartData',cartData);
         const productToUpdate = cartData.products.find(product => product.productId.equals(productId));
+        // console.log('productToUpdate',productToUpdate);
 
         if (!productToUpdate) {
             return res.json({ changeSuccess: false, message: 'Product not found in the cart' });
@@ -119,29 +122,29 @@ const loadCart = async (req, res) => {
 };
 
     // Cart Remove
-const removeProduct = async(req,res)=>{
-    try {
-        const productId = req.body.product;
-        // console.log('product Id',productId);
-        const userid= req.session.user_id;
-       
-        // console.log('userId',userid);
-
-        const cartData = await cartDb.findOneAndUpdate({ user: userid, "products.productId": productId },
-                                                       { $pull: { products: { productId: productId } } });
+    const removeProduct = async(req,res)=>{
+        try {
+            const productId = req.body.product;
+            // console.log('product Id',productId);
+            const userid= req.session.user_id;
         
-        // console.log('cartData',cartData);
+            // console.log('userId',userid);
 
-        if (cartData) {
-            res.json({ success: true, cartData: cartData.products });
-        } else {
-            res.json({ success: false });
+            const cartData = await cartDb.findOneAndUpdate({ user: userid, "products.productId": productId },
+                                                        { $pull: { products: { productId: productId } } });
+            
+            // console.log('cartData',cartData);
+
+            if (cartData) {
+                res.json({ success: true, cartData: cartData.products });
+            } else {
+                res.json({ success: false });
+            }
+            
+        } catch (error) {
+            console.log(error);
         }
-        
-    } catch (error) {
-        console.log(error);
     }
-}
 
 module.exports = {
     addToCart,

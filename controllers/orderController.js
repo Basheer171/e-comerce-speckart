@@ -12,7 +12,7 @@ try {
     
     const userId = req.session.user_id;
   
-    const addressData = await addressModel.findOne({userId:userId})
+    const addressData = await addressModel.findOne({userId:userId})   
     const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
 
         if (req.session.user_id) {
@@ -172,7 +172,7 @@ const deleteAddress = async (req, res) => {
         const order = new orderDb({
           deliveryDetails: address,
             uniqueId: uniNum,
-            userId: userId,
+            userId: userId, 
             userName: name,
             paymentMethod: paymentMethod,
             products: cartProducts,
@@ -228,14 +228,14 @@ const loadPlaceOrder = async (req, res)=>{
   }
 }
 
+
+
 const loadOrderPage = async (req, res) => {
   try {
-    const userId = req.session.user_id;
-    
-    // Find all orders for the user
-    const orderData = await orderDb.find({ userId: userId });
+    const userId = req.session.user_id; 
 
-    // Find user data for additional information
+    const orderData = await orderDb.find({ userId: userId }).sort({ date: -1 });
+
     const userData = await userDb.findById(userId);
 
     res.render('orders', { user: userData, orderData });
@@ -245,6 +245,8 @@ const loadOrderPage = async (req, res) => {
   }
 };
 
+
+//=================== load order detail page =============
 
 const loadOrderDeatail = async (req, res)=>{
   try {
@@ -263,6 +265,53 @@ res.render('orderDetails',{user:userData, orders:orderData})
   }
 }
 
+//======================= cancelorder =======================
+
+const cancelOrder = async (req, res) => {
+  try {   
+    const orderId = req.body.uniqueId; // Corrected variable name to orderId
+    const productId = req.body.productId;
+    // console.log('productId', productId);
+    // console.log('orderId', orderId);
+
+    const orderData = await orderDb.findOne({ _id: orderId });
+
+    if (!orderData) {
+      console.log('Order not found');
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const productInfo = orderData.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    if (!productInfo) {
+      return res.status(404).json({ message: "Product not found in the order" });
+    }
+    // console.log(productInfo);
+    productInfo.orderStatus = "canceled";
+    await orderData.save();
+
+    const quantityToIncrease = productInfo.quantity;
+    // console.log('quantityToIncrease',quantityToIncrease);
+    const product = await productDb.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found in the database" });
+    }
+
+    product.qty += quantityToIncrease;
+
+    await product.save();
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+
 
 module.exports = {
     loadCheckout,
@@ -272,5 +321,6 @@ module.exports = {
     placeOrder,
     loadPlaceOrder,
     loadOrderPage,
-    loadOrderDeatail
+    loadOrderDeatail,
+    cancelOrder
 }

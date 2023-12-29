@@ -25,6 +25,10 @@ app.use('/',disableBackButton,userRoute);
 const adminRoute = require('./routes/adminRoute');
 app.use('/admin',disableBackButton, nocache(), adminRoute);  
 
+app.use('*', (req, res) => {
+  res.render('404')
+})
+
 const port=3000
 
 app.listen(port, function () {

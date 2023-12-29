@@ -758,9 +758,9 @@ const editAddressLoad = async (req, res) => {
 
     // Find the user by userId and retrieve the specific address using its id
     const user = await addressModel.findOne({ userId });
-    console.log('user',user);
+    // console.log('user',user);
     const addressToEdit = user.address.id(addressId);
-    console.log('addressToEdit',addressToEdit); 
+    // console.log('addressToEdit',addressToEdit); 
 
     // Render the 'editAddress' template and pass the user and specific address
     res.render('editAddress', { user, address: addressToEdit });
@@ -791,7 +791,6 @@ const editAddress = async (req, res) => {
     );
 
     res.redirect('/profile');
-    console.log('editAddress', editAddress);
   } catch (error) {
     console.log(error);
   }
@@ -802,17 +801,15 @@ const deleteAddress = async (req, res) => {
   const addressId = req.body.id; 
 
   try {
-    const user = await addressModel.findOne({ userId});
+    const result = await addressModel.findOneAndUpdate(
+      { userId },
+      { $pull: { address: { _id: addressId } } },
+      { new: true } // To get the updated document
+    );
 
-    const addressIndex = user.address.id(addressId);
+    // console.log('resutlt',result);
 
-    if (addressIndex !== -1) {
-
-      user.address.splice(addressIndex, 1);
-
-      // Save the updated user object
-      await user.save();
-
+    if (result) {
       // Respond with a success message
       return res.json({ remove: 1 });
     } else {
@@ -825,6 +822,8 @@ const deleteAddress = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
 
   
   
@@ -854,6 +853,7 @@ module.exports = {
     addAddress,
     editAddressLoad,
     editAddress,
-    deleteAddress
+    deleteAddress,
+    
 
 }

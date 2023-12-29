@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const randomstring = require('randomstring');
 const config = require("../config/config");
 const nodemailer = require("nodemailer");
-const orderDb  = require ('../models/orderModels')
+const orderDb = require('../models/orderModels')
 const productDb = require('../models/productModel');
 
 
@@ -106,15 +106,22 @@ const verifyLogin = async (req, res) => {
 // dashboard for user details
 
 const loadDashboard = async (req, res) => {
-
     try {
         const adminData = await User.findById({ _id: req.session.user_id });
 
+        if (!adminData) {
+            // If adminData is not found, render a 404 page
+            res.status(404).render('404'); // Assuming '404' is the name of your 404 page template
+            return;
+        }
+
         res.render('home', { admin: adminData });
-    } catch (error) {
-        console.log(error.message);
+    } catch (error) {  ``
+        console.error(error.message);
+        // Render a 500 error page if an unexpected error occurs
+        res.status(500).render('500'); // Assuming '500' is the name of your 500 error page template
     }
-}
+};
 
 //logout in admin home 
 
@@ -340,9 +347,9 @@ const userBlockorActive = async (req, res) => {
         if (userData.is_block === true) {
 
             await User.updateOne({ _id: user_id }, { $set: { is_block: false } });
-            if(req.session.user_id===user_id){
-                req.session.user_id=null;
-              }
+            if (req.session.user_id === user_id) {
+                req.session.user_id = null;
+            }
             res.redirect('/admin/view-users')
 
         } else {
@@ -357,70 +364,70 @@ const userBlockorActive = async (req, res) => {
     }
 };
 
- // Load View Orders Page
-const loadViewOrders = async(req, res)=>{
+// Load View Orders Page
+const loadViewOrders = async (req, res) => {
     try {
         const orderData = await orderDb.find();
         // console.log('Order Data',orderData);
 
-        const productsArray=[];
+        const productsArray = [];
 
-        for(let orders of orderData){
+        for (let orders of orderData) {
             // console.log('orders', orders);
-            for(let productsValue of orders.products){
+            for (let productsValue of orders.products) {
                 // console.log('productsValue', productsValue);
                 const productId = productsValue.productId;
                 // console.log('ProductId',productId);
 
-                const productData  = await productDb.findById(productId)
-// console.log('productData',productData);
-                const userDetails = await User.findOne({firstName: orders.userName})
+                const productData = await productDb.findById(productId)
+                // console.log('productData',productData);
+                const userDetails = await User.findOne({ firstName: orders.userName })
                 // console.log('userDetails..........',userDetails);
 
-                if(productData){
-                    
+                if (productData) {
+
                     productsArray.push({
-                        user:userDetails,
-                        product:productData,
-                        orderDetails:{
-                            _id:orders._id,
-                            userId:orders.userId,
-                            deliveryDetails:orders.deliveryDetails,
-                            date:orders.date,
-                            totalAmount:productsValue.quantity*orders.totalAmount,
-                            orderStatus:productsValue.orderStatus,
-                            paymentStatus:productsValue.paymentStatus,
-                            statusLevel:productsValue.statusLevel,
-                            paymentMethod:orders.paymentMethod,
-                            quantity:productsValue.quantity,
+                        user: userDetails,
+                        product: productData,
+                        orderDetails: {
+                            _id: orders._id,
+                            userId: orders.userId,
+                            deliveryDetails: orders.deliveryDetails,
+                            date: orders.date,
+                            totalAmount: productsValue.quantity * orders.totalAmount,
+                            orderStatus: productsValue.orderStatus,
+                            paymentStatus: productsValue.paymentStatus,
+                            statusLevel: productsValue.statusLevel,
+                            paymentMethod: orders.paymentMethod,
+                            quantity: productsValue.quantity,
 
                         }
 
                     })
                 }
-                
+
             }
         }
         // console.log('Product Array',productsArray);
 
-        res.render('view-orders',{
-            message:'View Orders',
-            orders:productsArray,
+        res.render('view-orders', {
+            message: 'View Orders',
+            orders: productsArray,
         });
-        
+
     } catch (error) {
         console.log(error);
     }
 };
 
 // View OrderDetails
-const viewOrderDetails = async(req, res)=>{
+const viewOrderDetails = async (req, res) => {
     try {
         const orderId = req.query.orderId
         const productId = req.query.productId;
         // console.log('orderId:', orderId);
         // console.log('ProductId:', productId);
-        
+
         if (!orderId || !productId) {
             return res.status(400).send("orderId and productId are required");
         }
@@ -429,78 +436,79 @@ const viewOrderDetails = async(req, res)=>{
         const productData = await productDb.findById(productId);
         // console.log('Order Details',orderDetails);
         // console.log('productData',productData);  
-      
-        const productDetails = orderDetails.products.find((product)=>product.productId.toString()===productId);
 
-        const productOrder={
+        const productDetails = orderDetails.products.find((product) => product.productId.toString() === productId);
+
+        const productOrder = {
             orderId: orderDetails._id,
             product: productData,
-            _id:productDetails._id,
-            orderStatus:productDetails.orderStatus,
-            statusLevel:productDetails.statusLevel,
-            paymentStatus:productDetails.paymentStatus,
-            totalAmount:orderDetails.totalAmount,
-            quantity:productDetails.quantity,
-            paymentMethod:orderDetails.paymentMethod,
-            deliveryDetails:orderDetails.deliveryDetails,
-            date:orderDetails.date,
+            _id: productDetails._id,
+            orderStatus: productDetails.orderStatus,
+            statusLevel: productDetails.statusLevel,
+            paymentStatus: productDetails.paymentStatus,
+            totalAmount: orderDetails.totalAmount,
+            quantity: productDetails.quantity,
+            paymentMethod: orderDetails.paymentMethod,
+            deliveryDetails: orderDetails.deliveryDetails,
+            date: orderDetails.date,
 
         }
         // console.log('productOrder',productOrder);
 
 
-        res.render('view-ordersDetails',{
-            message:'View Order Details',
-            products:productOrder,
+        res.render('view-ordersDetails', {
+            message: 'View Order Details',
+            products: productOrder,
             orderId,
             productId
         })
-        
-        
+
+
     } catch (error) {
         console.log(error);
     }
 };
 
 // Change Order Status
-const changeOrderStatus = async(req, res)=>{
+const changeOrderStatus = async (req, res) => {
     try {
-        const {status, orderId, productId}=req.body;
-        // const orderId = req.body.orderId
-        // console.log('OrderId', orderId);
-        // console.log('Status',status);
+        const { status, orderId, productId } = req.body;
+            console.log('OrderId', orderId);
+        console.log('Status',status);
         const orderDetails = await orderDb.findById(orderId);
         // console.log(orderDetails);
-        if(!orderDetails){
+        if (!orderDetails) {
             return res.status(404).send('Order not found.');
         }
 
-        const statusMap={
-            Shipped:2,
-            OutforDelivery:3,
-            Delivered:4,
+        const statusMap = {
+            Shipped: 2,
+            OutforDelivery: 3,
+            Delivered: 4,
         };
 
-        const selectedStatus=status
-        const statusLevel=statusMap[selectedStatus]
+        const selectedStatus = status
+        const statusLevel = statusMap[selectedStatus]
 
-        const productDetails = orderDetails.products.find((product)=>product.productId.toString()===productId);
+        const productDetails = orderDetails.products.find((product) => product.productId.toString() === productId);
         // console.log(productDetails);
 
-        productDetails.statusLevel=statusLevel;
-        productDetails.orderStatus=status;
-        productDetails.updatedAt=Date.now();
+        productDetails.statusLevel = statusLevel;
+        productDetails.orderStatus = status;
+        productDetails.updatedAt = Date.now();
 
         const result = await orderDetails.save();
         // console.log('Result',result);
 
         res.redirect(`/admin/view-ordersDetails?orderId=${orderId}&productId=${productId}`);
 
-        
+
     } catch (error) {
         console.log(error);
     }
 }
+
+
 
 
 module.exports = {
