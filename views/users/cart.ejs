@@ -180,11 +180,14 @@
 <script>
     // Function cart count
    function cartCount(productId, user, count) {
+
+// console.log('count',count);
     // Get the DOM element representing the quantity
     const quantityElement = document.getElementById(productId);
-
+// console.log('quantityElement',quantityElement);
     // Parse the current quantity value as an integer
     const quantity = parseInt(quantityElement.innerHTML);
+    // console.log('quantity',quantity);
 // console.log('quantity',quantity);
     // Check if the count is -1 and the quantity is already 1, prevent further decrease
     if (count === -1 && quantity === 1) {

@@ -6,10 +6,10 @@ const fetchUserData = async (req, res, next) => {
         const userId = req.session.user_id;
 
         if (userId) {
-            const userData = await User.findById(userId);
-            res.locals.userData = userData;  // Set user data to res.locals.userData
+            const user = await User.findById(userId);
+            res.locals.user = user;  // Set user data to res.locals.userData
         } else {
-            res.locals.userData = null;  // Set null when there is no user
+            res.locals.user = null;  // Set null when there is no user
         }
 
         next();

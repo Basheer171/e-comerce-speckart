@@ -43,11 +43,10 @@ const addToCart = async (req, res) => {
                 },
             },
         };
-
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
         await cartDb.findOneAndUpdate({ user: userId }, update, options);
-
         res.json({ success: true });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'An error occurred' });
@@ -63,6 +62,8 @@ const loadCart = async (req, res) => {
         const userData = await userDb.findById({ _id: id });                
         const userId = userData._id;
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
+
+        // console.log('cartData',cartData);
         if (req.session.user_id) {
             if (cartData && cartData.products.length > 0) {
                 
@@ -91,9 +92,7 @@ const loadCart = async (req, res) => {
         const productId = req.body.product;
         // console.log('productId',productId);
         const count = parseInt(req.body.count);
-
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-// console.log('cartData',cartData);
         const productToUpdate = cartData.products.find(product => product.productId.equals(productId));
         // console.log('productToUpdate',productToUpdate);
 
@@ -113,6 +112,7 @@ const loadCart = async (req, res) => {
 
         // Save the updated cart
         await cartData.save();
+
 
         res.json({ changeSuccess: true, updatedQuantity: productToUpdate.quantity });
     } catch (error) {

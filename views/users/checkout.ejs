@@ -199,7 +199,7 @@
                                     <label for="onlinePayment" data-toggle="collapse" data-target="#onlinePaymentCollapse" aria-expanded="true" aria-controls="onlinePaymentCollapse">
                                         Online Payment
                                     </label>
-                                </div> -->
+                                </div> -->  
                                 <div id="onlinePaymentCollapse" class="collapse" aria-labelledby="onlinePayment" data-parent="#paymentAccordion"></div>
                             
                                 <!-- Cash on delivery -->
@@ -289,54 +289,78 @@ function removeAddress(id) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-   $(document).ready(function() {
-    // Event listener for Place Order button
-    $('#placeOrderBtn').on('click', function() {
-        // Get the selected address ID
-        var selectedAddress = $('.address-checkbox:checked').val();
 
-        // Get the selected payment method
-        var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
-
-        // Get the total amount
-        var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
-
-        // Log the values to check
-        console.log('Selected Address:', selectedAddress);
-        console.log('Selected Payment Method:', selectedPaymentMethod);
-        console.log('Total Amount:', totalAmount);
+  
     
-            // Prepare the data to be sent
-            var dataToSend = {
-                address: selectedAddress,
-                paymentMethod: selectedPaymentMethod,
-                totalAmount: totalAmount
-            };    
-            // Send the AJAX request
-            $.ajax({
-                url: '/placeOrder', // Replace with your server-side endpoint
-                method: 'post',
-                data: dataToSend,
-                success: function(response) {
-                    // Handle the success response from the server
-                    console.log('Order placed successfully:', response);
-                    // You can redirect the user to a confirmation page or perform other actions
-                },
-                error: function(error) {
-                    // Handle errors, if any
-                    console.error('Error placing order:', error);
-                }
-            });
+<script>
+    $(document).ready(function () {
+        // Flag to track whether conditions are met
+        var conditionsMet = false;
+
+        // Event listener for Place Order button
+        $('#placeOrderBtn').on('click', function (event) {
+            // Prevent the default behavior of the button (e.g., form submission or page navigation)
+            event.preventDefault();
+
+            // Get the selected address ID
+            var selectedAddress = $('.address-checkbox:checked').val();
+
+            // Get the selected payment method
+            var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+            // Get the total amount
+            var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
+
+            // Validate both address and payment method
+            if (!selectedAddress) {
+                alert('Please select an address and choose payment method');
+                conditionsMet = false;
+            } else if (!selectedPaymentMethod) {
+                alert('Please select a payment method.');
+                conditionsMet = false;
+            } else {
+                // Conditions are met, set the flag to true
+                conditionsMet = true;
+
+                // Log the values to check
+                console.log('Selected Address:', selectedAddress);
+                console.log('Selected Payment Method:', selectedPaymentMethod);
+                console.log('Total Amount:', totalAmount);
+
+                // Prepare the data to be sent
+                var dataToSend = {
+                    address: selectedAddress,
+                    paymentMethod: selectedPaymentMethod,
+                    totalAmount: totalAmount
+                };
+
+                // Send the AJAX request
+                $.ajax({
+                    url: '/placeOrder', // Replace with your server-side endpoint
+                    method: 'post',
+                    data: dataToSend,
+                    success: function (response) {
+                        // Handle the success response from the server
+                        console.log('Order placed successfully:', response);
+                        // You can redirect the user to a confirmation page or perform other actions
+
+                        // Navigate to the next page
+                        if (conditionsMet) {
+                            window.location.href = '/orderPlace';
+                        }
+                    },
+                    error: function (error) {
+                        // Handle errors, if any
+                        console.error('Error placing order:', error);
+                    }
+                });
+            }
         });
     });
-    </script>
-    <script>
-        document.getElementById('placeOrderBtn').addEventListener('click', function () {
-            // Set the desired URL in the href
-            window.location.href = '/orderPlace';  // Replace '/checkout' with the actual URL you want to navigate to
-        });
-    </script>
+</script>
+
+
+    
     
 
 <%- include('../layouts/user/footer.ejs') %>
