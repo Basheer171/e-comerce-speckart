@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const Product = require('../models/productModel')
 const category = require('../models/categoryModel')
 const addressModel = require('../models/addressModel')
+const Brand = require('../models/brandModel');
 
 const nodemailer = require("nodemailer");
 
@@ -624,12 +625,55 @@ const updateProfile = async(req,res)=>{
 
 const loadShop = async (req, res) => {
     try {
-      const products = await Product.find({});
-      res.render("shop", {
-        currentPage: "shop",
-        products: products,
-        user: req.session.user_id,
-      });
+
+      // Search
+      var search='';
+      if(req.query.search){
+          search=req.query.search;
+      }
+
+      // Pagination
+      var page=1;
+      if(req.query.page){
+          page =req.query.page;
+      }
+
+      const limit=8;
+
+      const user =  await User.findById(req.session.user_id);
+      const categoryData = await category.find({is_block:false});
+        const brandData = await Brand.find({is_block:false});
+      const products = await Product.find({
+            is_active:true,
+            $or:[
+                {name:{$regex:'.*'+search+'.*',$options:'i'}},
+                {category:{$regex:'.*'+search+'.*',$options:'i'}},
+                {brandName:{$regex:'.*'+search+'.*',$options:'i'}},
+            ]
+        })
+        .limit(limit*1)
+        .skip((page-1)*limit)
+        .exec();
+
+         // Count of pages
+         const count = await Product.find({
+          is_active:true,
+          $or:[
+              {name:{$regex:'.*'+search+'.*',$options:'i'}},
+              {category:{$regex:'.*'+search+'.*',$options:'i'}},
+              {brandName:{$regex:'.*'+search+'.*',$options:'i'}},
+          ]
+      }).countDocuments()
+
+      res.render('shop', {
+        user,
+        products,
+        categoryData,
+        brandData,
+        totalPages:Math.ceil(count/limit),  //Ex:- count of document/limit (9/6 = 1.5 => 2)
+        currentPage:page,   // page 1
+        title:'shop'});
+
     } catch (error) {
       console.log(error);
     }   

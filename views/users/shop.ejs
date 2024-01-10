@@ -87,7 +87,7 @@
             <div class="products mb-3">
               <div class="row justify-content-center">
                 <% for(i=0;i<products.length;i++) {%>
-                  <div class="col-6 col-md-4 col-lg-4 col-xl-3">
+                  <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item" data-brand="<%= products[i].brandName %>" data-category="<%= products[i].category %>">
                     <div class="product product-7 text-center">
                       <figure class="product-media">
                         <a href="/product?id=<%= products[i]._id%>">
@@ -136,24 +136,20 @@
 
 
 
-            <nav aria-label="Page navigation">
+            <div class="store-filter clearfix">
               <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                  <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-                    <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-                  </a>
-                </li>
-                <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item-total">of 6</li>
-                <li class="page-item">
-                  <a class="page-link page-link-next" href="#" aria-label="Next">
-                    Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-                  </a>
-                </li>
+            
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <% if (currentPage == i) { %>
+                    <li class="page-item active"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                  <% } else { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                  <% } %>
+                <% }; %>
+            
               </ul>
-            </nav>
+            </div>
+            
           </div><!-- End .col-lg-9 -->
           <aside class="col-lg-3 order-lg-first">
             <div class="sidebar sidebar-shop">
@@ -173,37 +169,18 @@
                 <div class="collapse show" id="widget-1">
                   <div class="widget-body">
                     <div class="filter-items filter-items-count">
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cat-1">
-                          <label class="custom-control-label" for="cat-1">Dresses</label>
-                        </div><!-- End .custom-checkbox -->
-                        <span class="item-count">3</span>
-                      </div><!-- End .filter-item -->
-
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cat-2">
-                          <label class="custom-control-label" for="cat-2">T-shirts</label>
-                        </div><!-- End .custom-checkbox -->
-                        <span class="item-count">0</span>
-                      </div><!-- End .filter-item -->
-
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cat-3">
-                          <label class="custom-control-label" for="cat-3">Bags</label>
-                        </div><!-- End .custom-checkbox -->
-                        <span class="item-count">4</span>
-                      </div><!-- End .filter-item -->
-
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cat-4">
-                          <label class="custom-control-label" for="cat-4">Jackets</label>
-                        </div><!-- End .custom-checkbox -->
-                        <span class="item-count">2</span>
-                      </div><!-- End .filter-item -->
+                      <% categoryData.forEach((category, index) =>{%>
+                        <div class="checkbox-filter">
+                            <div class="input-checkbox">
+                                <input type="checkbox" id="category-<%=index+1%>">
+                                <label for="category-<%=index+1%>">
+                                    <span></span>
+                                    <%=category.categoryName%>
+                                    <!-- <small>(120)</small> -->
+                                </label>    
+                            </div>
+                        </div>
+                        <% }); %>
 
                       
                     </div><!-- End .filter-items -->
@@ -226,33 +203,20 @@
                 <div class="collapse show" id="widget-4">
                   <div class="widget-body">
                     <div class="filter-items">
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="brand-1">
-                          <label class="custom-control-label" for="brand-1">Next</label>
-                        </div><!-- End .custom-checkbox -->
-                      </div><!-- End .filter-item -->
 
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="brand-2">
-                          <label class="custom-control-label" for="brand-2">River Island</label>
-                        </div><!-- End .custom-checkbox -->
-                      </div><!-- End .filter-item -->
-
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="brand-3">
-                          <label class="custom-control-label" for="brand-3">Geox</label>
-                        </div><!-- End .custom-checkbox -->
-                      </div><!-- End .filter-item -->
-
-                      <div class="filter-item">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="brand-4">
-                          <label class="custom-control-label" for="brand-4">New Balance</label>
-                        </div><!-- End .custom-checkbox -->
-                      </div><!-- End .filter-item -->
+                      <% brandData.forEach((brand, index)=>{%>
+                        <div class="checkbox-filter">
+                            <div class="input-checkbox">
+                                <input type="checkbox" id="brand-<%=index+1%>" class="brand-checkbox">
+                                <label for="brand-<%=index+1%>">
+                                    <span></span>
+                                    <%=brand.brandName%>
+                                    <!-- <small>(578)</small> -->
+                                </label>
+                            </div>
+                        </div>
+                        <% }); %>
+                      
                     </div><!-- End .filter-items -->
                   </div><!-- End .widget-body -->
                 </div><!-- End .collapse -->
@@ -275,7 +239,63 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
+
+
   <script>
+    $(document).ready(function () {
+        // Store the initial state of products
+        const initialProducts = $('.product-item');
+    
+        // Attach a click event handler to brand checkboxes
+        $('.brand-checkbox').on('change', function () {
+            updateProductDisplay();
+        });
+    
+        // Attach a click event handler to category checkboxes
+        $('[id^="category-"]').on('change', function () {
+            updateProductDisplay();
+        });
+    
+        // Function to update the product display based on selected filters
+        function updateProductDisplay() {
+            // Get the selected brands
+            const selectedBrands = $('.brand-checkbox:checked').map(function () {
+                return $(this).siblings('label').text().trim();
+            }).get();
+    
+            // Get the selected categories
+            const selectedCategories = $('[id^="category-"]:checked').map(function () {
+                return $(this).siblings('label').text().trim();
+            }).get();
+    
+            // Filter products based on selected brands and categories
+            if (selectedBrands.length > 0 || selectedCategories.length > 0) {
+                initialProducts.hide();
+    
+                initialProducts.each(function () {
+                    const productBrand = $(this).data('brand');
+                    const productCategory = $(this).data('category');
+    
+                    if (
+                        (selectedBrands.length === 0 || selectedBrands.includes(productBrand)) &&
+                        (selectedCategories.length === 0 || selectedCategories.includes(productCategory))
+                    ) {
+                        $(this).show();
+                    }
+                });
+            } else {
+                // If no filters selected, show all products
+                initialProducts.show();
+            }
+        }
+    });
+    </script>
+    
+
+
+
+  <script>
+
       function addToCart(id) {
           // Check if the button has the 'disabled' class
           if ($(`#addToCartBtn_${id}`).hasClass('disabled')) {

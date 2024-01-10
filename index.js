@@ -6,6 +6,11 @@ const express = require("express");
 const app = express();
 
 
+
+const userRoute = require('./routes/userRoute');
+
+const adminRoute = require('./routes/adminRoute');
+
 app.use("/public",express.static(path.join(__dirname, "public")))
 
 // app.use(nocache());
@@ -19,14 +24,13 @@ const disableBackButton = (req, res, next) => {
 
   
 
- 
+  app.use('/admin',disableBackButton, nocache(), adminRoute);  
 //for user routes 
-const userRoute = require('./routes/userRoute');
 app.use('/',disableBackButton,userRoute);
 
 //for admin routes
-const adminRoute = require('./routes/adminRoute');
-app.use('/admin',disableBackButton, nocache(), adminRoute);  
+
+
 
 
 const port=3000
