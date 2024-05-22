@@ -267,11 +267,10 @@ res.render('orderDetails',{user:userData, orders:orderData})
 
 //======================= cancelorder =======================
 const cancelOrder = async (req, res) => {
-  try {   
+  try {
       const { uniqueId, productId } = req.body;
 
       const orderData = await orderDb.findOne({ _id: uniqueId });
-      // console.log("orderData/////////",orderData);
 
       if (!orderData) {
           return res.status(404).json({ message: "Order not found" });
@@ -280,14 +279,18 @@ const cancelOrder = async (req, res) => {
       const productInfo = orderData.products.find(
           (product) => product.productId.toString() === productId
       );
-console.log("productInfo///////////",productInfo);
+
       if (!productInfo) {
           return res.status(404).json({ message: "Product not found in the order" });
       }
 
+      // Check if the order status is "Delivered"
+      if (productInfo.orderStatus === 'Delivered') {
+          return res.status(400).json({ message: "Cannot cancel a delivered order" });
+      }
+
       productInfo.orderStatus = "Cancelled";
       await orderData.save();
-
 
       const quantityToIncrease = productInfo.quantity;
       const product = await productDb.findById(productId);
@@ -299,7 +302,7 @@ console.log("productInfo///////////",productInfo);
       product.qty += quantityToIncrease;
       await product.save();
 
-      res.json({ Cancelled: true });
+      res.json({ cancel: 1 });
   } catch (error) {
       console.log(error);
       res.status(500).send('Internal Server Error');

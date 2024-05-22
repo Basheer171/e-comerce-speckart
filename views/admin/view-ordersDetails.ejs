@@ -287,18 +287,18 @@
                 </div>
                 <div class="position-relative mt-2 mx-3">
                   <form action="/admin/view-ordersDetails/changeStatus" method="post">
-                    <select name="status" class="mb-3 mx-4" style="width: 10rem; color: black;" required>
-                      <option value="" disabled selected>Select Status</option>
-                      <option value="Shipped" style="color: #131212;">Shipped</option>
-                      <option value="OutforDelivery">Out for Delivery</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                    <input type="text" name="orderId" value="<%=orderId%>" hidden>
-                    <input type="text" name="productId" value="<%=productId%>" hidden>
-
-                    <button type="submit" class="btn btn-primary mx-1" style="width: 12rem;">Update Now</button>
+                      <select name="status" class="mb-3 mx-4" style="width: 10rem; color: black;" required>
+                          <option value="" disabled selected>Select Status</option>
+                          <option value="Shipped" style="color: #131212;">Shipped</option>
+                          <option value="OutforDelivery">Out for Delivery</option>
+                          <option value="Delivered">Delivered</option>
+                      </select>
+                      <input type="text" name="orderId" value="<%= orderId %>" hidden>
+                      <input type="text" name="productId" value="<%= productId %>" hidden>
+              
+                      <button type="submit" class="btn btn-primary mx-1" style="width: 12rem;">Update Now</button>
                   </form>
-                </div>
+              </div>
               </div>
             </div>
           </div>

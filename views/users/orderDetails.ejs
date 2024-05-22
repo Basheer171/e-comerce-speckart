@@ -147,19 +147,19 @@ rel="stylesheet"
 
 
                         </td>
-
-
-
                         <td class="text-end font-weight-bold" style="text-align: end;">₹ <%=products.quantity * products.productId.price%>
                         </td>
                         <td class="text-end font-weight-bold" style="text-align: end;">
-                          <% if (products.orderStatus !== 'Cancelled') { %>
-                            <button id="cancelButton_<%= products.productId._id %>" class="btn-danger"
-                              onclick="cancelOrder('<%= orders._id %>', '<%= products.productId._id %>', 'cancelButton_<%= products.productId._id %>')">Cancel</button>
+                          <% if (products.orderStatus !== 'Cancelled' && products.orderStatus !== 'Delivered') { %>
+                              <button id="cancelButton_<%= products.productId._id %>" class="btn-danger"
+                                      onclick="cancelOrder('<%= orders._id %>', '<%= products.productId._id %>', 'cancelButton_<%= products.productId._id %>')">Cancel</button>
+                          <% } else if (products.orderStatus === 'Delivered') { %>
+                              <button class="btn-success" disabled>Delivered</button>
                           <% } else { %>
-                            <button class="btn-danger" disabled>Cancelled</button>
+                              <button class="btn-danger" disabled>Cancelled</button>
                           <% } %>
-                        </td>
+                      </td>
+                      
                            
                       </tr>
                     </tbody>
@@ -252,42 +252,44 @@ rel="stylesheet"
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-<script>
-  function cancelOrder(uniqueId, productId, buttonId) {
-
-    console.log('buttonId',buttonId);
-    // Display confirmation dialog using SweetAlert
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You want to cancel this order?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, cancel it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // User clicked the confirm button, proceed with the cancellation
-        $.ajax({
-          url: '/cancelOrder',
-          method: 'post',
-          data: { uniqueId, productId },
-          success: function (response) {
-            console.log(response);
-            if (response.cancel == 1) {
-              location.reload();
+  <script>
+    function cancelOrder(uniqueId, productId, buttonId) {
+      console.log('buttonId', buttonId);
+      // Display confirmation dialog using SweetAlert
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You want to cancel this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // User clicked the confirm button, proceed with the cancellation
+          $.ajax({
+            url: '/cancelOrder',
+            method: 'post',
+            data: { uniqueId, productId },
+            success: function (response) {
+              console.log(response);
+              if (response.cancel == 1) {
+                location.reload(); // Reload the page to reflect the change
+              } else {
+                Swal.fire('Error', 'Order could not be cancelled. It may have been delivered already.', 'error');
+              }
+            },
+            error: function (error) {
+              console.error("Error:", error);
             }
-          },
-          error: function (error) {
-            console.error("Error:", error);
-          }
-        });
-        // Disable the button after cancellation
-        document.getElementById(buttonId).disabled = true;
-      }
-    });
-  }
-</script>
+          });
+          // Disable the button after cancellation
+          document.getElementById(buttonId).disabled = true;
+        }
+      });
+    }
+  </script>
+  
 
 
 
