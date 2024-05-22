@@ -266,49 +266,45 @@ res.render('orderDetails',{user:userData, orders:orderData})
 }
 
 //======================= cancelorder =======================
-
 const cancelOrder = async (req, res) => {
   try {   
-    const orderId = req.body.uniqueId; // Corrected variable name to orderId
-    const productId = req.body.productId;
-    // console.log('productId', productId);
-    // console.log('orderId', orderId);
+      const { uniqueId, productId } = req.body;
 
-    const orderData = await orderDb.findOne({ _id: orderId });
+      const orderData = await orderDb.findOne({ _id: uniqueId });
+      // console.log("orderData/////////",orderData);
 
-    if (!orderData) {
-      console.log('Order not found');
-      return res.status(404).json({ message: "Order not found" });
-    }
+      if (!orderData) {
+          return res.status(404).json({ message: "Order not found" });
+      }
 
-    const productInfo = orderData.products.find(
-      (product) => product.productId.toString() === productId
-    );
+      const productInfo = orderData.products.find(
+          (product) => product.productId.toString() === productId
+      );
+console.log("productInfo///////////",productInfo);
+      if (!productInfo) {
+          return res.status(404).json({ message: "Product not found in the order" });
+      }
 
-    if (!productInfo) {
-      return res.status(404).json({ message: "Product not found in the order" });
-    }
-    // console.log(productInfo);
-    productInfo.orderStatus = "canceled";
-    await orderData.save();
+      productInfo.orderStatus = "Cancelled";
+      await orderData.save();
 
-    const quantityToIncrease = productInfo.quantity;
-    // console.log('quantityToIncrease',quantityToIncrease);
-    const product = await productDb.findById(productId);
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found in the database" });
-    }
+      const quantityToIncrease = productInfo.quantity;
+      const product = await productDb.findById(productId);
 
-    product.qty += quantityToIncrease;
+      if (!product) {
+          return res.status(404).json({ message: "Product not found in the database" });
+      }
 
-    await product.save();
+      product.qty += quantityToIncrease;
+      await product.save();
 
+      res.json({ Cancelled: true });
   } catch (error) {
-    console.log(error);
+      console.log(error);
+      res.status(500).send('Internal Server Error');
   }
-}
-
+};
 
 
 

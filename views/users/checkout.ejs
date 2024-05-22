@@ -1,366 +1,434 @@
 <%- include('../layouts/user/header.ejs') %>
 
-<main class="main">
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        <div class="container">
-            <h1 class="page-title">Checkout<span>Shop</span></h1>
-        </div><!-- End .container -->
-    </div><!-- End .page-header -->
-    <nav aria-label="breadcrumb" class="breadcrumb-nav">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-            </ol>
-        </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
-
-    <div class="page-content">
-        <div class="checkout">
+    <main class="main">
+        <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
             <div class="container">
-                <div class="checkout-discount">
-                    <form action="#">
-                        <input type="text" class="form-control" required id="checkout-discount-input">
-                        <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-                    </form>
-                </div><!-- End .checkout-discount -->
+                <h1 class="page-title">Checkout<span>Shop</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
 
-                <div class="row">
-                    <div class="col-lg-9">
-                        <h2 class="checkout-title">Billing Details</h2>
+        <div class="page-content">
+            <div class="checkout">
+                <div class="container">
+                    <div class="checkout-discount">
+                        <form action="#">
+                            <input type="text" class="form-control" required id="checkout-discount-input">
+                            <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here
+                                    to enter your code</span></label>
+                        </form>
+                    </div><!-- End .checkout-discount -->
 
-                        <div class="row">
-                            <% if (address && address.address.length > 0) { %>
-                                <% address.address.forEach((addressItem, index) => { %>
-                                    <div class="col-md-6 col-12 mb-3 mt-3">
-                                        <div class="card p-4" style="background: #F3F3F9; border-radius: 10px;">
-                                            <!-- Display a checkbox for each address -->
-                                            <input type="checkbox" class="address-checkbox" id="address" value="<%= addressItem.fullName %>, <%= addressItem.city %>,<%= addressItem.state %>,<%= addressItem.country %>,<%= addressItem.pincode %>,<%= addressItem.mobile %>">    
-                                            <div class="card-body"> 
-                                                <!-- Display address details -->
-                                                <h6 class="card-title" style="font-size: 15px;"><%= addressItem.fullName %></h6>
-                                                <p class="card-text mt-3">Number: <%= addressItem.mobile %></p>
-                                                <p class="card-text">Location: <%= addressItem.state %>, <%= addressItem.district %>, <%= addressItem.city %></p>
-                                                <p class="card-text">Pincode: <%= addressItem.pincode %></p>
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <h2 class="checkout-title">Billing Details</h2>
 
-                                                <hr class="my-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <!-- Edit and Remove buttons for each address -->
-                                                    <a href="/editCheckout?id=<%= addressItem._id %>">
-                                                        <button class="btn btn-outline-primary-2" type="button" id="editBTN" data-bs-toggle="modal" data-bs-target="">
-                                                            Edit
-                                                        </button>
-                                                    </a>
-                                                    <a onclick="removeAddress('<%= addressItem._id %>')">
-                                                        <button class="btn btn-outline-primary-2" type="button" data-bs-toggle="modal" data-bs-target="">
-                                                            Remove
-                                                        </button>
-                                                    </a>
+                            <div class="row">
+                                <% if (address && address.address.length> 0) { %>
+                                    <% address.address.forEach((addressItem, index)=> { %>
+                                        <div class="col-md-6 col-12 mb-3 mt-3">
+                                            <div class="card p-4" style="background: #F3F3F9; border-radius: 10px;">
+                                                <!-- Display a checkbox for each address -->
+                                                <input type="checkbox" class="address-checkbox" id="address"
+                                                    value="<%= addressItem.fullName %>, <%= addressItem.city %>,<%= addressItem.state %>,<%= addressItem.country %>,<%= addressItem.pincode %>,<%= addressItem.mobile %>">
+                                                <div class="card-body">
+                                                    <!-- Display address details -->
+                                                    <h6 class="card-title" style="font-size: 15px;">
+                                                        <%= addressItem.fullName %>
+                                                    </h6>
+                                                    <p class="card-text mt-3">Number: <%= addressItem.mobile %>
+                                                    </p>
+                                                    <p class="card-text">Location: <%= addressItem.state %>, <%=
+                                                                addressItem.district %>, <%= addressItem.city %>
+                                                    </p>
+                                                    <p class="card-text">Pincode: <%= addressItem.pincode %>
+                                                    </p>
+
+                                                    <hr class="my-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <!-- Edit and Remove buttons for each address -->
+                                                        <a href="/editCheckout?id=<%= addressItem._id %>">
+                                                            <button class="btn btn-outline-primary-2" type="button"
+                                                                id="editBTN" data-bs-toggle="modal" data-bs-target="">
+                                                                Edit
+                                                            </button>
+                                                        </a>
+                                                        <a onclick="removeAddress('<%= addressItem._id %>')">
+                                                            <button class="btn btn-outline-primary-2" type="button"
+                                                                data-bs-toggle="modal" data-bs-target="">
+                                                                Remove
+                                                            </button>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <% }) %>
-                            <% } else { %>
-                                <!-- Display a message if there are no addresses -->
-                                <p>No addresses available.</p>
-                            <% } %>
-                        </div>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <!-- Display a message if there are no addresses -->
+                                                <p>No addresses available.</p>
+                                                <% } %>
+                            </div>
 
-                        <!-- Checkbox to show/hide the shipping address form -->
-                        <input type="radio" id="showAddressForm" name="addressOption" data-toggle="collapse" data-target="#addressForm">
-                        <label for="showAddressForm">Use a different shipping address</label>
+                            <!-- Checkbox to show/hide the shipping address form -->
+                            <input type="radio" id="showAddressForm" name="addressOption" data-toggle="collapse"
+                                data-target="#addressForm">
+                            <label for="showAddressForm">Use a different shipping address</label>
 
-                        <!-- Shipping address form (hidden by default) -->
-                        <form action="/shipAddAddress" method="post" onsubmit="return validAddress()" class="collapse" id="addressForm">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-9 m-t-90">
-                                        <h2 class="checkout-title mb-3">Shipping Address</h2>
-                                        <div class="form-group">
-                                            <label for="fullName">Full Name</label>
-                                            <input type="text" class="form-control" id="fullName" name="fullName">
-                                            <p id="name-error" style="color: red;"></p>
-                                        </div>
+                            <!-- Shipping address form (hidden by default) -->
+                            <form action="/shipAddAddress" method="post" onsubmit="return validAddress()"
+                                class="collapse" id="addressForm">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-9 m-t-90">
+                                            <h2 class="checkout-title mb-3">Shipping Address</h2>
+                                            <div class="form-group">
+                                                <label for="fullName">Full Name</label>
+                                                <input type="text" class="form-control" id="fullName" name="fullName">
+                                                <p id="name-error" style="color: red;"></p>
+                                            </div>
 
-                                        <div class="form-group">
-                                            <label for="phone">Mobile Number</label>
-                                            <input type="tel" class="form-control" id="phone" name="mobile">
-                                            <p id="mobile-error" style="color: red;"></p>
-                                        </div>
+                                            <div class="form-group">
+                                                <label for="phone">Mobile Number</label>
+                                                <input type="tel" class="form-control" id="phone" name="mobile">
+                                                <p id="mobile-error" style="color: red;"></p>
+                                            </div>
 
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label for="state-county">State</label>
-                                                    <select class="form-control" id="state" name="state">
-                                                        <option value="">Select State</option>
-                                                    </select>
-                                                    <p id="state-error" style="color: red;"></p>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="state-county">State</label>
+                                                        <select class="form-control" id="state" name="state">
+                                                            <option value="">Select State</option>
+                                                        </select>
+                                                        <p id="state-error" style="color: red;"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="country">District</label>
+                                                        <input type="text" class="form-control" id="district"
+                                                            name="district">
+                                                        <p id="district-error" style="color: red;"></p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label for="country">District</label>
-                                                    <input type="text" class="form-control" id="district" name="district">
-                                                    <p id="district-error" style="color: red;"></p>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label for="town-city">City</label>
-                                                    <input type="text" class="form-control" id="city" name="city">
-                                                    <p id="city-error" style="color: red;"></p>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="town-city">City</label>
+                                                        <input type="text" class="form-control" id="city" name="city">
+                                                        <p id="city-error" style="color: red;"></p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="form-group">
-                                                    <label for="postcode">Pincode</label>
-                                                    <input type="text" class="form-control" id="pinCode" name="pincode">
-                                                    <p id="pincode-error" style="color: red;"></p>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="postcode">Pincode</label>
+                                                        <input type="text" class="form-control" id="pinCode"
+                                                            name="pincode">
+                                                        <p id="pincode-error" style="color: red;"></p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-12 text-center mb-3">
-                                                <button type="submit" class="btn btn-outline-primary-2">Submit</button>
+                                                <div class="col-12 text-center mb-3">
+                                                    <button type="submit"
+                                                        class="btn btn-outline-primary-2">Submit</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+
+                            <!-- ... (other existing code) ... -->
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
+                                <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
+                            </div><!-- End .custom-checkbox -->
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="checkout-diff-address">
+                                <label class="custom-control-label" for="checkout-diff-address">Ship to a different
+                                    address?</label>
+                            </div><!-- End .custom-checkbox -->
+
+                            <label>Order notes (optional)</label>
+                            <textarea class="form-control" cols="30" rows="4"
+                                placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
+                        </div><!-- End .col-lg-9 -->
 
                         <!-- ... (other existing code) ... -->
 
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkout-create-acc">
-                            <label class="custom-control-label" for="checkout-create-acc">Create an account?</label>
-                        </div><!-- End .custom-checkbox -->
+                        <aside class="col-lg-3">
+                            <div class="summary">
+                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkout-diff-address">
-                            <label class="custom-control-label" for="checkout-diff-address">Ship to a different address?</label>
-                        </div><!-- End .custom-checkbox -->
-
-                        <label>Order notes (optional)</label>
-                        <textarea class="form-control" cols="30" rows="4" placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
-                    </div><!-- End .col-lg-9 -->
-
-                    <!-- ... (other existing code) ... -->
-
-                    <aside class="col-lg-3">
-                        <div class="summary">
-                            <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
-
-                            <table class="table table-summary">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-
-                                 <tbody>
-                                    <% if (cart && cart.products && cart.products.length > 0) { %>
-                                        <% cart.products.forEach((data) => { %>
-                                            <tr>
-                                                <td><a href="/product?id=<%= data.productId._id %>">
-                                                    <%= data.productId.name %>
-                                                </a></td>
-                                                <td><%= data.totalPrice %></td>
-                                            </tr>
-                                        <% }) %>
-
+                                <table class="table table-summary">
+                                    <thead>
                                         <tr>
-                                            <td>Shipping:</td>
-                                            <td>Free shipping</td>
+                                            <th>Product</th>
+                                            <th>Total</th>
                                         </tr>
-                                
-                                        <tr class="summary-subtotal">
-                                            <td>Subtotal:</td>
-                                            <td><%= Total %></td>
-                                        </tr><!-- End .summary-subtotal -->
-                        
-                                        <tr class="summary-total">
-                                            <td>Total:</td>
-                                            <td><%= Total %></td>
-                                        </tr><!-- End .summary-total -->
-                                    <% } %>
-                                </tbody>
-                            </table><!-- End .table table-summary -->
+                                    </thead>
 
-                            <div id="paymentAccordion">
-                                <!-- Online Payment -->
-                                <!-- <div>
-                                    <input type="radio" name="paymentMethod" value="online" id="onlinePayment">
-                                    <label for="onlinePayment" data-toggle="collapse" data-target="#onlinePaymentCollapse" aria-expanded="true" aria-controls="onlinePaymentCollapse">
-                                        Online Payment
-                                    </label>
-                                </div> -->  
-                                <div id="onlinePaymentCollapse" class="collapse" aria-labelledby="onlinePayment" data-parent="#paymentAccordion"></div>
-                            
-                                <!-- Cash on delivery -->
-                                <div>
-                                    <input type="radio" name="paymentMethod" value="COD" id="cashOnDelivery">
-                                    <label for="cashOnDelivery" data-toggle="collapse" data-target="#cashOnDeliveryCollapse" aria-expanded="false" aria-controls="cashOnDeliveryCollapse">
-                                        Cash on Delivery
-                                    </label>
+                                    <tbody>
+                                        <% if (cart && cart.products && cart.products.length> 0) { %>
+                                            <% cart.products.forEach((data)=> { %>
+                                                <tr>
+                                                    <td><a href="/product?id=<%= data.productId._id %>">
+                                                            <%= data.productId.name %>
+                                                        </a></td>
+                                                    <td>
+                                                        <%= data.totalPrice %>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                                 <!-- coupon details-->
+                    <div class="coupon-details">
+                        <div class="section-title mb-0">
+                            <h6 class="title">Have a coupon?</h6>
+                        </div>
+                        <div class="input-checkbox">
+                            <input type="checkbox" id="coupon-details" onchange="toggleCouponInput()">
+                            <label for="coupon-details">
+                                <span></span>
+                                Click here.
+                            </label>
+                            <div class="caption" id="couponInputContainer" style="display: none;">
+                                <div class="form-group">
+                                    <input class="input" type="text" id="code" name="code" placeholder="Apply your coupon code">
                                 </div>
-                                <div id="cashOnDeliveryCollapse" class="collapse" aria-labelledby="cashOnDelivery" data-parent="#paymentAccordion"></div>
-                            
-                                <!-- Wallet -->
-                                <!-- <div>
+                                <button id="apply" type="button" class="btn btn-primary" onclick="applyCoupon($('#code').val())">Apply</button>
+                                <button id="unApply" type="button" class="btn btn-danger" onclick="unApplyCoupon($('#code').val())" style="display: none;">Unapply</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end coupon details-->
+
+                                                    <tr>
+                                                        <td>Shipping:</td>
+                                                        <td>Free shipping</td>
+                                                    </tr>
+
+                                                    <tr class="summary-subtotal">
+                                                        <td>Subtotal:</td>
+                                                        <td>
+                                                            <%= Total %>
+                                                        </td>
+                                                    </tr><!-- End .summary-subtotal -->
+
+                                                    <tr class="summary-total">
+                                                        <td>Total:</td>
+                                                        <td>
+                                                            <%= Total %>
+                                                        </td>
+                                                    </tr><!-- End .summary-total -->
+                                                    <!-- coupon discount -->
+                    <div class="order-col">
+                        <div>Coupon Discount</div>
+                        <div class="text-danger">₹<span id="couponDiscount">0</span></div>
+                    </div>
+                                                    <% } %>
+                                    </tbody>
+                                </table><!-- End .table table-summary -->
+
+                                <div id="paymentAccordion">
+                                    <!-- Online Payment -->
+                                    <div class="input-radio">
+
+                                        <input type="radio" name="paymentMethod" value="online" id="onlinePayment">
+                                        <label for="onlinePayment" data-toggle="collapse" data-target="#onlinePaymentCollapse" aria-expanded="true" aria-controls="onlinePaymentCollapse">
+                                            Online Payment
+                                        </label>
+                                        <div class="caption">
+                                            <ul style="display: flex; justify-content: space-evenly;">
+                                                <li><img src="/public/userImages/gpay.png" alt="" style="width: 30px; height: auto;"></li>
+                                                <li><img src="/public/userImages/phonepay.png" alt="" style="width: 30px; height: auto;"></li>
+                                                <li><img src="/public/userImages/paytm.png" alt="" style="width: 30px; height: auto;"></li>
+                                                <li><img src="/public/userImages/mastercard-logo.png" alt="" style="width: 30px; height: auto;"></li>
+                                                <li><img src="/public/userImages/visa.png" alt="" style="width: 30px; height: auto;"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div id="onlinePaymentCollapse" class="collapse" aria-labelledby="onlinePayment"
+                                        data-parent="#paymentAccordion"></div>
+
+                                    <!-- Cash on delivery -->
+                                    <div>
+                                        <input type="radio" name="paymentMethod" value="COD" id="cashOnDelivery">
+                                        <label for="cashOnDelivery" data-toggle="collapse"
+                                            data-target="#cashOnDeliveryCollapse" aria-expanded="false"
+                                            aria-controls="cashOnDeliveryCollapse">
+                                            Cash on Delivery
+                                        </label>
+                                    </div>
+                                    <div id="cashOnDeliveryCollapse" class="collapse" aria-labelledby="cashOnDelivery"
+                                        data-parent="#paymentAccordion"></div>
+
+                                    <!-- Wallet -->
+                                    <div>
                                     <input type="radio" name="paymentMethod" value="wallet" id="walletPayment">
                                     <label for="walletPayment" data-toggle="collapse" data-target="#walletPaymentCollapse" aria-expanded="false" aria-controls="walletPaymentCollapse">
                                         Wallet
-                                    </label>
-                                </div> -->
-                                <div id="walletPaymentCollapse" class="collapse" aria-labelledby="walletPayment" data-parent="#paymentAccordion"></div>
-                            </div>
-                            
-
-                            <!-- Place Order button -->
-<button type="button" class="btn btn-outline-primary-2 btn-order btn-block" id="placeOrderBtn" >
-    <span class="btn-text">Place Order</span>
-    <span class="btn-hover-text">Proceed to Checkout</span>
-</button>
-
-                        </div><!-- End .summary -->
-                    </aside><!-- End .col-lg-3 -->
-                </div><!-- End .row -->
-            </div><!-- End .container -->
-        </div><!-- End .checkout -->
-    </div><!-- End .page-content -->
-</main><!-- End .main -->
-
-<script src="/public/assets/js/validationaddress.js"></script>
+                                      </label>
+                                </div>
+                                    <div id="walletPaymentCollapse" class="collapse" aria-labelledby="walletPayment"
+                                        data-parent="#paymentAccordion"></div>
+                                </div>
 
 
-<!-- Include jQuery (you can download it or use a CDN) -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                                <!-- Place Order button -->
+                                <button type="button" class="btn btn-outline-primary-2 btn-order btn-block"
+                                    id="placeOrderBtn">
+                                    <span class="btn-text">Place Order</span>
+                                    <span class="btn-hover-text">Proceed to Checkout</span>
+                                </button>
+
+                            </div><!-- End .summary -->
+                        </aside><!-- End .col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .checkout -->
+        </div><!-- End .page-content -->
+        <!--------------------------- Modal avialabel coupon ------------------------------------>
+    </main><!-- End .main -->
+
+   
+    <script src="/public/assets/js/validationaddress.js"></script>
 
 
-<!-- Include Bootstrap (you can download it or use a CDN) -->
-<!-- Make sure to include Popper.js and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Include jQuery (you can download it or use a CDN) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-<script>
 
-function removeAddress(id) {
-    // Display confirmation dialog
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, remove it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // User clicked the confirm button, proceed with the removal
-            $.ajax({
-                url: '/deleteAddress',
-                method: 'delete',
-                data: { id },
-                success: (response) => {
-                    if (response.remove == 1) {
-                        // Display success message
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Address removed!',   
-                            icon: 'success',
-                            timer: 2000,
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    }
-                },
+    <!-- Include Bootstrap (you can download it or use a CDN) -->
+    <!-- Make sure to include Popper.js and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+
+        function removeAddress(id) {
+            // Display confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // User clicked the confirm button, proceed with the removal
+                    $.ajax({
+                        url: '/deleteAddress',
+                        method: 'delete',
+                        data: { id },
+                        success: (response) => {
+                            if (response.remove == 1) {
+                                // Display success message
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Address removed!',
+                                    icon: 'success',
+                                    timer: 2000,
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            }
+                        },
+                    });
+                }
             });
         }
-    });
-}
 
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-  
-    
-<script>
-    $(document).ready(function () {
-        // Flag to track whether conditions are met
-        var conditionsMet = false;
 
-        // Event listener for Place Order button
-        $('#placeOrderBtn').on('click', function (event) {
-            // Prevent the default behavior of the button (e.g., form submission or page navigation)
-            event.preventDefault();
 
-            // Get the selected address ID
-            var selectedAddress = $('.address-checkbox:checked').val();
+    <script>
+        $(document).ready(function () {
+            // Flag to track whether conditions are met
+            var conditionsMet = false;
 
-            // Get the selected payment method
-            var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+            // Event listener for Place Order button
+            $('#placeOrderBtn').on('click', function (event) {
+                // Prevent the default behavior of the button (e.g., form submission or page navigation)
+                event.preventDefault();
 
-            // Get the total amount
-            var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
+                // Get the selected address ID
+                var selectedAddress = $('.address-checkbox:checked').val();
 
-            // Validate both address and payment method
-            if (!selectedAddress) {
-                alert('Please select an address and choose payment method');
-                conditionsMet = false;
-            } else if (!selectedPaymentMethod) {
-                alert('Please select a payment method.');
-                conditionsMet = false;
-            } else {
-                // Conditions are met, set the flag to true
-                conditionsMet = true;
+                // Get the selected payment method
+                var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
 
-                // Log the values to check
-                console.log('Selected Address:', selectedAddress);
-                console.log('Selected Payment Method:', selectedPaymentMethod);
-                console.log('Total Amount:', totalAmount);
+                // Get the total amount
+                var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
 
-                // Prepare the data to be sent
-                var dataToSend = {
-                    address: selectedAddress,
-                    paymentMethod: selectedPaymentMethod,
-                    totalAmount: totalAmount
-                };
+                // Validate both address and payment method
+                if (!selectedAddress) {
+                    alert('Please select an address and choose payment method');
+                    conditionsMet = false;
+                } else if (!selectedPaymentMethod) {
+                    alert('Please select a payment method.');
+                    conditionsMet = false;
+                } else {
+                    // Conditions are met, set the flag to true
+                    conditionsMet = true;
 
-                // Send the AJAX request
-                $.ajax({
-                    url: '/placeOrder', // Replace with your server-side endpoint
-                    method: 'post',
-                    data: dataToSend,
-                    success: function (response) {
-                        // Handle the success response from the server
-                        console.log('Order placed successfully:', response);
-                        // You can redirect the user to a confirmation page or perform other actions
+                    // Log the values to check
+                    console.log('Selected Address:', selectedAddress);
+                    console.log('Selected Payment Method:', selectedPaymentMethod);
+                    console.log('Total Amount:', totalAmount);
 
-                        // Navigate to the next page
-                        if (conditionsMet) {
-                            window.location.href = '/orderPlace';
+                    // Prepare the data to be sent
+                    var dataToSend = {
+                        address: selectedAddress,
+                        paymentMethod: selectedPaymentMethod,
+                        totalAmount: totalAmount
+                    };
+
+                    // Send the AJAX request
+                    $.ajax({
+                        url: '/placeOrder', // Replace with your server-side endpoint
+                        method: 'post',
+                        data: dataToSend,
+                        success: function (response) {
+                            // Handle the success response from the server
+                            console.log('Order placed successfully:', response);
+                            // You can redirect the user to a confirmation page or perform other actions
+
+                            // Navigate to the next page
+                            if (conditionsMet) {
+                                window.location.href = '/orderPlace';
+                            }
+                        },
+                        error: function (error) {
+                            // Handle errors, if any
+                            console.error('Error placing order:', error);
                         }
-                    },
-                    error: function (error) {
-                        // Handle errors, if any
-                        console.error('Error placing order:', error);
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 
-    
-    
 
-<%- include('../layouts/user/footer.ejs') %>
+
+
+    <%- include('../layouts/user/footer.ejs') %>

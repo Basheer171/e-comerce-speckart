@@ -51,6 +51,7 @@ const categoryController = require("../controllers/categoryController");
 const brandController = require("../controllers/brandController");
 const productController = require("../controllers/productController");
 const orderController = require ("../controllers/orderController");
+const couponController = require("../controllers/couponController");
 
 
 
@@ -109,7 +110,12 @@ admin_route.get('/view-orders', admiauth.isLogin, adminController.loadViewOrders
 admin_route.get('/view-ordersDetails', admiauth.isLogin, adminController.viewOrderDetails);
 admin_route.post('/view-ordersDetails/changeStatus',adminController.changeOrderStatus)
 
-
+admin_route.get('/view-coupon', admiauth.isLogin, couponController.loadViewCoupon);
+admin_route.get('/add-coupon', admiauth.isLogin, couponController.loadAddCoupon);
+admin_route.post('/add-coupon', couponController.AddCoupon);
+admin_route.get('/edit-coupon', admiauth.isLogin, couponController.loadEditCoupon);
+admin_route.post('/edit-coupon', couponController.editCoupon);
+admin_route.get('/delete-coupon', admiauth.isLogin, couponController.deletecoupon);
 
 
 

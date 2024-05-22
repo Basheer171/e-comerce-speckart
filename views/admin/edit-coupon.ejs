@@ -1,8 +1,32 @@
+
 <%- include('../layouts/admin/header.ejs') %>
 
-  <body class="g-sidenav-show  bg-gray-200">
+<style>
+    .form-control{
+        background-color: rgb(230, 233, 233);
+    }
+    .btn{
+      width: 50%;
+    }
+    .btn-control{
+      display: flex;
+      justify-content: center;
+    }
+    input[type=text]{
+      padding: 12px 20px;
+    }
+    input[type=date]{
+      padding: 12px 20px;
+    }
+    input[type=number]{
+      padding: 12px 20px;
+    }
 
+</style>
 
+<!-- saideNaveBar -->
+
+<body class="g-sidenav-show  bg-gray-200">
     <aside
     class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
     id="sidenav-main">
@@ -35,7 +59,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-category">
+        <a class="nav-link text-white" href="/admin/view-category">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">inventory_2</i>
           </div>
@@ -68,7 +92,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/view-coupon">
+        <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-coupon">
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">redeem</i>
           </div>
@@ -111,89 +135,72 @@
 </div>
 </div> -->
   </aside>
-      <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+      
+  <!-- endSaidNavBar -->
 
-        <%- include('../layouts/admin/navbar.ejs') %>
-
-
-
-          <div class="container-fluid py-4">
-            <div class="row">
-              <div class="col-12">
-                <div class="card my-4">
-                  <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+  <div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                      <h6 class="text-white text-capitalize ps-3">
-                        <%=message%>
-                      </h6>
+                        <h6 class="text-white text-capitalize ps-3"><%= message %></h6>
                     </div>
-                  </div>
-                  <div class="card-body px-0 pb-2">
-                    <div class="container-fluid">
-                      <form action="/admin/edit-category" enctype="multipart/form-data" method="post">
-                        <div class="row">
-                          <div class="col-md-3 py-4">
-                            <div class="form-group">
-                                <div class="form-label rounded">Category Name</div>
-                                <input type="text" value="<%=categoryData.categoryName%>" name="category" placeholder="Category Name" required>
-                            </div>
-                        </div>
-                         
-                          <div class="row">
-                            <div class="col md-3 py-4">
-                              <div class="form-group">  
-                                <div class="form-label rounded">Category Specification</div>
-                                <input type="text" value="<%=categoryData.description%>" name="description"
-                                  placeholder="description" required>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <!-- Old images -->
-                            <div class="col md-3 py-4">
-                              <div class="form-group">
-                                <div class="form-label rounded">Images</div>
-                                <img src="/public/userImages/<%= categoryData.image %>" alt="Old Image"
-                                  style="width: 100px;">
-                                <div class="image-preview-container mt-2"></div>
-                              </div>
-                            </div>
-
-                            <!-- <div class="col md-3 py-4"> -->
-                            <div class="form-group">
-                              <div class="form-label rounded">New Image</div>
-                              <input type="file" name="image" id="image" required>
-                              <div class="image-preview-container mt-2"></div>
-                            </div>
-                            <!-- </div> -->
-                            <!-- <div class="form-check py-4">
-                              <div class="form-label rounded">Action</div>
-                              <input class="form-check-input" type="radio" name="is_block" value="1" <%
-                                if(categoryData.is_block==true){%> checked <%}%> >
-                                <label class="form-check-label" for="listOption">List</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="radio" name="is_block" value="0" <%
-                                if(categoryData.is_block==false){%> checked <%}%> >
-                                <label class="form-check-label" for="unlistOption">Unlist</label>
-                            </div> -->
-                          </div>
-                          <div class="row">
-                            <div class="col md-3 py-4">
-                              <input type="hidden" name="id" value="<%=categoryData._id %>">
-                              <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
                 </div>
-              </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="container-fluid">
+                        <form class="row g-3" action="" method="post" id="couponForm">
+                          <% if(couponData){%>
+                            <div class="col-md-6">
+                              <label for="inputCouponName" class="form-label">Coupon Name</label>
+                              <input type="text" name="couponName" class="form-control" id="couponName" placeholder="Coupon Name" value="<%=couponData.couponName%>"> 
+                              <div id="couponNameError" class="error-message text-danger"></div>
+                            </div>
+                            <div class="col-md-6">
+                              <label for="inputCouponCode" class="form-label">Coupon Code</label>
+                              <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Coupon Code" value="<%=couponData.couponCode%>">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputDiscountAmount" class="form-label">Discount Amount</label>
+                                <input type="number" class="form-control" id="discountAmount" name="discountAmount" placeholder="Discount Amount" value="<%=couponData.discountAmount%>">
+                                <div id="discountAmountError" class="error-message text-danger"></div>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="inputValidFrom" class="form-label">Valid From</label>
+                                <input type="date" class="form-control" id="validFrom" name="validFrom" value="<%=couponData.validFrom.toISOString().slice(0, 10)%>">
+                              </div>
+                              <div class="col-md-6">
+                                <label for="inputValidTo" class="form-label">Valid To</label>
+                                <input type="date" class="form-control" id="validTo" name="validTo" value="<%=couponData.validTo.toISOString().slice(0, 10)%>">
+                                <div id="validToError" class="error-message text-danger"></div>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="inputMiniMarginAmount" class="form-label">Minimum Margin Amount</label>
+                                <input type="number" class="form-control" id="minimumSpend" name="minimumSpend" placeholder="Margin Amount" value="<%=couponData.minimumSpend%>">
+                              </div>
+                              <div class="col-md-6">
+                                <label for="inputUserLimit" class="form-label">User Limit</label>
+                                <input type="number" class="form-control" id="usersLimit" name="usersLimit" placeholder="User Limit" value="<%=couponData.usersLimit%>">
+                                <div id="userLimitError" class="error-message text-danger"></div>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="inputDescription" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<%=couponData.description%>">
+                              </div>
+                              <div class="btn-control">
+                                <input type="hidden" name="id" value="<%=couponData._id%>">
+                                <button type="submit" class="btn btn-info mr-2" id="submitBtn">Update Coupon</button>
+                              </div>
+                              <% }else{ %>
+                                <p>No data available for this coupon.</p>
+                                <% } %>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <%- include('../layouts/admin/footer.ejs') %>
-            </div>
-
-      </main>
+        </div>
+    </div>
+    <%- include('../layouts/admin/footer.ejs') %>
+</div>
+</main>

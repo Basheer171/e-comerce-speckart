@@ -367,7 +367,7 @@ const userBlockorActive = async (req, res) => {
 // Load View Orders Page
 const loadViewOrders = async (req, res) => {
     try {
-        const orderData = await orderDb.find();
+        const orderData = await orderDb.find().sort({ date: -1 });
         // console.log('Order Data',orderData);
 
         const productsArray = [];
@@ -473,8 +473,8 @@ const viewOrderDetails = async (req, res) => {
 const changeOrderStatus = async (req, res) => {
     try {
         const { status, orderId, productId } = req.body;
-            console.log('OrderId', orderId);
-        console.log('Status',status);
+            // console.log('OrderId', orderId);
+        // console.log('Status',status);
         const orderDetails = await orderDb.findById(orderId);
         // console.log(orderDetails);
         if (!orderDetails) {
