@@ -5,7 +5,7 @@ const config = require("../config/config");
 const nodemailer = require("nodemailer");
 const orderDb = require('../models/orderModels')
 const productDb = require('../models/productModel');
-
+const Admin = require('../models/adminModel')
 
 
 //adding secure password bcrypt
@@ -79,18 +79,15 @@ const verifyLogin = async (req, res) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
-        const userData = await User.findOne({ email: email });
-        if (userData) {
-            const passwordMatch = await bcrypt.compare(password, userData.password);
+        const adminData = await Admin.findOne({ email: email });
+        // console.log("userdata",userData);
+        if (adminData) {
+            const passwordMatch = await bcrypt.compare(password, adminData.password);
+            // console.log("password",passwordMatch);
             if (passwordMatch) {
-                if (userData.is_admin === 0) {
-
-                    res.render('login', { message: "Email and password are incorrect." });
-                } else {
-
-                    req.session.user_id = userData._id;
+                    req.session.user_id = adminData._id;
                     res.redirect("/admin/home");
-                }
+                
             } else {
                 res.render('login', { message: "Email and password are incorrect." });
             }
@@ -107,16 +104,16 @@ const verifyLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-        const adminData = await User.findById({ _id: req.session.user_id });
+        const adminData = await Admin.findById({ _id: req.session.user_id });
 
         if (!adminData) {
             // If adminData is not found, render a 404 page
-            res.status(404).render('404'); // Assuming '404' is the name of your 404 page template
+            res.render('login',) // Assuming '404' is the name of your 404 page template
             return;
         }
 
-        res.render('home', { admin: adminData });
-    } catch (error) {  ``
+        res.render('home');
+    } catch (error) {  
         console.error(error.message);
         // Render a 500 error page if an unexpected error occurs
         res.status(500).render('500'); // Assuming '500' is the name of your 500 error page template

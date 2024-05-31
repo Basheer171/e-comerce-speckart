@@ -138,6 +138,102 @@ const categoryListorUnlist = async (req, res) => {
 }
 
 
+const applyCategoryOffer = async (req, res) => {
+    try {
+        const { offerId, categoryId } = req.body;
+
+        const offerData = await Offer.findOne({ _id: offerId });
+
+        if (!offerData) {
+            return res.json({ status: false, message: 'Offer not found' });
+        }
+        const categoryData = await Category.findOneAndUpdate(
+            { _id: categoryId },
+            { $set: { offer: offerId } },
+            { new: true }
+        );
+
+        if (!categoryData) {
+            return res.json({ status: false, message: 'Category not found' });
+        }
+
+        const updatedProduct = await Product.updateMany(
+            { category: categoryId },
+            [
+                {
+                    $set: {
+                        categoryOffer: new mongoose.Types.ObjectId(offerId),
+                        categoryDiscountedPrice: {
+                            $subtract: [
+                                "$price",
+                                {
+                                    $divide: [
+                                        { $multiply: ["$price", offerData.percentage] },
+                                        100,
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+            { new: true, lean: true }
+        );
+        if (updatedProduct) {
+            res.json({ status: true });
+        } else {
+            return res.json({ status: false, message: 'Failed to update products' });
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).render('500');
+    }
+};
+
+// ------------------------------------- Remove Apply Offer -------------------------------------------//Address
+
+const removeCategoryOffer = async (req, res) => {
+    try {
+        const { categoryId } = req.body;
+
+        const categoryData = await Category.findOne({ _id: categoryId });
+
+        if (!categoryData) {
+            return res.json({ status: false, message: 'Category not found' });
+        }
+
+        if (categoryData.offer) {
+            const updateCategory = await Category.updateOne(
+                { _id: categoryId },
+                {
+                    $unset: {
+                        offer: ""
+                    }
+                }
+            );
+            const updatedProduct = await Product.updateOne(
+                { category: categoryId },
+                {
+                    $unset: {
+                        categoryOffer: "",
+                        categoryDiscountedPrice: ""
+                    }
+                }
+            );
+            return res.json({status:true});
+        }else{
+
+            return res.json({status:false, message: "Offer field does not exist in the category",});
+
+        };
+    } catch (error) {
+        console.log(error);
+        res.status(500).render('500');
+    }
+}
+
 
 
 module.exports = {
@@ -147,4 +243,7 @@ module.exports = {
     editCategoryLoad,
     updateCategory,
     categoryListorUnlist,
+    applyCategoryOffer,
+    removeCategoryOffer
+
 }

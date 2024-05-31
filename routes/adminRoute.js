@@ -1,9 +1,7 @@
 const express = require("express");
 const admin_route = express();
 
-const session = require("express-session");
-const config = require("../config/config");
-admin_route.use(session({secret:config.sessionSecret,resave: false,saveUninitialized: true,}));
+
 
 const bodyParser = require("body-parser");
 admin_route.use(bodyParser.json());
@@ -50,8 +48,8 @@ const adminController = require("../controllers/adminController");
 const categoryController = require("../controllers/categoryController");
 const brandController = require("../controllers/brandController");
 const productController = require("../controllers/productController");
-const orderController = require ("../controllers/orderController");
 const couponController = require("../controllers/couponController");
+const offerController = require("../controllers/offerController")
 
 
 
@@ -108,7 +106,8 @@ admin_route.get('/is_activeProduct', admiauth.isLogin, productController.product
 
 admin_route.get('/view-orders', admiauth.isLogin, adminController.loadViewOrders);
 admin_route.get('/view-ordersDetails', admiauth.isLogin, adminController.viewOrderDetails);
-admin_route.post('/view-ordersDetails/changeStatus',adminController.changeOrderStatus)
+admin_route.post('/view-ordersDetails/changeStatus',adminController.changeOrderStatus);
+
 
 admin_route.get('/view-coupon', admiauth.isLogin, couponController.loadViewCoupon);
 admin_route.get('/add-coupon', admiauth.isLogin, couponController.loadAddCoupon);
@@ -116,6 +115,15 @@ admin_route.post('/add-coupon', couponController.AddCoupon);
 admin_route.get('/edit-coupon', admiauth.isLogin, couponController.loadEditCoupon);
 admin_route.post('/edit-coupon', couponController.editCoupon);
 admin_route.get('/delete-coupon', admiauth.isLogin, couponController.deletecoupon);
+
+admin_route.get('/view-offers', admiauth.isLogin, offerController.loadViewOffer);
+admin_route.get('/add-offer', admiauth.isLogin, offerController.loadAddOffer);
+admin_route.post('/add-offer', admiauth.isLogin, offerController.addOffer);
+admin_route.get('/edit-offer',admiauth.isLogin, offerController.loadEditOffer);
+admin_route.post('/edit-offer',admiauth.isLogin, offerController.editOffer);
+admin_route.patch('/cancelOffer',admiauth.isLogin, offerController.cancelOffer);
+
+// admin_route.patch('/applyOffer',admiauth.isLogin, categoryController.applyCategoryOffer);
 
 
 

@@ -4,7 +4,6 @@ const session = require("express-session");
 const path = require("path")
 const config = require("../config/config");
 
-user_route.use(session({secret:config.sessionSecret,resave: false,saveUninitialized: true,}));
 
 const auth = require("../middleware/auth");
 const fetchUserData = require("../middleware/userData")
@@ -112,10 +111,15 @@ user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);
 
 
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
-user_route.get('/orderPlace',auth.isLogin,orderController.loadPlaceOrder );
+user_route.get('/orderPlace/:id',auth.isLogin,orderController.loadPlaceOrder );
 user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDeatail );
-user_route.post('/cancelOrder',orderController.cancelOrder)
+user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder)
+
+
+// user_router.get('/coupon', auth.isLogin, couponController.couponUserPageLoad);
+
+
 
 user_route.get('*',(req,res)=>{
 

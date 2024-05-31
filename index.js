@@ -3,9 +3,13 @@ mongoose.connect("mongodb://127.0.0.1:27017/user_management_system");
 const path = require("path")
 const nocache = require("nocache");
 const express = require("express");
+require('dotenv').config();
+const session = require("express-session");
+const config = require("./config/config");
 const app = express();
 
 
+app.use(session({secret:config.sessionSecret,resave: false,saveUninitialized: true,}));
 
 const userRoute = require('./routes/userRoute');
 

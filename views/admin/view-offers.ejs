@@ -1,0 +1,272 @@
+<%- include('../layouts/admin/header.ejs') %>
+
+<style>
+  a:hover {
+    color: white;
+  }
+</style>
+
+<body class="g-sidenav-show bg-gray-200">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark" id="sidenav-main">
+        <div class="sidenav-header" style="margin: 15px;">
+            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0" href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
+                <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
+                <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
+            </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/home">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">dashboard</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-users">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">group</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Users</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-category">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">inventory_2</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Category</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-product">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">branding_watermark</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Products</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-brand">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">category</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Brand</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-orders">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">wysiwyg</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-coupon">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">redeem</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Coupon</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-offers">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">local_offer</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Offers</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="./pages/profile.html">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">person</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/logout">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">logout</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Log out</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg">
+                                <div class="row justify-content-lg-between align-items-center margin-0 py-0">
+                                    <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
+                                        <h6 class="text-white text-capitalize ps-3"><%= title %></h6>
+                                    </div>
+                                    <div class="col-md-12 col-lg-6">
+                                        <div class="d-flex justify-content-end">
+                                            <a class="nav-link text-white" href="/admin/add-offer">
+                                                <button type="button" class="btn bg-gradient-success ms-3 mt-2">
+                                                    <i class="material-icons opacity-10">add</i> Add Offer
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-4" id="dtBasicExample">
+                                    <thead>
+                                        <tr style="background-color: rgb(227, 225, 225);">
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">No</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Offer Name</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Starting Date</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Expiry Date</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Discount</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Status</th>
+                                            <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% let count = 1 %>
+                                        <% offerData.forEach((offer) => { %>
+                                            <% 
+                                            let active;
+                                            if (offer.startingDate < now && offer.expiryDate > now && offer.status) { 
+                                                active = "Active"; 
+                                            } else if (offer.startingDate > now && offer.status) { 
+                                                active = "Upcoming"; 
+                                            } else if (offer.expiryDate < now && offer.status) { 
+                                                active = "Expired"; 
+                                            } 
+                                            %>
+                                            <tr>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0"><%= count %></p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0"><%= offer.offerName %></p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0"><%= offer.startingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0"><%= offer.expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0"><%= offer.percentage %> %</p>
+                                                </td>
+                                                <td>
+                                                    <% if (offer.status) { %>
+                                                        <span class="<%= active === 'Active' ? 'text-success' : (active === 'Upcoming' ? 'text-warning' : 'text-primary') %>">
+                                                            <%= active %>
+                                                        </span>
+                                                    <% } else { %>
+                                                        <span class="text-danger">Cancelled</span>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if ((active === "Active" || active === "Upcoming") && offer.status) { %>
+                                                        <a href="#" onclick="cancelOffer('<%= offer._id %>')"><span class="badge badge-sm bg-gradient-danger">Cancel</a></span>
+                                                    <% } %>
+                                                    <% if (active !== "Expired" && offer.status) { %>
+                                                        <span class="badge badge-sm bg-gradient-warning"><a href="/admin/edit-offer?offerId=<%= offer._id %>">Edit</a></span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                            <% count++ %>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+        <!-- SweetAlert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+        <!-- Script for Data Table -->
+        <script>
+            $(document).ready(function () {
+                $('#dtBasicExample').DataTable({
+                    responsive: true
+                });
+                $('.dataTables_length').addClass('bs-select');
+            });
+        </script>
+
+        <!-- Script for cancelOffer -->
+        <script>
+            function cancelOffer(offerId) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, cancel it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/admin/cancelOffer',
+                            type: 'PATCH',
+                            contentType: 'application/json',
+                            data: JSON.stringify({ offerId: offerId }),
+                            success: function (response) {
+                                if (response.status) {
+                                    Swal.fire({
+                                        title: "Cancelled!",
+                                        text: "Your offer has been cancelled.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Unable to cancel the offer.",
+                                        icon: "error"
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: "Unable to communicate with the server.",
+                                    icon: "error"
+                                });
+                                console.error("Error:", status, error);
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
+
+<%- include('../layouts/admin/footer.ejs') %>

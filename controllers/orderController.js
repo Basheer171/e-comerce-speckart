@@ -4,6 +4,12 @@ const addressModel = require('../models/addressModel');
 const cartDb = require('../models/cartModel');
 const productDb = require('../models/productModel');
 const orderDb  = require ('../models/orderModels')
+const Razorpay = require("razorpay");
+
+var razorpayInstance = new Razorpay({
+  key_id: process.env.key_id,
+  key_secret: process.env.key_secret
+});
 
 
 
@@ -128,35 +134,19 @@ const deleteAddress = async (req, res) => {
   
   const placeOrder = async (req, res) => {
     try {
-
         const userId = req.session.user_id;
-        // console.log('userId',userId);
-        const address = req.body.address; 
-
-        // console.log('address',address);
-
+        const address = req.body.address;
         const cartData = await cartDb.findOne({ user: userId });
-        // console.log('cartData',cartData);
         const total = parseInt(req.body.totalAmount);
-        // console.log('total',total);
         const paymentMethod = req.body.paymentMethod;
-        // console.log('paymentMethod',paymentMethod);
         const userData = await userDb.findOne({ _id: userId });
-        // console.log('userData',userData);
         const name = userData.firstName;
-        // console.log('name',name);
 
         const uniNum = Math.floor(Math.random() * 900000) + 100000;
-        // console.log('uniNum',uniNum);
         const status = paymentMethod === 'COD' ? 'placed' : 'pending';
-        // console.log('status',status);
-        const statusLevel = status === 'placed' ? 1 : 0;
-        // console.log('statusLevel',statusLevel);
 
         const today = new Date();
-        // console.log('today',today);
         const deliveryDate = new Date(today);
-        // console.log('deliveryDate',deliveryDate);
         deliveryDate.setDate(today.getDate() + 7);
 
         const cartProducts = cartData.products.map((productItem) => ({
@@ -166,13 +156,11 @@ const deleteAddress = async (req, res) => {
             statusLevel: 1,
             paymentStatus: 'Pending',
         }));
-        // console.log('cartProducts',cartProducts);
-
 
         const order = new orderDb({
-          deliveryDetails: address,
+            deliveryDetails: address,
             uniqueId: uniNum,
-            userId: userId, 
+            userId: userId,
             userName: name,
             paymentMethod: paymentMethod,
             products: cartProducts,
@@ -182,27 +170,63 @@ const deleteAddress = async (req, res) => {
         });
 
         const orderData = await order.save();
-          // console.log('orderData',orderData);
         const orderid = order._id;
-        // console.log('orderid',orderid);
-
+        console.log(orderid)
         if (orderData) {
             if (paymentMethod === 'COD') {
                 for (const item of cartData.products) {
                     const productId = item.productId._id;
                     const quantity = parseInt(item.quantity, 10);
-                    const result = await productDb.updateOne(
+                    await productDb.updateOne(
                         { _id: productId },
                         { $inc: { qty: -quantity } }
                     );
                 }
+                await cartDb.deleteOne({ user: req.session.user_id });
                 res.json({ success: true, orderid });
-            }
+            } else {
+                const razorpayOrder = await razorpayInstance.orders.create({
+                    amount: total * 100, // Amount in paise
+                    currency: 'INR',
+                    receipt: `order_rcptid_${orderid}`
+                });
 
-            await cartDb.deleteOne({user:req.session.user_id})
+                res.json({ order: razorpayOrder, orderid });
+            }
         } else {
-            // Handle the case when orderData is not available
             res.status(400).send('Failed to place the order');
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+const verifyPayment = async (req, res) => {
+    try {
+        const { payment_id, order_id, signature, order } = req.body;
+
+        const body = order_id + "|" + payment_id;
+        const expectedSignature = crypto
+            .createHmac('sha256', process.env.key_secret)
+            .update(body.toString())
+            .digest('hex');
+
+        if (expectedSignature === signature) {
+            for (const item of order.products) {
+                const productId = item.productId._id;
+                const quantity = parseInt(item.quantity, 10);
+                await productDb.updateOne(
+                    { _id: productId },
+                    { $inc: { qty: -quantity } }
+                );
+            }
+            await cartDb.deleteOne({ user: order.userId });
+            order.paymentStatus = 'Paid';
+            await order.save();
+            res.json({ success: true, orderid: order._id });
+        } else {
+            res.status(400).json({ message: 'Invalid signature' });
         }
     } catch (error) {
         console.log(error);
@@ -318,6 +342,7 @@ module.exports = {
     deleteAddress,
     shipaddAddress,
     placeOrder,
+    verifyPayment,
     loadPlaceOrder,
     loadOrderPage,
     loadOrderDeatail,

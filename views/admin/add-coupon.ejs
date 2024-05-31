@@ -220,126 +220,119 @@
 
 <!-- Toastify Library  -->
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
-$(document).ready(function () {
-  // Enable submit button only if there are no errors
-  function enableSubmitButton() {
-      var hasErrors = $('.error-message:visible').length > 0;
-      $('#submitBtn').prop('disabled', hasErrors);
-  }
-
-
-$('#couponForm').submit(function (e) {
-    e.preventDefault();
-
-    // Validate required fields before sending the request
-    var couponCode = $('#couponCode').val();
-    var validFrom = $('#validFrom').val();
-    var validTo = $('#validTo').val();
-    var minimumSpend = $('#minimumSpend').val();
-    var usersLimit = $('#usersLimit').val();
-
-    if (!couponCode || !validFrom || !validTo || !minimumSpend || !usersLimit) {
-        // Handle validation error, show a message, or prevent the request
-        console.error('Validation error: Some required fields are missing');
-        return;
-    }
-
-    // Your form data
-    var formData = $(this).serialize();
-
-    // Continue with the AJAX request
-    $.ajax({
-        type: 'POST',
-        url: '/admin/add-coupon',
-        data: formData,
-        dataType: 'json',
-        success: function (response) {
-            // Handle the response from the server
-            if (response.success) {
-                // Coupon added successfully
-                // alert(response.message)
-                Swal.fire({
-                  icon: "success",
-                  title: "Your coupon has been saved",
-                  showConfirmButton: false,
-                  // timer: 1500
-              });
-
-                window.location.href = '/admin/view-coupon';
-
-            } else {
-                // Coupon addition failed
-                // alert(response.message)
-                Swal.fire({
-                  title: 'Warning!',
-                  text: response.message,
-                  icon: "warning",
-                  confirmButtonText: 'OK',
-                  confirmButtonColor: '#ffcc00'
-                });
-            }
-        },
-        error: function (error) {
-            // Handle the error if the request fails
-            console.error('Error:', error);
-            // You can show an error message or take appropriate action
-        }
-    });
-
-
-  });
-
-  // Validation for Coupon Name
-  $('#couponName').on('blur', function () {
-      var couponName = $(this).val();
-      var errorMessage = '';
-
-      if (couponName === '') {
-          errorMessage = 'Coupon name must be entered';
-          $('#couponNameError').text(errorMessage).toggle(errorMessage !== '');
-          enableSubmitButton();
-
-          // Set timeout to remove error message after 5 seconds
-          setTimeout(()=>{
-          $('#couponNameError').fadeOut();
-          },5000);
-
-        }else {
-        $('#couponNameError').text(errorMessage).toggle(errorMessage !== '');
-        enableSubmitButton();
+  $(document).ready(function () {
+      // Enable submit button only if there are no errors
+      function enableSubmitButton() {
+          var hasErrors = $('.error-message:visible').length > 0;
+          $('#submitBtn').prop('disabled', hasErrors);
       }
-
+  
+      $('#couponForm').submit(function (e) {
+          e.preventDefault();
+  
+          // Validate required fields before sending the request
+          var couponCode = $('#couponCode').val();
+          var validFrom = $('#validFrom').val();
+          var validTo = $('#validTo').val();
+          var minimumSpend = $('#minimumSpend').val();
+          var usersLimit = $('#usersLimit').val();
+  
+          if (!couponCode || !validFrom || !validTo || !minimumSpend || !usersLimit) {
+              // Handle validation error, show a message, or prevent the request
+              console.error('Validation error: Some required fields are missing');
+              return;
+          }
+  
+          // Your form data
+          var formData = $(this).serialize();
+  
+          // Continue with the AJAX request
+          $.ajax({
+              type: 'POST',
+              url: '/admin/add-coupon',
+              data: formData,
+              dataType: 'json',
+              success: function (response) {
+                  // Handle the response from the server
+                  if (response.success) {
+                      // Coupon added successfully
+                      Swal.fire({
+                          icon: "success",
+                          title: "Your coupon has been saved",
+                          showConfirmButton: false,
+                          timer: 2000
+                      }).then(() => {
+                          // Redirect after SweetAlert2 timer finishes
+                          window.location.href = '/admin/view-coupon';
+                      });
+                  } else {
+                      // Coupon addition failed
+                      Swal.fire({
+                          title: 'Warning!',
+                          text: response.message,
+                          icon: "warning",
+                          confirmButtonText: 'OK',
+                          confirmButtonColor: '#ffcc00'
+                      });
+                  }
+              },
+              error: function (error) {
+                  // Handle the error if the request fails
+                  console.error('Error:', error);
+                  // You can show an error message or take appropriate action
+              }
+          });
+      });
+  
+      // Validation for Coupon Name
+      $('#couponName').on('blur', function () {
+          var couponName = $(this).val();
+          var errorMessage = '';
+  
+          if (couponName === '') {
+              errorMessage = 'Coupon name must be entered';
+              $('#couponNameError').text(errorMessage).toggle(errorMessage !== '');
+              enableSubmitButton();
+  
+              // Set timeout to remove error message after 5 seconds
+              setTimeout(() => {
+                  $('#couponNameError').fadeOut();
+              }, 5000);
+          } else {
+              $('#couponNameError').text(errorMessage).toggle(errorMessage !== '');
+              enableSubmitButton();
+          }
+      });
+  
+      // Validation for Coupon Code
+      $('#couponCode').on('blur', function () {
+          var couponCode = $(this).val();
+          var errorMessage = '';
+  
+          if (couponCode === '') {
+              errorMessage = 'Coupon code must be entered';
+              $('#couponCodeError').text(errorMessage).toggle(errorMessage !== '');
+              enableSubmitButton();
+  
+              // Set timeout to remove error message after 5 seconds
+              setTimeout(() => {
+                  $('#couponCodeError').fadeOut();
+              }, 5000);
+          } else {
+              $('#couponCodeError').text(errorMessage).toggle(errorMessage !== '');
+              enableSubmitButton();
+          }
+      });
+  
+      // Hide error messages after 5 seconds
+      setTimeout(function () {
+          $('.error-message').fadeOut();
+      }, 5000);
   });
-
-
-  // Validation for Coupon Code
-  $('#couponCode').on('blur', function () {
-      var couponCode = $(this).val();
-      var errorMessage = '';
-
-      if (couponCode === '') {
-          errorMessage = 'Coupon code must be entered';
-          $('#couponCodeError').text(errorMessage).toggle(errorMessage !== '');
-          enableSubmitButton();
-          // Set timeout to remove error message after 5 seconds
-          setTimeout(()=>{
-            $('#couponCodeError').fadeOut();
-          },5000);
-      }else{
-        $('#couponCodeError').text(errorMessage).toggle(errorMessage !== '');
-          enableSubmitButton();
-      }
-  });
-
- 
-
-  // Hide error messages after 5 seconds
-  setTimeout(function () {
-      $('.error-message').fadeOut();
-  }, 5000);
-});
-
-</script>
+  </script>
+  
 
