@@ -22,6 +22,10 @@ const categorySchema = new mongoose.Schema({
         type:Date,
         default:Date.now,
     },
+    offer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer',
+      },
     
 },{timestamp:true});
 

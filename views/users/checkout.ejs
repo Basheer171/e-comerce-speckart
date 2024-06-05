@@ -226,7 +226,7 @@
                                                         </td>
                                                     </tr><!-- End .summary-subtotal -->
 
-                                                    <tr class="summary-total">
+                                                    <tr class="summary-total" id="total">
                                                         <td>Total:</td>
                                                         <td>
                                                             <%= Total %>
@@ -363,134 +363,123 @@
 
 
     <script>
-        $(document).ready(function () {
-            // Event listener for Place Order button
-            $('#placeOrderBtn').on('click', function (event) {
-                // Prevent the default behavior of the button (e.g., form submission or page navigation)
-                event.preventDefault();
-    
-                // Get the selected address ID
-                var selectedAddress = $('.address-checkbox:checked').val();
-    
-                // Get the selected payment method
-                var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
-    
-                // Get the total amount
-                var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
-    
-                // Validate both address and payment method
-                if (!selectedAddress) {
-                    alert('Please select an address.');
-                    return;
-                }
-                if (!selectedPaymentMethod) {
-                    alert('Please select a payment method.');
-                    return;
-                }
-    
-                // Prepare the data to be sent
-                var dataToSend = {
-                    address: selectedAddress,
-                    paymentMethod: selectedPaymentMethod,
-                    totalAmount: totalAmount
-                };
-    
-                // Send the AJAX request to place order
-                $.ajax({
-                    type: "POST",
-                    url: "/placeOrder",
-                    data: dataToSend,
-                    success: function (response) {
-                        if (response.success === true) {
-                            Swal.fire({
-                                title: "Your order has been successfully completed.",
-                                icon: "success",
-                                showConfirmButton: false,
-                                timer: 1500,
-                                didClose: () => {
-                                    window.location.href = `orderPlace/${response.orderid}`;
-                                }
-                            });
-                        } else {
-                            razorPayment(response.order);
+      $(document).ready(function () {
+    // Event listener for Place Order button
+    $('#placeOrderBtn').on('click', function (event) {
+        // Prevent the default behavior of the button (e.g., form submission or page navigation)
+        event.preventDefault();
+
+        // Get the selected address
+        var selectedAddress = $('.address-checkbox:checked').val();
+
+        // Get the selected payment method
+        var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+        // Get the total amount
+        var totalAmount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
+
+        // Validate both address and payment method
+        if (!selectedAddress) {
+            alert('Please select an address.');
+            return;
+        }
+        if (!selectedPaymentMethod) {
+            alert('Please select a payment method.');
+            return;
+        }
+
+        // Prepare the data to be sent
+        var dataToSend = {
+            address: selectedAddress,
+            paymentMethod: selectedPaymentMethod,
+            totalAmount: totalAmount
+        };
+
+        // Send the AJAX request to place order
+        $.ajax({
+            type: "POST",
+            url: "/placeOrder",
+            data: dataToSend,
+            success: function (response) {
+                if (response.success === true) {
+                    Swal.fire({
+                        title: "Your order has been successfully completed.",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        didClose: () => {
+                            window.location.href = `orderPlace/${response.orderid}`;
                         }
-                    },
-                    error: function (error) {
-                        console.error('Error placing order:', error);
-                    }
-                });
-            });
-    
-            // Razorpay payment integration
-            function razorPayment(order) {
-                var options = {
-                    key: 'rzp_test_OOxrpqsR7Y8V4y',
-                    amount: order.totalAmount * 100,
-                    currency: 'INR',
-                    name: 'specart',
-                    description: 'Test Transaction',
-                    image: '/images/my_Logo.png',
-                    order_id: order.id,
-                    handler: function (response) {
-                        verifyPayment(response, order);
-                    },
-                    prefill: {
-                        name: 'Customer Name',
-                        email: 'customer@example.com',
-                        contact: '1234567890',
-                    },
-                    notes: {
-                        address: order.address,
-                    },
-                    theme: {
-                        color: '#F37254',
-                    },
-                };
-    
-                var razorpayInstance = new Razorpay(options);
-                razorpayInstance.open();
-            }
-    
-            // Verify payment
-            function verifyPayment(payment, order) {
-                $.ajax({
-                    url: '/verifyPayment',
-                    method: 'post',
-                    data: {
-                        payment:payment,
-                         amount:amount,
-                        order:order
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                title: "Payment successful!",
-                                icon: "success",
-                                showConfirmButton: false,
-                                timer: 1500,
-                                didClose: () => {
-                                    window.location.href = '/orderPlace';
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Payment failed!',
-                                text: response.message,
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Error verifying payment:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Payment error!',
-                            text: 'There was an error processing your payment. Please try again.',
-                        });
-                    }
-                });
+                    });
+                } else {
+                    razorPayment(response.order);
+                }
+            },
+            error: function (error) {
+                console.error('Error placing order:', error);
             }
         });
+    });
+
+    function razorPayment(order) {
+        var options = {
+            key: 'rzp_test_OOxrpqsR7Y8V4y', 
+            amount: order.amount * 100,
+            currency: 'INR',
+            name: 'specart',
+            description: 'Test Transaction',
+            image: '/images/my_Logo.png',
+            order_id: order.id, 
+            handler: function (response) {
+                verifyPayment(response, order);
+            },
+            prefill: {
+                name: 'Customer Name',
+                email: 'customer@example.com',
+                contact: '1234567890',
+            },
+            notes: {
+                address: order.address,
+            },
+            theme: {
+                color: '#F37254',
+            },
+        };
+
+        var razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
+    }
+
+    function verifyPayment(payment, order) {
+        var amount = '<%= Total %>'; // Assuming Total is a variable in your EJS template
+          $.ajax({
+            url: '/verifyPayment',
+            method: 'POST',
+            data: {
+                payment: payment,
+                amount: amount,
+                order: order
+            },
+            success: function (response) {
+                if (response.codsuccess == true) {
+                    location.href = `/orderPlace/${response.orderid}`;
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Payment Failed',
+                        showConfirmButton: 'false',
+                        timer: 1500,
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX request failed:", status, error);
+            },
+        });
+    }
+});
+
     </script>
     
 

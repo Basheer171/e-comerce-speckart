@@ -1,81 +1,120 @@
 <%- include('../layouts/admin/header.ejs') %>
 
-    <body class="g-sidenav-show  bg-gray-200">
+<style>
+    .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* Adjust the width as per your requirement */
+        display: block;
+    }
 
+    .table thead th {
+        border-bottom: 2px solid #dee2e6;
+    }
 
-        <aside
-        class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
-        id="sidenav-main">
-        <div class="sidenav-header" style="margin: 15px;">
-            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
-                target="_blank"></a>
-            <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
+    .table tbody tr td {
+        border-top: 1px solid #dee2e6;
+    }
+
+    .card {
+        margin: 15px;
+    }
+
+    .card-header {
+        background: linear-gradient(87deg, #11cdef 0, #117a8b 100%) !important;
+        color: #fff;
+    }
+
+    .btn {
+        margin: 5px;
+    }
+
+    .modal-header {
+        background-color: #5e72e4;
+        color: #fff;
+    }
+
+    .modal-content {
+        border-radius: 0.5rem;
+    }
+</style>
+
+<body class="g-sidenav-show bg-gray-200">
+
+    <aside
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
+    id="sidenav-main">
+    <div class="sidenav-header" style="margin: 15px;">
+        <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+            aria-hidden="true" id="iconSidenav"></i>
+        <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
+            target="_blank"></a>
+        <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
+        </a>
+    </div>
+    <hr class="horizontal light mt-0 mb-2">
+    <!-- <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main"> -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/home">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">dashboard</i>
+                </div>
+                <span class="nav-link-text ms-1">Dashboard</span>
             </a>
-        </div>
-        <hr class="horizontal light mt-0 mb-2">
-        <!-- <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main"> -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/home">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">dashboard</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="/admin/view-users">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">group</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Users</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-category">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">inventory_2</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Category</span>
-                </a>
-            </li>
-    
-            <li class="nav-item">
-                <a class="nav-link text-white " href="/admin/view-product">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">branding_watermark</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Porducts</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="/admin/view-brand">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">category</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Brand</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="/admin/view-orders">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">wysiwyg</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Orders</span>
-                </a>
-            </li>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-users">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">group</i>
+                </div>
+                <span class="nav-link-text ms-1">Users</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-category">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">inventory_2</i>
+                </div>
+                <span class="nav-link-text ms-1">Category</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-product">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">branding_watermark</i>
+                </div>
+                <span class="nav-link-text ms-1">Porducts</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="/admin/view-brand">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">category</i>
+                </div>
+                <span class="nav-link-text ms-1">Brand</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/view-orders">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">wysiwyg</i>
+                </div>
+                <span class="nav-link-text ms-1">Orders</span>
+            </a>
+        </li>
             <li class="nav-item">
                 <a class="nav-link text-white " href="/admin/view-coupon">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="material-icons opacity-10">redeem</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Coupon</span>
+                </div>
+                <span class="nav-link-text ms-1">Coupon</span>
                 </a>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-white" href="/admin/view-offers">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                     <i class="material-icons opacity-10">local_offer</i>
@@ -83,232 +122,275 @@
                   <span class="nav-link-text ms-1">Offers</span>
                 </a>
               </li>
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
-                </h6>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="./pages/profile.html">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">person</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Profile</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white " href="/admin/logout">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">logout</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Log out</span>
-                </a>
-            </li>
-            <!-- <li class="nav-item">
-      <a class="nav-link text-white " href="./pages/sign-up.html">
-        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-          <i class="material-icons opacity-10">assignment</i>
-        </div>
-        <span class="nav-link-text ms-1">Sign Up</span>
-      </a>
-    </li> -->
-        </ul>
-        <!-- </div> -->
-        <!-- <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-    <div class="mx-3">
-    <a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
+        <li class="nav-item mt-3">
+            <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
+            </h6>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white " href="./pages/profile.html">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">person</i>
+                </div>
+                <span class="nav-link-text ms-1">Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white " href="/admin/logout">
+                <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                    <i class="material-icons opacity-10">logout</i>
+                </div>
+                <span class="nav-link-text ms-1">Log out</span>
+            </a>
+        </li>
+        <!-- <li class="nav-item">
+  <a class="nav-link text-white " href="./pages/sign-up.html">
+    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+      <i class="material-icons opacity-10">assignment</i>
     </div>
-    </div> -->
-    </aside>
-            <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <span class="nav-link-text ms-1">Sign Up</span>
+  </a>
+</li> -->
+    </ul>
+    <!-- </div> -->
+    <!-- <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+<div class="mx-3">
+<a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
+</div>
+</div> -->
+</aside>
 
-                <%- include('../layouts/admin/navbar.ejs') %>
 
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <%- include('../layouts/admin/navbar.ejs') %>
 
-                    <div class="container-fluid py-4">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card my-4">
-                                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                        <div class="bg-gradient-primary shadow-primary border-radius-lg">
-                                            <div
-                                                class="row justify-content-lg-between align-items-center margin-0 py-0">
-                                                <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
-                                                    <h6 class="text-white text-capitalize ps-3">
-                                                        <%=message%>
-                                                    </h6>
-                                                </div>
-                                                <div class="col-md-12 col-lg-6">
-                                                    <div class="d-flex justify-content-end">
-                                                        <a class="nav-link text-white " href="/admin/add-category">
-                                                            <button type="button"
-                                                                class="btn bg-gradient-success ms-3 mt-2">
-                                                                <i class="material-icons opacity-10">add</i> Add
-                                                                Category</button>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg">
+                                <div class="row justify-content-lg-between align-items-center margin-0 py-0">
+                                    <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
+                                        <h6 class="text-white text-capitalize ps-3"><%= title %></h6>
                                     </div>
-                                    <div class="card-body px-0 pb-2">
-                                        <div class="table-responsive p-0">
-                                            <table class="table align-items-center mb-4" id="user-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            No</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Category Name</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Description</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Image</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Update</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Status</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">
-                                                            Action</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% let counter=1; %>
-                                                        <% if (categoryData.length>0){%>
-                                                            <% categoryData.forEach((cat)=>{%>
-                                                                <tr>
-                                                                    <td>
-                                                                        <p class="text-xs font-weight-bold mb-0">
-                                                                            <%= counter %>
-                                                                        </p>
-                                                                    </td>
-                                                                    <td>
-                                                                        <p class="text-xs font-weight-bold mb-0">
-                                                                            <%=cat.categoryName%>
-                                                                        </p>
-                                                                    </td>
-                                                                    <td>
-                                                                        <p class="text-xs font-weight-bold mb-0">
-                                                                            <%=cat.description%>
-                                                                        </p>
-                                                                    </td>
-                                                                   <td>
-                                                                        <img src="/public/userImages/<%=cat.image%>"
-                                                                            class="avatar avatar-sm me-3 border-radius-lg"
-                                                                            alt="">
-                                                                    </td>
-                                                                    <td>
-                                                                        <p class="text-xs font-weight-bold mb-0"><a
-                                                                                href="/admin/edit-category?id=<%= cat._id %>">Edit</a>
-                                                                        </p>
-                                                                    </td>
-                                                                    <td>
-                                                                        <p class="text-xs font-weight-bold mb-0">Stock
-                                                                        </p>
-                                                                    </td>
-                                                                    <% if (cat.is_block==false){%>
-                                                                        <td class=" text-sm">
-                                                                            <a
-                                                                                href="/admin/is_blockCategory?id=<%= cat._id %>" class="block-unblock-link">
-                                                                                <span
-                                                                                    class="badge badge-sm bg-gradient-success">List</span></a>
-                                                                        </td>
-                                                                        <%}else{%>
-                                                                            <td class=" text-sm">
-                                                                                <a
-                                                                                    href="/admin/is_blockCategory?id=<%= cat._id %>" class="block-unblock-link">
-                                                                                    <span
-                                                                                        class="badge badge-sm bg-gradient-danger">Unlist</span></a>
-                                                                            </td>
-                                                                            <% } %>
-                                                                                <% counter++; %>
-                                                                                    <%});%>
-
-
-                                                                                        <% } %>
-
-                                                </tbody>
-                                            </table>
+                                    <div class="col-md-12 col-lg-6">
+                                        <div class="d-flex justify-content-end">
+                                            <a class="btn bg-gradient-dark mb-0" href="/admin/add-category">
+                                                <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Category
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+                        <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">No</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Category Name</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Description</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Image</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Update</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Offers</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Action</th>
 
-                        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-                        <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-                        
-                        <script>
-                            $('#user-table').DataTable({
-                                responsive: true,
-                                
-                            });
-                            </script>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% categoryData.forEach((cat, index) => { %>
+                                        <tr>
+                                            <td><%= index + 1 %></td>
+                                            <td><%= cat.categoryName %></td>
+                                            <td><p class="text-sm font-weight-bold mb-0 truncate"><%= cat.description %></p></td>
+                                            <td><img src="/public/userImages/<%= cat.image %>" class="avatar avatar-sm me-3" alt="category image"></td>
+                                            <td><a href="/admin/edit-category?id=<%= cat._id %>" class="btn btn-warning btn-sm">Edit</a></td>
+                                            <td>
+                                                <% if (cat.offer) { %>
+                                                    <span class="<% if (cat.offer.status) { %> text-success text-sm <% } else { %> text-warning text-sm <% } %>">
+                                                        <%= cat.offer.status ? 'Active' : 'Inactive' %>
+                                                    </span>
+                                                    <p class="text-info text-sm"><%= cat.offer.offerName %><br><span class="text-warning text-sm"><%= cat.offer.percentage %>% Discount</span></p>
+                                                <% } else { %>
+                                                    <span class="text-info text-xs">No Offer Applied</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if(cat.offer){%>
+                                                  <a href="#" onclick="removeOffer('<%=cat._id%>')"><span class="badge badge-sm bg-gradient-danger">Remove Offer</a></span>
+                                                  <% }else{%>
+                                                    <a href="#" class="badge badge-sm bg-gradient-success open-offer-modal" data-bs-toggle="modal" data-bs-target="#offerModal" data-cat-id="<%=cat._id%>">Apply offer</a>
+                                                  <% } %>
+                                                </td>
+                                            
+                                            <td class="align-middle text-center text-sm">
+                                                <% if (!cat.is_block) { %>
+                                                <span class="badge badge-sm bg-gradient-success">Listed</span>
+                                                <% } else { %>
+                                                <span class="badge badge-sm bg-gradient-danger">Unlisted</span>
+                                                <% } %>
+                                                <% if (!cat.is_block) { %>
+                                                <a href="/admin/is_blockCategory?id=<%= cat._id %>" class="btn btn-danger btn-sm mt-1">Unlist</a>
+                                                <% } else { %>
+                                                <a href="/admin/is_blockCategory?id=<%= cat._id %>" class="btn btn-success btn-sm mt-1">List</a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <!-- Offer Modal -->
+        <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Offer List</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: black;"></button>
+                    </div>
+                    <div class="modal-body" id="offer-modal_1">
+                        <% if (availableOffers && availableOffers.length > 0) { %>
+                            <% availableOffers.forEach((offer) => { %>
+                            <div class="card" style="width: 25rem; background-color: cadetblue;">
+                                <div class="card-body custom-card-background" style="height: .25rem;">
+                                    <h5 class="card-title" style="color: white;"><%= offer.offerName %></h5>
+                                </div>
+                                <ul class="list-group list-group-flush" style="background-color: rgb(238, 10, 97);">
+                                    <li class="list-group-item" style="color: black;">Starting Date:<%= new Date(offer.startingDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></li>
+                                    <li class="list-group-item" style="color: black;">Expiry Date:<%= new Date(offer.expiryDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-') %></li>
+                                    <li class="list-group-item" style="color: black;">Discount:<%= offer.percentage %>%</li>
+                                </ul>
+                            </div>
+                            <div class="d-flex mt-2">
+                                <button type="button" onclick="applyOffer('<%= offer._id %>')" class="btn btn-primary">Apply</button>
+                            </div>
+                            <% }); %>
+                        <% } else { %>
+                            <h1 class="text-info text">Offer not found</h1>
+                        <% } %>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../layouts/admin/footer.ejs') %>
+
+    <!-- Bootstrap 5 JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Include jQuery from a CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include SweetAlert2 from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Modal Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var openOfferModalButtons = document.querySelectorAll('.open-offer-modal');
+
+            openOfferModalButtons.forEach(function (button) {
+                button.addEventListener('click', function (e) {
+                    var catId = button.getAttribute('data-cat-id');
+                    updateModalContent(catId);
+                });
+            });
+
+            function updateModalContent(catId) {
+                var modal_1 = document.getElementById('offer-modal_1');
+                modal_1.setAttribute('cid', catId);
+                var modalTitle = document.querySelector('#exampleModalLabel');
+                modalTitle.innerText = 'Offer List for Category ID: ' + catId;
+            }
+        });
+    </script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    let blockUnblockList = document.querySelectorAll(".block-unblock-link");
-
-    for (let i = 0; i < blockUnblockList.length; i++) {
-      blockUnblockList[i].addEventListener("click", function (event) {
-        event.preventDefault();
-
-        let link = this;
-        let userId = link.href.split("=")[1]; // Extracting user ID from the link
-
-        const successAlert = Swal.mixin({
-          customClass: {
-            confirmButton: "btn btn-success",
-            cancelButton: "btn btn-danger",
-          },
-          buttonsStyling: false,
+    function applyOffer(offerId) {
+        const cid = document.getElementById('offer-modal_1').getAttribute('cid');
+        $.ajax({
+            url: '/admin/applyOffer',
+            method: 'PATCH',
+            data: { offerId: offerId, categoryId: cid },
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Offer Applied successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    })
+                }
+            },
+            error: function () {
+                // Handle the case when the AJAX request encounters an error
+                Swal.fire({
+                    title: "Error!",
+                    text: "Unable to communicate with the server.",
+                    icon: "error"
+                });
+            }
         });
-        successAlert.fire({
+    }
+
+    function removeOffer(categoryId) {
+        Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Blocke/Active!",
-            cancelButtonText: "No, cancel!",
-            reverseButtons: true,
-
-          }).then((result) => {
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, remove it!"
+        }).then((result) => {
             if (result.isConfirmed) {
-              window.location.href = link.href;
-              
-              successAlert.fire({
-                title: "Blocked!",
-                text: "User has been blocked.",
-                icon: "success",
-                
-              });
-            } else if (
-              /* Read more about handling dismissals below */
-              result.dismiss === Swal.DismissReason.cancel
-              ) {
-                successAlert.fire({
-                  title: "Cancelled",
-                  text: "User safe :)",
-                  icon: "error",
+                $.ajax({
+                    url: '/admin/removeOffer',
+                    method: 'PATCH',
+                    data: { categoryId: categoryId },
+                    success: function (response) {
+                        if (response.status) {
+                            Swal.fire({
+                                title: "Removed!",
+                                text: "Your file has been removed.",
+                                icon: "success"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            // Handle the case when deletion is not successful
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Unable to delete the file.",
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle the case when the AJAX request encounters an error
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Unable to communicate with the server.",
+                            icon: "error"
+                        });
+                    }
                 });
             }
-          });
+        });
 
-      });
     }
-  });
 </script>
-
-                        <%- include('../layouts/admin/footer.ejs') %>
-                    </div>
-            </main>

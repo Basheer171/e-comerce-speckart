@@ -7,11 +7,13 @@ var productSchema = new mongoose.Schema({
         required:true,
     },
     category:{
-        type:String,
-        required:true,  
+        type:mongoose.Schema.ObjectId,
+        ref:'Category',
+        required:true,
     },
     brandName:{
-        type:String,
+        type:mongoose.Schema.ObjectId,
+        ref:'Brand',
         required:true,
     },
     price:{
@@ -33,8 +35,22 @@ var productSchema = new mongoose.Schema({
     is_active:{
         type:Boolean,
         default:true,
+    },
+    offer:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'Offer',
+    },
+    categoryOffer:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'offer'
+    },
+    discountedPrice:{
+        type:Number,
+    },
+    categoryDiscountedPrice:{
+        type:Number,
     }
-});
+},{ timestamps: true });
 
 //Export the model
 module.exports = mongoose.model('Product', productSchema);

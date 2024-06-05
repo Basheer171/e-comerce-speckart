@@ -1,25 +1,32 @@
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const Brand = require('../models/brandModel');
+const Offer = require('../models/offerModel')
+
 
 
 // View Product page
 const viewProduct = async (req, res) => {
     try {
-        // Remove search-related code
-
-        const product = await Product.find();
-
+        const product = await Product.find()
+            .populate({ path: "category", populate: { path: "offer" } })
+            .populate('brandName')
+            .populate('offer');
+        
+        const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
+        
         res.render('view-product', {
-            message: 'Product Details',
+            title: 'Product Details',
             product,
+            availableOffers
         });
+
     } catch (error) {
         console.log(error);
-        res.status(500).send('Server error');
+        res.render('500');
     }
 };
-    
+
 
 // Load add Product
 const loadAddProduct = async(req,res)=>{
@@ -188,6 +195,76 @@ const loadProductPageLoad = async (req,res)=>{
     }
 }
 
+ // ---------------------------------------- Apply Product Offer ------------------------------------------------//
+ const applyProductOffer = async(req, res)=>{
+    try {
+        const { offerId, productId } = req.body;
+
+        const offerData = await Offer.findOne({ _id: offerId });
+
+        if(!offerData){
+            return res.json({status:false,message:"Offer not found"});
+        };
+
+        const productData = await Product.findOne({_id:productId}).populate('category');
+
+
+        if(!productData){
+            return res.json({status:false,message:"Product not found"});
+        };
+
+        // Get the category discount, if available
+        const categoryDiscount = productData.category && productData.category.offer ? await Offer.findOne({_id:productData.category.offer}):0;
+
+        // Calculate real price and discounted price for the product
+        const discountPercentage = offerData.percentage;
+        const originalPrice = parseFloat(productData.price);
+        const discountedPrice = originalPrice-(originalPrice*discountPercentage)/100;
+
+        // Check if category offer is available and its discount is greater than product offer
+        if(categoryDiscount && categoryDiscount.percentage > discountPercentage){
+            return res.json({status:false, message: 'Category offer has greater discount'});
+        }
+
+        await Product.updateOne({_id:productId},
+            {
+                $set:{
+                    offer:offerId,
+                    discountedPrice:discountedPrice
+                }
+            });
+        
+            const updatedProduct = await Product.findOne({_id:productId}).populate('offer')
+            res.json({status:true})
+
+    } catch (error) {
+        console.error(error);
+        res.render('500')
+    }
+  }
+
+
+  // ------------------------------- Remove Product Offer -------------------------------------------//
+  const removeProductOffer = async(req, res)=>{
+    try {
+
+        const {productId}=req.body;
+
+        const updatedProductData = await Product.updateOne({_id:productId},
+            {$unset:{
+                offer:"",
+                discountedPrice:""
+
+            }});
+
+            return res.json({status:true});
+
+        
+    } catch (error) {
+        console.error(error);
+        res.render('500')
+    }
+  }
 module.exports = {
     
     viewProduct,
@@ -197,4 +274,6 @@ module.exports = {
     editProduct,
     productListorUnlist,
     loadProductPageLoad,
+    applyProductOffer,
+    removeProductOffer
 }   

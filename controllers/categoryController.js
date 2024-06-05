@@ -1,18 +1,26 @@
+const { default: mongoose } = require('mongoose');  
 const Category = require('../models/categoryModel');
+const Offer = require('../models/offerModel');
+const Product = require('../models/productModel');
 
 // View Category Dashboard
 const viewCategory = async (req, res) => {
     try {
-        const categoryData = await Category.find();   // Fetch categories from the database        
-        // console.log(categoryData);
+        const categoryData = await Category.find({}).populate('offer').exec();
+        const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
 
-        res.render('view-category', { message: 'View Category', categoryData }); // passing categoryData
+        res.render('view-category', {
+            title: 'View Category',
+            categoryData,
+            availableOffers
+        });
 
     } catch (error) {
         console.log(error);
-        res.status(500).send('Server error');
+        res.render('500');
     }
 }
+
 
 // Add new category Load
 const addCategoryLoad = async (req, res) => {
@@ -140,10 +148,10 @@ const categoryListorUnlist = async (req, res) => {
 
 const applyCategoryOffer = async (req, res) => {
     try {
-        const { offerId, categoryId } = req.body;
+            const { offerId, categoryId } = req.body;
 
         const offerData = await Offer.findOne({ _id: offerId });
-
+        // console.log("offerData",offerData);
         if (!offerData) {
             return res.json({ status: false, message: 'Offer not found' });
         }

@@ -118,14 +118,15 @@
                         </div><!-- End .compare-dropdown -->
 
                         <div class="wishlist">
-                            <a href="wishlist.html" title="Wishlist">
+                            <a href="wishlist.html" title="Wishlist" id="wishlist-link">
                                 <div class="icon">
                                     <i class="icon-heart-o"></i>
                                     <span class="wishlist-count badge">3</span>
                                 </div>
                                 <p>Wishlist</p>
                             </a>
-                        </div><!-- End .compare-dropdown -->
+                        </div><!-- End .wishlist -->
+                        
 
                         <div class="dropdown cart-dropdown">
                             <a href="cart" class="dropdown-toggle" >
@@ -192,4 +193,10 @@
                 </div><!-- End .container -->
             </div><!-- End .header-bottom -->
         </header><!-- End .header -->
+        <script>
+            document.getElementById("wishlist-link").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevents the default action of the link
+               
+            });
+        </script>
         

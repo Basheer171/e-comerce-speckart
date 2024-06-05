@@ -123,8 +123,11 @@ admin_route.get('/edit-offer',admiauth.isLogin, offerController.loadEditOffer);
 admin_route.post('/edit-offer',admiauth.isLogin, offerController.editOffer);
 admin_route.patch('/cancelOffer',admiauth.isLogin, offerController.cancelOffer);
 
-// admin_route.patch('/applyOffer',admiauth.isLogin, categoryController.applyCategoryOffer);
+admin_route.patch('/applyOffer',admiauth.isLogin, categoryController.applyCategoryOffer);
+admin_route.patch('/removeOffer', admiauth.isLogin, categoryController.removeCategoryOffer);
 
+admin_route.patch('/applyProductOffer',admiauth.isLogin, productController.applyProductOffer);
+admin_route.patch('/removeProductOffer', admiauth.isLogin, productController.removeProductOffer);
 
 
 

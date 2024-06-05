@@ -4,9 +4,7 @@ const Offer = require('../models/offerModel');
 //------------------------------------------- Load View Offer Page ------------------------------------------//
 const loadViewOffer = async (req, res) => {
     try {
-        
         const offerData = await Offer.find().sort({ date: -1 });
-
         res.render('view-offers', {
             title: 'View Offers',
             offerData: offerData,
@@ -21,7 +19,7 @@ const loadViewOffer = async (req, res) => {
 };
 
 
-
+    
 // --------------------------------------- Load Add Offer Page ---------------------------------------------//
 const loadAddOffer = async(req, res)=>{
     try {

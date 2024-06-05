@@ -104,6 +104,10 @@ user_route.delete('/deleteAddress',auth.isLogin,userController.deleteAddress)
 // ========================  checkout   ==========================
 
 user_route.get('/checkout',auth.isLogin,  auth.is_blocked, orderController.loadCheckout );
+
+user_route.post('/verifyPayment',auth.isLogin, orderController.verifyPayment);
+
+
 user_route.get('/editCheckout',auth.isLogin,  auth.is_blocked,orderController.editAddressLoad );
 user_route.delete('/deleteAddress',auth.isLogin,orderController.deleteAddress)
 user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);

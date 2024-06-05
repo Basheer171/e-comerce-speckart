@@ -159,9 +159,7 @@
                                         <div class="bg-gradient-primary shadow-primary border-radius-lg ">
                                             <div
                                                 class="row justify-content-lg-between align-items-center margin-0 py-0">
-                                                <div class="col-md-12 col-lg-6 mb-2 mb-lg-0">
-                                                    <h6 class="text-white text-capitalize ps-3">  <%=message%></h6>
-                                                </div>
+                                               
                                                 <div class="col-md-12 col-lg-6">
                                                     <div class="d-flex justify-content-end">
                                                         <a class="nav-link text-white " href="/admin/add-product">
@@ -184,31 +182,22 @@
                                             <table class="table align-items-center" id="user-table">
                                                 <thead>
                                                     <tr style="background-color: rgb(227, 225, 225);">
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">No</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Product Name</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Category</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Brand</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Quantity</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Description</th>
-                                                        <th class="text-center text-uppercase text-xxs font-weight-bolder "
-                                                            style="color: black;">Price</th>
-                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Image</th>
-                                                        <th class="text-uppercase text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Update</th>
-                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Status</th>
-                                                        <th class="text-uppercase  text-xxs font-weight-bolder  ps-2"
-                                                            style="color: black;">Action</th>
-
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">No</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Product Name</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Category</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Brand</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Quantity</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Description</th>
+                                                      <th class="text-center text-uppercase text-xxs font-weight-bolder " style="color: black;">Price</th>
+                                                      <th class="text-uppercase  text-xxs font-weight-bolder  ps-2" style="color: black;">Image</th>
+                                                      <th class="text-uppercase  text-xxs font-weight-bolder  ps-2" style="color: black;">Status</th>
+                                                      <th class="text-uppercase text-xxs font-weight-bolder  ps-2" style="color: black;">Update</th>
+                                                      <th class="text-uppercase  text-xxs font-weight-bolder  ps-2" style="color: black;">Offers Status</th>
+                                                      <th class="text-uppercase  text-xxs font-weight-bolder  ps-2" style="color: black;">Offers</th>
+                                                      <th class="text-uppercase  text-xxs font-weight-bolder  ps-2" style="color: black;">Action</th>
+                                    
                                                     </tr>
-                                                </thead>
+                                                  </thead>
                                                 <tbody>
                                                     <% let counter=1; %>
                                                         <% product.forEach(products=> { %>
@@ -275,6 +264,27 @@
                                                                         </td>
                                                                         <%}%>
 
+                                                                        <td>
+                                                                            <% if(products.offer){%>
+                                                                              <span class="text-danger text-sm">Product Offer Applied !</span><br>
+                                                                              <span class="text-info text-sm"><%=products.offer.offerName %></span>
+                                                                            <p class="text-xs text-success font-weight-bold mb-0"><%=products.offer.percentage%>% Discount</p>
+                                                                            <%}else if(products.category && products.category.offer){%>
+                                                                              <span class="text-warning text-sm">Category Offer Applied !</span><br>
+                                                                              <span class="text-info text-sm"><%=products.category.offer.offerName %></span>
+                                                                              <p class="text-xs text-success font-weight-bold mb-0"><%=products.category.offer.percentage%>% Discount</p>
+                                                                              <% }else{%>
+                                                                                <span class="text-danger text-sm">No offer</span>
+                                                                                <% } %>
+                                                                          </td>
+                                                      
+                                                                            <td>
+                                                                              <% if(products.offer){%>
+                                                                                <a href="#" onclick="removeProductOffer('<%=products._id%>')"><span class="badge badge-sm bg-gradient-danger">Remove Offer</a></span>
+                                                                                <% }else{%>
+                                                                                  <a href="#" class="badge badge-sm bg-gradient-success open-offer-modal" data-bs-toggle="modal" data-bs-target="#offerModal" data-pro-id="<%=products._id%>">Apply offer</a>
+                                                                                <% } %>
+                                                                              </td>
                                                                             <!-- product List/Unlist -->
                                                                             <% if(products.is_active===true){%>
                                                                                 <td class=" text-sm">
@@ -308,6 +318,47 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        
+<!---------------------------------------- modal_disply_offers ---------------------------------------------->
+<div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLabel">Offer List</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: black;"></button>
+          </div>
+          <div class="modal-body" id="offer-modal_1">
+           
+            <% availableOffers.forEach((offer)=>{%>
+         
+           <div class="card" style="width: 25rem; background-color: cadetblue;">
+             <!-- <img src="/adminAssets/images/offer_sticker.png" class="card-img-top" alt="..."> -->
+             <div class="card-body custom-card-background" style="height: .25rem;">
+               <h5 class="card-title" style="color: white;"><%=offer.offerName%></h5>
+             </div>
+             <ul class="list-group list-group-flush" style="background-color: rgb(238, 10, 97);">
+               <li class="list-group-item" style="color: black;">Starting Date:<%=offer.startingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-')%></li>
+               <li class="list-group-item" style="color: black;">Expiry Date:<%=offer.expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).replace(/\//g, '-')%></li>
+               <li class="list-group-item" style="color: black;">Discount:<%=offer.percentage%>%</li>
+             </ul>
+           </div>
+     
+               <div class="d-flex mt-2">
+                 <button type="button" onclick="applyProductOffer('<%= offer._id%>')"  class="btn btn-primary" >Apply</button>
+               </div>
+          <% }); %>
+          
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+     </div>
+    </div>
+  </div>
+  </div>
+  
+
                         <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
                         <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -375,6 +426,121 @@
     }
   });
 </script>
+
+  <!-- script for Data Table -->
+  <script>
+    $(document).ready(function () {
+      $('#dtBasicExample').DataTable({
+            responsive: true
+          });
+        $('.dataTables_length').addClass('bs-select');
+    });
+  </script>
+  <!-- Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var openOfferModalButtons = document.querySelectorAll('.open-offer-modal');
+  
+      openOfferModalButtons.forEach(function (button) {
+        button.addEventListener('click', function (e) {
+          var productId = button.getAttribute('data-pro-id');
+          updateModalContent(productId);
+        });
+      });
+  
+      function updateModalContent(productId) {
+        
+        var modal_1 = document.getElementById('offer-modal_1');
+        modal_1.setAttribute('productId', productId);
+        modalTitle.innerText = 'Offer List for Category ID: ' + productId;
+      }
+    });
+  </script>
+  
+  <script>
+    async function applyProductOffer(offerId) {
+      const productId = document.getElementById('offer-modal_1').getAttribute('productId');
+  
+      try {
+        const response = await fetch('/admin/applyProductOffer', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ offerId, productId }),
+        });
+  
+        if (response.ok) {
+          const result = await response.json();
+          if (result.status) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Applied successfully.',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload();
+            });
+          }
+        } else {
+          throw new Error('Unable to apply the offer.');
+        }
+      } catch (error) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Unable to communicate with the server.',
+          icon: 'error'
+        });
+      }
+    }
+  
+    async function removeProductOffer(productId) {
+      try {
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'You won\'t be able to revert this!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, remove it!'
+        });
+  
+        if (result.isConfirmed) {
+          const response = await fetch('/admin/removeProductOffer', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+          });
+  
+          if (response.ok) {
+            const result = await response.json();
+            if (result.status) {
+              Swal.fire({
+                title: 'Removed!',
+                text: 'Your file has been removed.',
+                icon: 'success'
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              throw new Error('Unable to delete the file.');
+            }
+          } else {
+            throw new Error('Unable to delete the file.');
+          }
+        }
+      } catch (error) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Unable to communicate with the server.',
+          icon: 'error'
+        });
+      }
+    }
+  </script>
 
                         <%- include('../layouts/admin/footer.ejs') %>
 
