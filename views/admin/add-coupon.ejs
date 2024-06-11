@@ -257,6 +257,7 @@
               data: formData,
               dataType: 'json',
               success: function (response) {
+                
                   // Handle the response from the server
                   if (response.success) {
                       // Coupon added successfully
@@ -269,8 +270,16 @@
                           // Redirect after SweetAlert2 timer finishes
                           window.location.href = '/admin/view-coupon';
                       });
-                  } else {
+                  } else if(response.invalidPrice) {
                       // Coupon addition failed
+                      Swal.fire({
+                          title: 'Warning!',
+                          text: response.message,
+                          icon: "warning",
+                          confirmButtonText: 'OK',
+                          confirmButtonColor: '#ffcc00'
+                      });
+                  }else{
                       Swal.fire({
                           title: 'Warning!',
                           text: response.message,

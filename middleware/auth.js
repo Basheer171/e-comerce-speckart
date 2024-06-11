@@ -15,22 +15,26 @@ const isLogin = async (req, res, next) => {
 }
 
 // Check user is blocked/not
-const is_blocked = async(req, res, next)=>{
+// Check user is blocked/not
+const is_blocked = async (req, res, next) => {
     try {
-
         const userData = await User.findById(req.session.user_id);
-        // console.log('user data', userData);
-        if(userData.is_block===true){
-
-            res.render('login',{message:'Blocked By Admin'});
-        }else{
-            next();
+        
+        if (!userData) {
+            return res.render('login', { message: 'User not found' });
         }
 
+        if (userData.is_block === true) {
+            return res.render('login', { message: 'Blocked By Admin' });
+        } else {
+            next();
+        }
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 
 const isLogout = async (req, res, next) => {

@@ -6,7 +6,7 @@ const couponScheema = new mongoose.Schema({
         required:true,
     },
     couponCode:{
-        type:String,
+        type:String, 
         required:true,
     },
     discountAmount:{

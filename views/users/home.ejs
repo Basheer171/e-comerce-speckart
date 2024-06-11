@@ -190,67 +190,76 @@
                     <!-- /container -->
                 </div>
                 <!-- /SECTION -->
-            </div><!-- End .heading -->
+              </div><!-- End .heading -->
 
 
-            <div class="container">
+              <div class="container">
                 <div class="heading heading-center mb-6 mt-4">
                     <h2 class="title">Recent Arrivals Products</h2><!-- End .title -->
                     <p style="font-size: larger;" class="mb-3">Step Up Your Style</p>
                     <div class="products mb-3">
                         <div class="row justify-content-center">
-
-                            <% for(i=0;i<products.length;i++) {%>
+            
+                            <% for (let i = 0; i < products.length; i++) { %>
                                 <div class="col-6 col-md-4 col-lg-4 col-xl-3">
                                     <div class="product product-7 text-center">
                                         <figure class="product-media">
                                             <a href="/product?id=<%= products[i]._id %>">
-                                                <img src="/public/userImages/<%= products[i].image %>"
-                                                    alt="Product image" class="product-image">
-
+                                                <img src="/public/userImages/<%= products[i].image %>" alt="Product image" class="product-image">
+                                                <%if (products[i].offer ){%>
+                                                    <div class="product-lable-badge" style=" position: absolute;
+                                                    top: 20px; 
+                                                    left: 20px; 
+                                                    background-color: red;
+                                                    color: white;
+                                                    padding-left: 10px;
+                                                    padding-right: 10px;
+                                                    ">
+                                                      <span class="product-lable" style="font-size: 12px;"><%= products[i].offer.percentage %> % OFF</span>
+                                                    </div>
+                                                    <%}%>
                                             </a>
-
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a> 
-                                            </div><!-- End .product-action-vertical -->
                                         </figure><!-- End .product-media -->
-
+                                        
                                         <div class="product-body">
-                                            <div class="product-cat">
-
-                                                <a rel="tag" style="font-size: 14px;">
-                                                    <%= products[i].category %>
-                                                </a>
-                                            </div>
-                                            <h3 class="product-title"><a>
-                                                    <%= products[i].name %>
-                                                </a></h3><!-- End .product-title -->
-                                            <div class="product-price">
-                                                ₹<%= products[i].price %>
-                                            </div><!-- End .product-price -->   
+                                            <!-- Debugging: Output product name and price -->
+                                            <h3 class="product-title"><a><%= products[i].name %></a></h3><!-- End .product-title -->
+                                            
+                                            <% if (products[i].offer) { %>
+                                                <div class="product-price">
+                                                    <del> ₹<%= products[i].price %></del>
+                                                    <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice) %></span>
+                                                </div><!-- End .product-price -->
+                                            <% } else { %>
+                                                <div class="product-price">
+                                                    ₹<%= products[i].price %>
+                                                </div><!-- End .product-price -->
+                                            <% } %>
                                         </div><!-- End .product-body -->
-                                        <%if(products[i].qty>0){%>
+                            
+                                        <!-- Product action buttons -->
+                                        <% if (products[i].qty > 0) { %>
                                             <div class="product-action">
                                                 <a class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')" id="addToCartBtn_<%= products[i]._id %>">
                                                     <span>add to cart</span>
                                                 </a>
                                             </div><!-- End .product-action -->
-                                            
-                                    <%}else{%>
-                                        <div class="product-action">
-                                            <a  class="btn-product btn-cart" ><span>OUT OF STOCK</span></a>
-                                        </div><!-- End .product-action --> 
-                                    <%}%>
+                                        <% } else { %>
+                                            <div class="product-action">
+                                                <a class="btn-product btn-cart"><span>OUT OF STOCK</span></a>
+                                            </div><!-- End .product-action -->
+                                        <% } %>
                                     </div><!-- End .product -->
                                 </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                                <%}%>
-
-
+                            <% } %>
+                            
+            
+            
                         </div>
                     </div>
                 </div><!-- End .container -->
+            </div>
+            
                 <%- include('../layouts/user/footer.ejs') %>
 
 

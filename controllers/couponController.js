@@ -49,6 +49,9 @@ const {
 
 }=req.body;
 
+  if(discountAmount > minimumSpend){
+    return res.json({ invalidPrice: true, message: 'discount amount cant be abouve the minimum spend' });
+  }
 
 // Check if coupon name is unique
 const existingCouponName = await couponDb.findOne({ couponName: couponName });
@@ -108,10 +111,8 @@ const loadEditCoupon = async(req, res)=>{
     }
 };
 
-// Edit Coupon and Update
-const editCoupon = async(req, res)=>{
+const editCoupon = async (req, res) => {
     try {
-        
         const {
             couponName,
             couponCode,
@@ -121,27 +122,58 @@ const editCoupon = async(req, res)=>{
             minimumSpend,
             usersLimit,
             description
-        
-        }=req.body;
+        } = req.body;
 
-        const updatedCoupon = await couponDb.findOneAndUpdate({
-            _id:req.query.id},
-            {$set:{
-                couponName:couponName,
-                couponCode:couponCode,
-                discountAmount:discountAmount,
-                validFrom:validFrom,
-                validTo:validTo,
-                minimumSpend:minimumSpend,
-                usersLimit:usersLimit,
-                description:description
-            }});
-            
-            res.redirect('/admin/view-coupon');
-            
-        
+        // Ensure discount amount is not greater than minimum spend
+        if (Number(discountAmount) > Number(minimumSpend)) {
+            return res.json({ invalidPrice: true, message: 'Discount amount can\'t be above the minimum spend' });
+        }
+
+        // Check if coupon name is unique (excluding current coupon)
+        const existingCouponName = await couponDb.findOne({
+            couponName: couponName,
+            _id: { $ne: req.query.id }
+        });
+        if (existingCouponName) {
+            return res.json({ success: false, message: 'Coupon name already exists' });
+        }
+
+        // Check if coupon code is unique (excluding current coupon)
+        const existingCouponCode = await couponDb.findOne({
+            couponCode: couponCode,
+            _id: { $ne: req.query.id }
+        });
+        if (existingCouponCode) {
+            return res.json({ success: false, message: 'Coupon code already exists' });
+        }
+
+        // Update the coupon
+        const updatedCoupon = await couponDb.findOneAndUpdate(
+            { _id: req.query.id },
+            {
+                $set: {
+                    couponName: couponName,
+                    couponCode: couponCode,
+                    discountAmount: discountAmount,
+                    validFrom: validFrom,
+                    validTo: validTo,
+                    minimumSpend: minimumSpend,
+                    usersLimit: usersLimit,
+                    description: description
+                }
+            },
+            { new: true } // Option to return the updated document
+        );
+
+        if (!updatedCoupon) {
+            return res.json({ success: false, message: 'Coupon not found' });
+        }
+
+        res.json({ success: true, message: 'Coupon updated successfully' });
+
     } catch (error) {
         console.log(error);
+        res.json({ success: false, message: 'An error occurred while updating the coupon' });
     }
 };
 
@@ -168,10 +200,14 @@ const couponUserPageLoad = async(req, res)=>{
         const userId = req.session.user_id;
         const userData = await userDb.findOne({_id:userId});
      
-        const couponData = await couponDb.find({status:true});
+        // Get the current date
+        const currentDate = new Date();
+
+        // Fetch only the coupons that are still valid
+        const couponData = await couponDb.find({status: true, validTo: { $gte: currentDate }});
         
-        res.render('coupon',{
-            user:userData,
+        res.render('coupon', {
+            user: userData,
             couponData,
         });
         
@@ -183,29 +219,27 @@ const couponUserPageLoad = async(req, res)=>{
 
 
 
+
 // --------------------------------- Function for applying coupon on the user side (Checkout Page) ------------------------------------------//
 const applyCoupon = async(req, res)=>{
 
     try {
         const userId = req.session.user_id;
        
-        const code = req.body.code
+        const code = req.body.code         
       
 
         req.session.code=code;
 
         const amount = Number(req.body.amount);
        
-        const cartData = await cartDb.findOne({userId:userId}).populate('products.productId');
+        const cartData = await cartDb.findOne({user:userId}).populate('products.productId');
         
 
         let totalPrice=0;
 
-        const userExist = await couponDb.findOne({
-            couponCode:code,
-            usedUsers:{$in:[userId]}
-        });
-       
+        const userExist = await couponDb.findOne({ couponCode:code, usedUsers: {$in:[userId]} });
+        
         if (cartData && cartData.products.length > 0) {
             const products = cartData.products;
             for (const product of products) {

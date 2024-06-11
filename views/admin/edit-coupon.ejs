@@ -1,206 +1,226 @@
-
 <%- include('../layouts/admin/header.ejs') %>
 
 <style>
-    .form-control{
+    .form-control {
         background-color: rgb(230, 233, 233);
     }
-    .btn{
-      width: 50%;
+    .btn {
+        width: 50%;
     }
-    .btn-control{
-      display: flex;
-      justify-content: center;
+    .btn-control {
+        display: flex;
+        justify-content: center;
     }
-    input[type=text]{
-      padding: 12px 20px;
+    input[type=text],
+    input[type=date],
+    input[type=number] {
+        padding: 12px 20px;
     }
-    input[type=date]{
-      padding: 12px 20px;
-    }
-    input[type=number]{
-      padding: 12px 20px;
-    }
-
 </style>
 
-<!-- saideNaveBar -->
-
-<body class="g-sidenav-show  bg-gray-200">
-    <aside
-    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
-    id="sidenav-main">
-    <div class="sidenav-header" style="margin: 15px;">
-      <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-        aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
-        target="_blank"></a>
-      <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
-      <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
-      </a>
-    </div>
-    <hr class="horizontal light mt-0 mb-2">
-    <!-- <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main"> --> 
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link " href="/admin/home">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">dashboard</i>
-          </div>
-          <span class="nav-link-text ms-1">Dashboard</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/view-users">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">group</i>
-          </div>
-          <span class="nav-link-text ms-1">Users</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="/admin/view-category">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">inventory_2</i>
-          </div>
-          <span class="nav-link-text ms-1">Category</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/view-product">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">branding_watermark</i>
-          </div>
-          <span class="nav-link-text ms-1">Porducts</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/view-brand">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">category</i>
-          </div>
-          <span class="nav-link-text ms-1">Brand</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/view-orders">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">wysiwyg</i>
-          </div>
-          <span class="nav-link-text ms-1">Orders</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-coupon">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">redeem</i>
-          </div>
-          <span class="nav-link-text ms-1">Coupon</span>
-        </a>
-      </li>
-      <li class="nav-item mt-3">
-        <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages
-        </h6>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white " href="./pages/profile.html">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">person</i>
-          </div>
-          <span class="nav-link-text ms-1">Profile</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white " href="/admin/logout">
-          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="material-icons opacity-10">logout</i>
-          </div>
-          <span class="nav-link-text ms-1">Log out</span>
-        </a>
-      </li>
-      <!-- <li class="nav-item">
-<a class="nav-link text-white " href="./pages/sign-up.html">
-  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-    <i class="material-icons opacity-10">assignment</i>
-  </div>
-  <span class="nav-link-text ms-1">Sign Up</span>
-</a>
-</li> -->
-    </ul>
-    <!-- </div> -->
-    <!-- <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-<div class="mx-3">
-<a class="btn bg-gradient-primary mt-4 w-100" href="https://www.creative-tim.com/product/material-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
-</div>
-</div> -->
-  </aside>
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-      
-  <!-- endSaidNavBar -->
-
-  <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3"><%= message %></h6>
+<body class="g-sidenav-show bg-gray-200">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark" id="sidenav-main">
+        <div class="sidenav-header" style="margin: 15px;">
+            <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand m-0" href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
+                <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
+                
+            </a>
+        </div>
+        <hr class="horizontal light mt-0 mb-2">
+        <ul class="navbar-nav">
+            <!-- Dashboard Link -->
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/home">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">dashboard</i>
                     </div>
-                </div>
-                <div class="card-body px-0 pb-2">
-                    <div class="container-fluid">
-                        <form class="row g-3" action="" method="post" id="couponForm">
-                          <% if(couponData){%>
-                            <div class="col-md-6">
-                              <label for="inputCouponName" class="form-label">Coupon Name</label>
-                              <input type="text" name="couponName" class="form-control" id="couponName" placeholder="Coupon Name" value="<%=couponData.couponName%>"> 
-                              <div id="couponNameError" class="error-message text-danger"></div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+            <!-- Users Link -->
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-users">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">group</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Users</span>
+                </a>
+            </li>
+            <!-- Other Links -->
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-category">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">inventory_2</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Category</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-product">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">branding_watermark</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Products</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-brand">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">category</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Brand</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/view-orders">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">wysiwyg</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white active bg-gradient-primary" href="/admin/view-coupon">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">redeem</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Coupon</span>
+                </a>
+            </li>
+            <!-- Account Pages -->
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="./pages/profile.html">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">person</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/admin/logout">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">logout</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Log out</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                <h6 class="text-white text-capitalize ps-3"><%= message %></h6>
                             </div>
-                            <div class="col-md-6">
-                              <label for="inputCouponCode" class="form-label">Coupon Code</label>
-                              <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Coupon Code" value="<%=couponData.couponCode%>">
+                        </div>
+                        <div class="card-body px-0 pb-2">
+                            <div class="container-fluid">
+                                <form class="row g-3" action="" method="post" id="couponForm">
+                                    <% if (couponData) { %>
+                                        <div class="col-md-6">
+                                            <label for="couponName" class="form-label">Coupon Name</label>
+                                            <input type="text" name="couponName" class="form-control" id="couponName" placeholder="Coupon Name" value="<%= couponData.couponName %>">
+                                            <div id="couponNameError" class="error-message text-danger"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="couponCode" class="form-label">Coupon Code</label>
+                                            <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Coupon Code" value="<%= couponData.couponCode %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="discountAmount" class="form-label">Discount Amount</label>
+                                            <input type="number" class="form-control" id="discountAmount" name="discountAmount" placeholder="Discount Amount" value="<%= couponData.discountAmount %>">
+                                            <div id="discountAmountError" class="error-message text-danger"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="validFrom" class="form-label">Valid From</label>
+                                            <input type="date" class="form-control" id="validFrom" name="validFrom" value="<%= couponData.validFrom.toISOString().slice(0, 10) %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="validTo" class="form-label">Valid To</label>
+                                            <input type="date" class="form-control" id="validTo" name="validTo" value="<%= couponData.validTo.toISOString().slice(0, 10) %>">
+                                            <div id="validToError" class="error-message text-danger"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="minimumSpend" class="form-label">Minimum Margin Amount</label>
+                                            <input type="number" class="form-control" id="minimumSpend" name="minimumSpend" placeholder="Margin Amount" value="<%= couponData.minimumSpend %>">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="usersLimit" class="form-label">User Limit</label>
+                                            <input type="number" class="form-control" id="usersLimit" name="usersLimit" placeholder="User Limit" value="<%= couponData.usersLimit %>">
+                                            <div id="userLimitError" class="error-message text-danger"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="description" class="form-label">Description</label>
+                                            <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<%= couponData.description %>">
+                                        </div>
+                                        <div class="btn-control">
+                                            <input type="hidden" name="id" value="<%= couponData._id %>">
+                                            <button type="submit" class="btn btn-info mr-2" id="submitBtn">Update Coupon</button>
+                                        </div>
+                                    <% } else { %>
+                                        <p>No data available for this coupon.</p>
+                                    <% } %>
+                                </form>
                             </div>
-                            <div class="col-md-6">
-                                <label for="inputDiscountAmount" class="form-label">Discount Amount</label>
-                                <input type="number" class="form-control" id="discountAmount" name="discountAmount" placeholder="Discount Amount" value="<%=couponData.discountAmount%>">
-                                <div id="discountAmountError" class="error-message text-danger"></div>
-                              </div>
-                              <div class="col-md-6">
-                                <label for="inputValidFrom" class="form-label">Valid From</label>
-                                <input type="date" class="form-control" id="validFrom" name="validFrom" value="<%=couponData.validFrom.toISOString().slice(0, 10)%>">
-                              </div>
-                              <div class="col-md-6">
-                                <label for="inputValidTo" class="form-label">Valid To</label>
-                                <input type="date" class="form-control" id="validTo" name="validTo" value="<%=couponData.validTo.toISOString().slice(0, 10)%>">
-                                <div id="validToError" class="error-message text-danger"></div>
-                              </div>
-                              <div class="col-md-6">
-                                <label for="inputMiniMarginAmount" class="form-label">Minimum Margin Amount</label>
-                                <input type="number" class="form-control" id="minimumSpend" name="minimumSpend" placeholder="Margin Amount" value="<%=couponData.minimumSpend%>">
-                              </div>
-                              <div class="col-md-6">
-                                <label for="inputUserLimit" class="form-label">User Limit</label>
-                                <input type="number" class="form-control" id="usersLimit" name="usersLimit" placeholder="User Limit" value="<%=couponData.usersLimit%>">
-                                <div id="userLimitError" class="error-message text-danger"></div>
-                              </div>
-                              <div class="col-md-6">
-                                <label for="inputDescription" class="form-label">Description</label>
-                                <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<%=couponData.description%>">
-                              </div>
-                              <div class="btn-control">
-                                <input type="hidden" name="id" value="<%=couponData._id%>">
-                                <button type="submit" class="btn btn-info mr-2" id="submitBtn">Update Coupon</button>
-                              </div>
-                              <% }else{ %>
-                                <p>No data available for this coupon.</p>
-                                <% } %>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <%- include('../layouts/admin/footer.ejs') %>
         </div>
-    </div>
-    <%- include('../layouts/admin/footer.ejs') %>
-</div>
-</main>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('couponForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            console.log("formData",formData);
+            const formProps = Object.fromEntries(formData);
+            console.log("formProps",formProps);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: this.method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formProps),
+                }); 
+console.log("response",response);
+                const data = await response.json();
+console.log("data",data);
+                if (!data.success) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                    }).then(() => {
+                        window.location.href = '/admin/view-coupon';
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the coupon.',
+                });
+            }
+        });
+    </script>
+</body>
+</body>

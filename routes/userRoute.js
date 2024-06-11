@@ -31,6 +31,7 @@ const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const orderController = require('../controllers/orderController');
+const couponController = require('../controllers/couponController')
 
 user_route.use(fetchUserData)
 
@@ -117,11 +118,18 @@ user_route.post('/shipAddAddress',auth.isLogin,orderController.shipaddAddress);
 user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 user_route.get('/orderPlace/:id',auth.isLogin,orderController.loadPlaceOrder );
 user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
-user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDeatail );
+user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetail );
 user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder)
 
+  user_route.get('/coupon', auth.isLogin, couponController.couponUserPageLoad);
+  user_route.post('/couponApply', auth.isLogin, couponController.applyCoupon);
+  user_route.post('/deleteCoupon', auth.isLogin, couponController.deleteAppliedCoupon);
 
-// user_router.get('/coupon', auth.isLogin, couponController.couponUserPageLoad);
+user_route.get('/wallet', auth.isLogin , userController.load_wallet);
+
+
+
+
 
 
 

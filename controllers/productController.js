@@ -180,9 +180,8 @@ const loadProductPageLoad = async (req,res)=>{
     try {
       const productID = req.query.id;
       
-      let product=await Product.findOne({_id:productID})
+      let product=await Product.findOne({_id:productID}).populate('offer');
     //   console.log('product',product);
-
       res.render('product',{
         product:product,
         user:req.session.user_id, 

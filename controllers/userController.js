@@ -5,6 +5,7 @@
   const category = require('../models/categoryModel')
   const addressModel = require('../models/addressModel')
   const Brand = require('../models/brandModel');
+  const offerDb = require('../models/offerModel');
 
   const nodemailer = require("nodemailer");
 
@@ -421,10 +422,11 @@
 
   const loadHome = async(req,res)=>{
       try{
-
-          const productData = await Product.find({is_active:true})
+        const productData = await Product.find({is_active:true})
+        .populate('offer')
           // console.log('profuct data',productData);
           const categoryData = await category.find({is_block:false})
+      
           
           res.render('home',{ 
               user:req.session.user_id,
@@ -646,14 +648,15 @@
           const products = await Product.find({
             is_active: true,
             $or: [
-              { name: { $regex: search, $options: 'i' } },
-              { category: { $regex: search, $options: 'i' } },
-              { brandName: { $regex: search, $options: 'i' } },
+              { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+              // { category: { $regex: '.*' + search + '.*', $options: 'i' } },
+              // { brandName: { $regex: '.*' + search + '.*', $options: 'i' } },
             ]
           })
           .limit(limit)
           .skip((page - 1) * limit)
           .exec();
+          
           
 
           // Count of pages
@@ -661,8 +664,8 @@
             is_active:true,
             $or:[
                 {name:{$regex:'.*'+search+'.*',$options:'i'}},
-                {category:{$regex:'.*'+search+'.*',$options:'i'}},
-                {brandName:{$regex:'.*'+search+'.*',$options:'i'}},
+                // {category:{$regex:'.*'+search+'.*',$options:'i'}},
+                // {brandName:{$regex:'.*'+search+'.*',$options:'i'}},
             ]
         }).countDocuments()
 
@@ -868,6 +871,21 @@
     }
   };
 
+  const load_wallet = async(req, res) =>{
+   try {
+
+    user_id = req.session.user_id;
+    const user_Data = await User.findOne({_id : user_id});
+    res.render('wallet',{user:user_Data})
+
+   } catch (error) {
+
+    console.log(error);
+    
+   }
+
+  }
+
 
 
     
@@ -899,6 +917,5 @@
       editAddressLoad,
       editAddress,
       deleteAddress,
-      
-
-  }
+      load_wallet,
+      }

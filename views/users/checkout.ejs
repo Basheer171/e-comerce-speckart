@@ -193,25 +193,26 @@
                                                 </tr>
                                                 <% }) %>
                                                  <!-- coupon details-->
-                    <div class="coupon-details">
-                        <div class="section-title mb-0">
-                            <h6 class="title">Have a coupon?</h6>
-                        </div>
-                        <div class="input-checkbox">
-                            <input type="checkbox" id="coupon-details" onchange="toggleCouponInput()">
-                            <label for="coupon-details">
-                                <span></span>
-                                Click here.
-                            </label>
-                            <div class="caption" id="couponInputContainer" style="display: none;">
-                                <div class="form-group">
-                                    <input class="input" type="text" id="code" name="code" placeholder="Apply your coupon code">
-                                </div>
-                                <button id="apply" type="button" class="btn btn-primary" onclick="applyCoupon($('#code').val())">Apply</button>
-                                <button id="unApply" type="button" class="btn btn-danger" onclick="unApplyCoupon($('#code').val())" style="display: none;">Unapply</button>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Coupon Input Field -->
+    <div class="coupon-details">
+        <div class="section-title mb-0">
+            <h6 class="title">Have a coupon?</h6>
+        </div>
+        <div class="input-checkbox">
+            <input type="checkbox" id="coupon-details" onchange="toggleCouponInput()">
+            <label for="coupon-details">
+                <span></span>
+                Click here.
+            </label>
+            <div class="caption" id="couponInputContainer" style="display: none;">
+                <div class="form-group">
+                    <input class="input" type="text" id="code" name="code" placeholder="Apply your coupon code">
+                </div>
+                <button id="apply" type="button" class="btn btn-primary" onclick="applyCoupon($('#code').val())">Apply</button>
+                <button id="unApply" type="button" class="btn btn-danger" onclick="unApplyCoupon($('#code').val())" style="display: none;">Unapply</button>
+            </div>
+        </div>
+    </div>
                     <!--end coupon details-->
 
                                                     <tr>
@@ -229,9 +230,13 @@
                                                     <tr class="summary-total" id="total">
                                                         <td>Total:</td>
                                                         <td>
-                                                            <%= Total %>
+                                                            <!-- Old total amount (strikethrough style) -->
+                                                            <span id="oldTotal"><%= Total %></span><br>
+                                                            <!-- New total amount (bold style) -->
+                                                            <span id="newTotal" style="font-weight: bold;"></span>
                                                         </td>
                                                     </tr><!-- End .summary-total -->
+                                                    
                                                     <!-- coupon discount -->
                     <div class="order-col">
                         <div>Coupon Discount</div>
@@ -301,6 +306,9 @@
             </div><!-- End .checkout -->
         </div><!-- End .page-content -->
         <!--------------------------- Modal avialabel coupon ------------------------------------>
+
+ 
+</div>
     </main><!-- End .main -->
 
    
@@ -478,9 +486,133 @@
             },
         });
     }
-});
+    });
 
     </script>
+
+<script>
+    
+    // ------------------------------------toggleCouponInput-----------------------------
+    function toggleCouponInput() {
+        var couponInputContainer = document.getElementById('couponInputContainer');
+        var checkbox = document.getElementById('coupon-details');
+
+        if (checkbox.checked) {
+            couponInputContainer.style.display = 'block';
+        } else {
+            couponInputContainer.style.display = 'none';
+        }
+    }
+
+    // ----------------------------------end toggleCouponInput--------------------------------
+
+    function applyCoupon(code) {
+        var amount = '<%= Total %>';
+    $.ajax({
+        url: '/couponApply',
+        data: {
+            code: code,
+            amount: amount,
+        },
+        method: 'post',
+        success: (response) => {
+            console.log("response",response);
+            if (response.user) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops !!',
+                    text: 'This coupon already used!',
+                });
+            } else if (response.dateExpired) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops !!',
+                    text: 'This coupon has expired!',
+                });
+            } else if (response.notActivated) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops !!',
+                    text: 'This coupon is not activated yet!',
+                });
+            } else if (response.insufficientAmount) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops !!',
+                    text: 'You can\'t use the coupon. Buy more to meet the minimum spend requirement.',
+                });
+            } else if (response.amountOkay) {
+    console.log('Amount Okay', response);
+
+    // Get the old and new total elements by their IDs
+    var oldTotalElement = document.getElementById('oldTotal');
+    var newTotalElement = document.getElementById('newTotal');
+
+    // Set the content of the old total element to the previous total amount with a strikethrough style
+    oldTotalElement.innerHTML = '<s>' + '<%= Total %>' + '</s>';
+
+    // Set the content of the new total element to the discounted total amount with bold style
+    newTotalElement.textContent = response.disTotal;
+
+    // Show a success message using SweetAlert
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Discount redeemed',
+        showConfirmButton: false,
+        timer: 1500
+    });
+} else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops !!',
+                    text: 'Invalid Coupon !!'
+                });
+            }
+        },
+        error: () => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops !!',
+                text: 'Something went wrong on the server side!',
+            });
+        },
+    });
+}
+
+
+    function unApplyCoupon(code) {
+        const amount=document.getElementById('total').innerHTML;
+        // document.getElementById('couponDiscount').innerHTML
+
+        // Clear the input field
+        // document.getElementById('code').value = '';
+
+        $.ajax({
+            url:'/deleteCoupon',
+            data:{code:code, amount:amount},
+            method:'post',
+            success:(response)=>{
+                if(response.success){
+                    document.getElementById('total').innerHTML=response.disTotal
+                    document.getElementById('couponDiscount').innerHTML=0;
+
+                    document.getElementById('apply').style.display='block'
+                    document.getElementById('unApply').style.display='none'
+
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Deleted !!',
+                        text:'Applied coupon is deleted'
+                    })
+                }
+            }
+        })
+    };
+
+
+
+</script>
     
 
 

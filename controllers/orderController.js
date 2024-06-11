@@ -4,6 +4,7 @@
   const cartDb = require('../models/cartModel');
   const productDb = require('../models/productModel');
   const orderDb  = require ('../models/orderModels')
+  const couponDb = require('../models/coupenModel')
   const Razorpay = require("razorpay");
   const crypto = require('crypto');
 
@@ -139,18 +140,18 @@
           const userId = req.session.user_id;
           const address = req.body.address;
           const cartData = await cartDb.findOne({ user: userId });
-          const total = parseInt(req.body.totalAmount);
+          const total = parseInt(req.body.totalAmount, 10);
           const paymentMethod = req.body.paymentMethod;
           const userData = await userDb.findOne({ _id: userId });
           const name = userData.firstName;
-
+  
           const uniNum = Math.floor(Math.random() * 900000) + 100000;
           const status = paymentMethod === 'COD' ? 'placed' : 'pending';
-
+  
           const today = new Date();
           const deliveryDate = new Date(today);
           deliveryDate.setDate(today.getDate() + 7);
-
+  
           const cartProducts = cartData.products.map((productItem) => ({
               productId: productItem.productId,
               quantity: productItem.quantity,
@@ -158,7 +159,19 @@
               statusLevel: 1,
               paymentStatus: 'Pending',
           }));
-
+  
+          // Calculate the discount amount if a coupon is applied
+          let discountAmount = 0;
+          if (req.session.code) {
+              const coupon = await couponDb.findOne({ couponCode: req.session.code });
+              if (coupon) {
+                  discountAmount = coupon.discountAmount;
+              }
+          }
+  
+          // Calculate the final amount after applying the discount
+          const finalAmount = total - discountAmount;
+  
           const order = new orderDb({
               deliveryDetails: address,
               uniqueId: uniNum,
@@ -166,14 +179,15 @@
               userName: name,
               paymentMethod: paymentMethod,
               products: cartProducts,
-              totalAmount: total,
+              totalAmount: finalAmount,
               date: new Date(),
               expectedDelivery: deliveryDate,
+              discount: discountAmount,
           });
-
+  
           const orderData = await order.save();
           const orderid = order._id;
-          // console.log(orderid)
+  
           if (orderData) {
               if (paymentMethod === 'COD') {
                   for (const item of cartData.products) {
@@ -188,7 +202,7 @@
                   res.json({ success: true, orderid });
               } else {
                   const razorpayOrder = await razorpayInstance.orders.create({
-                      amount: total * 100, // Amount in paise
+                      amount: finalAmount * 100, // Amount in paise
                       currency: 'INR',
                       receipt: `order_rcptid_${orderid}`
                   });
@@ -199,14 +213,16 @@
           }
       } catch (error) {
           console.log(error);
-          res.status(500).send('Internal Server Error');
+          if (!res.headersSent) {
+              res.status(500).send('Internal Server Error');
+          }
       }
   };
-
+  
   const verifyPayment = async (req, res) => {
     try {
       const details = req.body;
-      console.log("details",details);
+      // console.log("details",details);
       const cartData = await cartDb.findOne({ user: req.session.user_id });
       const products = cartData.products;
   
@@ -288,7 +304,7 @@
 
   //=================== load order detail page =============
 
-  const loadOrderDeatail = async (req, res)=>{
+  const loadOrderDetail = async (req, res)=>{
     try {
       
       const id = req.query.id;
@@ -361,6 +377,6 @@
       verifyPayment,
       loadPlaceOrder,
       loadOrderPage,
-      loadOrderDeatail,
+      loadOrderDetail,
       cancelOrder
   }
