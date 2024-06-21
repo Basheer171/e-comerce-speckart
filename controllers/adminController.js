@@ -41,6 +41,7 @@ const addUserMail = async (name, email, password, user_id) => {
                 pass: config.emailPassword
             }
         });
+
         const mailOptions = {
             from: config.emailUser,
             to: email,
@@ -66,8 +67,7 @@ const addUserMail = async (name, email, password, user_id) => {
 const loadLogin = async (req, res) => {
     try {
 
-        res.render('login');
-
+        res.render('login');   
     } catch (error) {
         console.log(error.message);
     }
@@ -87,7 +87,6 @@ const verifyLogin = async (req, res) => {
             if (passwordMatch) {
                     req.session.user_id = adminData._id;
                     res.redirect("/admin/home");
-                
             } else {
                 res.render('login', { message: "Email and password are incorrect." });
             }
@@ -364,146 +363,170 @@ const userBlockorActive = async (req, res) => {
 // Load View Orders Page
 const loadViewOrders = async (req, res) => {
     try {
-        const orderData = await orderDb.find().sort({ date: -1 });
-        // console.log('Order Data',orderData);
-
+        const orderData = await orderDb.find().populate('products').sort({date:-1})
         const productsArray = [];
-
-        for (let orders of orderData) {
-            // console.log('orders', orders);
-            for (let productsValue of orders.products) {
-                // console.log('productsValue', productsValue);
-                const productId = productsValue.productId;
-                // console.log('ProductId',productId);
-
-                const productData = await productDb.findById(productId)
-                // console.log('productData',productData);
-                const userDetails = await User.findOne({ firstName: orders.userName })
-                // console.log('userDetails..........',userDetails);
-
+        for (let order of orderData) {
+            for (let productValue of order.products) {
+                const productId = productValue.productId;
+                const productData = await productDb.findById(productId);
+                const userDetails = await User.findOne({ firstName: order.userName });
+        
                 if (productData) {
-
                     productsArray.push({
                         user: userDetails,
                         product: productData,
                         orderDetails: {
-                            _id: orders._id,
-                            userId: orders.userId,
-                            deliveryDetails: orders.deliveryDetails,
-                            date: orders.date,
-                            totalAmount: productsValue.quantity * orders.totalAmount,
-                            orderStatus: productsValue.orderStatus,
-                            paymentStatus: productsValue.paymentStatus,
-                            statusLevel: productsValue.statusLevel,
-                            paymentMethod: orders.paymentMethod,
-                            quantity: productsValue.quantity,
-
-                        }
-
-                    })
+                            _id: order._id,
+                            userId: order.userId,
+                            deliveryDetails: order.deliveryDetails,
+                            date: order.date,
+                            totalAmount: productValue.quantity * order.totalAmount,
+                            orderStatus: productValue.orderStatus,
+                            paymentStatus: productValue.paymentStatus,
+                            statusLevel: productValue.statusLevel,
+                            paymentMethod: order.paymentMethod,
+                            quantity: productValue.quantity,
+                        },
+                    });
                 }
-
             }
         }
-        // console.log('Product Array',productsArray);
 
+        // console.log("productsArray",productsArray);
+    
         res.render('view-orders', {
             message: 'View Orders',
             orders: productsArray,
         });
-
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        res.status(500).render('500', {
+            title: '500',
+        });
     }
 };
 
-// View OrderDetails
 const viewOrderDetails = async (req, res) => {
     try {
-        const orderId = req.query.orderId
+        const orderId = req.query.orderId;
         const productId = req.query.productId;
-        // console.log('orderId:', orderId);
-        // console.log('ProductId:', productId);
 
         if (!orderId || !productId) {
             return res.status(400).send("orderId and productId are required");
         }
 
-        const orderDetails = await orderDb.findById(orderId)
+        // Fetch order details from the database
+        const orderDetails = await orderDb.findById(orderId);
+        if (!orderDetails) {
+            return res.status(404).send('Order not found.');
+        }
+
+        // Fetch product details from the database
         const productData = await productDb.findById(productId);
-        // console.log('Order Details',orderDetails);
-        // console.log('productData',productData);  
+        if (!productData) {
+            return res.status(404).send('Product not found.');
+        }
 
-        const productDetails = orderDetails.products.find((product) => product.productId.toString() === productId);
+        // Find the specific product details within the order
+        const productDetails = orderDetails.products.find(product => product.productId.toString() === productId);
+        if (!productDetails) {
+            return res.status(404).send('Product not found in order.');
+        }
 
+        let paymentStatus = productDetails.paymentStatus; // Default to existing payment status
+        // console.log("paymentStatus",paymentStatus);
+        if (productDetails.orderStatus === 'Delivered') {
+            paymentStatus = 'success';
+        }else{
+            paymentStatus = "Pending"
+        }
+        // console.log("paymentStatus",paymentStatus);
+
+        // Prepare data to pass to the template
         const productOrder = {
             orderId: orderDetails._id,
             product: productData,
             _id: productDetails._id,
             orderStatus: productDetails.orderStatus,
             statusLevel: productDetails.statusLevel,
-            paymentStatus: productDetails.paymentStatus,
+            paymentStatus: paymentStatus,
             totalAmount: orderDetails.totalAmount,
             quantity: productDetails.quantity,
             paymentMethod: orderDetails.paymentMethod,
             deliveryDetails: orderDetails.deliveryDetails,
             date: orderDetails.date,
+        };
 
-        }
-        // console.log('productOrder',productOrder);
-
-
+        // Render the view-ordersDetails EJS template with the data
         res.render('view-ordersDetails', {
             message: 'View Order Details',
             products: productOrder,
             orderId,
-            productId
-        })
-
+            productId,
+        });
 
     } catch (error) {
         console.log(error);
+        res.status(500).send('Internal Server Error');
     }
 };
 
-// Change Order Status
+
+
 const changeOrderStatus = async (req, res) => {
     try {
         const { status, orderId, productId } = req.body;
-            // console.log('OrderId', orderId);
-        // console.log('Status',status);
+
+        // Find the order details in the database
         const orderDetails = await orderDb.findById(orderId);
-        // console.log(orderDetails);
         if (!orderDetails) {
             return res.status(404).send('Order not found.');
         }
 
+        // Define status mapping and payment status mapping
         const statusMap = {
             Shipped: 2,
             OutforDelivery: 3,
             Delivered: 4,
         };
 
-        const selectedStatus = status
-        const statusLevel = statusMap[selectedStatus]
+        const paymentStatusMap = {
+            Delivered: 'Complete',
+        };
 
-        const productDetails = orderDetails.products.find((product) => product.productId.toString() === productId);
-        // console.log(productDetails);
+        // Determine the status level based on selected status
+        const selectedStatus = status;
+        const statusLevel = statusMap[selectedStatus];
+        // Find the product details within the order
+        const productDetails = orderDetails.products.find(product => product.productId.toString() === productId);
+        if (!productDetails) {
+            return res.status(404).send('Product not found in order.');
+        }
 
+        // Update product details with new status
         productDetails.statusLevel = statusLevel;
         productDetails.orderStatus = status;
         productDetails.updatedAt = Date.now();
 
+        // Update payment status if the order is delivered
+        if (selectedStatus === 'Delivered') {
+            orderDetails.products[0].paymentStatus = paymentStatusMap[selectedStatus];
+        }
+        // Save the updated order details
         const result = await orderDetails.save();
-        // console.log('Result',result);
+        // console.log("result",result);
 
+        // Redirect back to view-ordersDetails page with orderId and productId
         res.redirect(`/admin/view-ordersDetails?orderId=${orderId}&productId=${productId}`);
-
 
     } catch (error) {
         console.log(error);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
+
+
+
 
 
 

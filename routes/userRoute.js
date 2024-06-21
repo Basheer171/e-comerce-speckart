@@ -125,7 +125,10 @@ user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder)
   user_route.post('/couponApply', auth.isLogin, couponController.applyCoupon);
   user_route.post('/deleteCoupon', auth.isLogin, couponController.deleteAppliedCoupon);
 
-user_route.get('/wallet', auth.isLogin , userController.load_wallet);
+user_route.get('/wallet', auth.isLogin,userController.load_wallet);
+user_route.post('/profile/addMoneyToWallet',auth.isLogin, userController.addMoneyToWallet);
+user_route.post('/verifyWalletpayment',auth.isLogin, userController.verifyWalletpayment);
+user_route.get('/walletHistory', auth.isLogin, userController.walletHistory)
 
 
 

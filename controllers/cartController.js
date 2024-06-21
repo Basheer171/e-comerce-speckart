@@ -18,33 +18,39 @@ const addToCart = async (req, res) => {
         const { id: productId } = req.body;
         const { _id: userId } = await userDb.findById(user_id);
 
-
         // Check if the product is already in the cart
-        const cartData = await cartDb.findOne({ user: userId, 'products.productId': productId });
+        const cartData = await cartDb.findOne({ userId: userId, 'products.productId': productId });
 
-        if (cartData) { 
+        if (cartData) {
             // Product is already in the cart
             return res.json({ alreadyInCart: true });
         }
 
         const productData = await productDb.findById(productId);
-        // console.log('productData',productData);
         if (!productData) {
             return res.status(404).json({ error: 'Product not found' });
+        }
+
+        let productPrice = productData.price;
+
+        if (productData.offer && productData.discountedPrice) {
+            productPrice = productData.discountedPrice;
         }
 
         const update = {
             $addToSet: {
                 products: {
                     productId,
-                    price: productData.price,
+                    price: productPrice,
                     quantity: 1,
-                    totalPrice: productData.price,
+                    totalPrice: productPrice,
                 },
             },
         };
+
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
         await cartDb.findOneAndUpdate({ user: userId }, update, options);
+
         res.json({ success: true });
 
     } catch (error) {
@@ -56,12 +62,14 @@ const addToCart = async (req, res) => {
 
 
 
+
 const loadCart = async (req, res) => {
     try {
         const id = req.session.user_id;
         const userData = await userDb.findById({ _id: id });                
         const userId = userData._id;
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
+        console.log("cartData",cartData);
 
         // console.log('cartData',cartData);
         if (req.session.user_id) {

@@ -1,0 +1,186 @@
+<%- include('../layouts/user/header.ejs') %>
+
+<style>
+  body {
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;
+  }
+
+  .main-body {
+    padding: 15px;
+  }
+
+  .card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .breadcrumb {
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+  }
+
+  .breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .breadcrumb-item.active {
+    color: #6c757d;
+  }
+
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+  }
+
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+  }
+
+  .pagination {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .pagination .page-item .page-link {
+    color: #007bff;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-primary:hover {
+    color: #fff;
+    background-color: #0056b3;
+    border-color: #004085;
+  }
+
+  .no-transactions-img {
+    width: 200px;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .pagination {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pagination .page-item .page-link {
+  color: #495057; /* Text color */
+  border: 1px solid #dee2e6; /* Border color */
+}
+
+.pagination .page-item .page-link:hover {
+  color: #007bff; /* Hover text color */
+  background-color: #e9ecef; /* Hover background color */
+  border-color: #dee2e6; /* Hover border color */
+}
+
+.pagination .page-item.active .page-link {
+  color: #fff; /* Active text color */
+  background-color: #007bff; /* Active background color */
+  border-color: #007bff; /* Active border color */
+}
+
+</style>
+
+<div class="container">
+  <div class="main-body">
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item">
+            <a href="/wallet">wallet</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            wallet History
+          </li>
+        </ol>
+      </nav>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Wallet History</h5>
+        <% if (walletHistory.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Details</th>
+                <th>Transaction Type</th>
+                <th>Amount</th>
+                <th>Current Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% walletHistory.forEach((data, index) => { %>
+              <tr>
+                <th scope="row"><%= (currentPage - 1) * limit + index + 1 %></th>
+                <td><%= data.transactionDate ? data.transactionDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A' %></td>
+                <td><%= data.transactionDetails %></td>
+                <td><%= data.transactionType %></td>
+                <td><%= data.transactionAmount %></td>
+                <td><%= data.currentBalance %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="store-filter clearfix">
+          <ul class="pagination">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+        <% } else { %>
+        <div class="text-center">
+          <h3>No wallet transactions</h3>
+          <img src="/images/no-transactions.svg" alt="No transactions" class="no-transactions-img" />
+          <a href="/product" class="btn btn-primary">Continue Shopping</a>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/user/footer.ejs') %>

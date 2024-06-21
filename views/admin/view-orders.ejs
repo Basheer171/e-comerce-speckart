@@ -256,6 +256,7 @@
                                         <% if(Array.isArray(orders) && orders.length > 0) { %>
                                           <% let count = 1; %>
                                           <% orders.forEach((data) => { %>
+                                         
                                             <tr>
                                               <td>
                                                 <p class="text-xs font-weight-bold mb-0"><%= count %></p>
@@ -286,21 +287,24 @@
                                                 <% } else if(data.orderDetails.orderStatus === 'Shipped') { %>
                                                   <p class="text-xs text-primary font-weight-bold mb-0">Shipped</p>
                                                 <% } else if(data.orderDetails.orderStatus === 'Delivered') { %>
-                                                  <p class="text-xs text-success font-weight-bold mb-0">Delivered</p>
+                                                  <p class="text-xs text-success font-weight-bold mb-0">Delivered</p>   
                                                 <% } else if(data.orderDetails.orderStatus === 'Cancelled') { %>
                                                   <p class="text-xs text-danger font-weight-bold mb-0">Cancelled</p>
                                                 <% } else if(data.orderDetails.orderStatus === 'OutforDelivery') { %>
                                                   <p class="text-xs text-info font-weight-bold mb-0">OutforDelivery</p>
                                                 <% } %>
+                                               
                                               </td>
                                               <td>
-                                                <% if(data.orderDetails.paymentStatus === 'Success') { %>
-                                                  <p class="text-xs text-success font-weight-bold mb-0">Success</p>
+                                                <% if(data.orderDetails.paymentStatus === 'success') { %>
+                                                  <p class="text-xs text-success font-weight-bold mb-0">success</p>
                                                 <% } else if(data.orderDetails.paymentStatus === 'Pending') { %>
                                                   <p class="text-xs font-weight-bold mb-0">Pending</p>
                                                 <% } else if(data.orderDetails.paymentStatus === 'Failed') { %>
                                                   <p class="text-xs font-weight-bold mb-0">Failed</p>
-                                                <% } %>
+                                                <% } else if (data.orderDetails.paymentStatus === 'Complete'){%>
+                                                    <p class="text-xs font-weight-bold mb-0">success</p>
+                                                <%}%>
                                               </td>
                                               <td class="text-sm">
                                                 <% if(data.orderDetails.orderStatus === 'Cancelled') { %>

@@ -5,15 +5,17 @@
   const category = require('../models/categoryModel')
   const addressModel = require('../models/addressModel')
   const Brand = require('../models/brandModel');
-  const offerDb = require('../models/offerModel');
-
   const nodemailer = require("nodemailer");
-
   const config = require("../config/config");
-
   const randormstring = require("randomstring");
+  const Razorpay = require('razorpay');
+  const crypto = require('crypto');
 
-  //adding secure password bcrypt
+  var instance = new Razorpay({
+    key_id: process.env.key_id,
+    key_secret: process.env.key_secret
+  });
+
 
   const securePassword = async(password)=>{
 
@@ -886,8 +888,130 @@
 
   }
 
+  
+//--------------------------------------------- Add money to wallet ------------------------------------//
+const addMoneyToWallet = async(req, res)=>{
+  try {
+      const {amount}=req.body
+      console.log("amount",amount);
+    
+      const id = crypto.randomBytes(8).toString('hex');
+      
+      var options={
+          amount:amount*100,
+          currency:'INR',
+          receipt:'Hello'+id
+      }
+
+      instance.orders.create(options,(err, order)=>{
+          if(err){
+              res.json({status:false});
+          }else{
+              res.json({status:true, payment:order})
+          }
+      })
+
+  } catch (error) {
+      console.log(error);
+      res.render('500')
+  }
+};
+
+const verifyWalletpayment = async(req, res)=>{
+  try {
+      const userId = req.session.user_id;
+      
+      const details = req.body;
+      
+      const amount = parseInt(details.order.amount)/100;
+   
+      let hmac = crypto.createHmac('sha256',process.env.key_secret)
+
+      hmac.update(details.payment.razorpay_order_id + '|' + details.payment.razorpay_payment_id);
+
+          hmac = hmac.digest('hex');
+          if(hmac===details.payment.razorpay_signature){
+              const user = await User.findById(userId);
+              const currentWalletBalance = user.wallet || 0;
+              
+              const updatedBalance = currentWalletBalance + amount;
+          
+
+              const walletHistory={
+                  transactionDate:new Date(),
+                  transactionDetails: 'Deposited via Razorpay',
+                  transactionType:"Credit",
+                  transactionAmount: amount,
+                  currentBalance: updatedBalance
+                  
+              }
+             
+
+              await User.findByIdAndUpdate({_id:userId},
+                  {$inc:{wallet:amount},
+                  $push:{walletHistory}
+              });
+
+              return res.json({status:true});
+          }else{
+              return res.json({status:flase});
+          }
+      
+  } catch (error) {
+      console.log(error);
+      res.render('500')
+  }
+};
 
 
+    //-------------------------------- Wallet History----------------------------//
+
+    const walletHistory = async (req, res) => {
+      try {
+        // Search
+        let search = '';
+        if (req.query.search) {
+          search = req.query.search;
+        }
+    
+        // Pagination
+        let page = 1;
+        if (req.query.page) {
+          page = parseInt(req.query.page, 10);
+        }
+    
+        const limit = 6;
+        const userId = req.session.user_id;
+    
+        const user = await User.findById(userId);
+    
+        // Ensure walletHistory is an array
+        const walletHistoryData = (user.walletHistory || []).sort((a, b) => b.transactionDate - a.transactionDate);
+    
+        // Perform search if applicable
+        const filteredData = walletHistoryData.filter(data =>
+          data.transactionDetails.includes(search) || data.transactionType.includes(search)
+        );
+    
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedData = filteredData.slice(startIndex, endIndex);
+    
+        const count = filteredData.length;
+    
+        // Render the template with the paginated data
+        res.render('walletHistory', {
+          user,
+          walletHistory: paginatedData,
+          totalPages: Math.ceil(count / limit),
+          currentPage: page,
+          limit: limit,
+        });
+      } catch (error) {
+        console.log(error);
+        res.render('500');
+      }
+    };
     
     
   module.exports = {  
@@ -918,4 +1042,7 @@
       editAddress,
       deleteAddress,
       load_wallet,
+      addMoneyToWallet,
+      verifyWalletpayment,
+      walletHistory
       }
