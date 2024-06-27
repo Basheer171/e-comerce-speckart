@@ -1,39 +1,39 @@
-const Orders = require('../models/orderModel')
+const Orders = require('../models/orderModels')
 
 
 
 
 
 
-const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date()) => {
-    try {
-        console.log(startDate, endDate);
+    const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date()) => {
+        try {
+            // console.log("something",startDate, endDate);
 
-        const ordersData = await Orders.find(
-            {
-                $or: [
-                    { "products.orderStatus": "Delivered" },
-                    { "createdAt": { $gte: startDate, $lt: endDate } },
-                    { "paymentStatus": "success" }
-                ]
-            }
-        );
-        
-        let totalIncome = 0;
-        for (const order of ordersData) {
-            for (const pdt of order.products) {
-                if (pdt.orderStatus === 'Delivered'|| pdt.paymentStatus === 'success') {
-                    totalIncome += parseInt(order.totalAmount);
+            const ordersData = await Orders.find(
+                {
+                    $or: [
+                        { "products.orderStatus": "Delivered" },
+                        { "createdAt": { $gte: startDate, $lt: endDate } },
+                        { "paymentStatus": "success" }
+                    ]
+                }
+            );
+            
+            let totalIncome = 0;
+            for (const order of ordersData) {
+                for (const pdt of order.products) {
+                    if (pdt.orderStatus === 'Delivered'|| pdt.paymentStatus === 'success') {
+                        totalIncome += parseInt(order.totalAmount);
+                    }
                 }
             }
-        }
-        
-        return formatNum(totalIncome);
+            // console.log("totalIncome",totalIncome);
+            return formatNum(totalIncome);
 
-    } catch (error) {
-        throw error;
+        } catch (error) {
+            throw error;
+        }
     }
-}
 
 
 
@@ -48,7 +48,7 @@ const countSales = async(startDate = new Date('1990-01-01'), endDate = new Date(
                 }
             }
         );
-        console.log("ordersData", ordersData);
+        // console.log("ordersData", ordersData);
 
         
         let salesCount = 0;
@@ -60,7 +60,7 @@ const countSales = async(startDate = new Date('1990-01-01'), endDate = new Date(
             }
         }
 
-
+        // console.log("salesCount",salesCount);
         return salesCount;
 
     } catch (error) {
@@ -83,7 +83,7 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
             {
                 $group:{
                     _id: { createdAt: { $dateToString: { format: '%Y', date: '$createdAt'}}},
-                    sales: { $sum: '$totalPrice' }
+                    sales: { $sum: '$totalAmount' }
                 }
             },
             {
@@ -92,6 +92,9 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
         ]
 
         const orderData = await Orders.aggregate(pipeline)
+
+        // console.log("orderData",orderData);
+
         return orderData
 
     } catch (error) {
@@ -138,7 +141,7 @@ const findSalesDataOfMonth = async (year, month) => {
         ];
 
         const orderData = await Orders.aggregate(pipeline);
-        console.log("pipeline is:", orderData);
+        // console.log("pipeline is:", orderData);
         return orderData;
     } catch (error) {
         throw error;
@@ -160,7 +163,7 @@ const findSalesDataOfYear = async(year) => {
             {
                 $group:{
                     _id: {  createdAt: { $dateToString: { format: '%m', date: '$createdAt'}}},
-                    sales: { $sum: '$totalPrice' }
+                    sales: { $sum: '$totalAmount' }
                 }
             },
             {
@@ -202,7 +205,7 @@ module.exports = {
     formatNum,
     findIncome,
     countSales,
-    findSalesData,
+    findSalesData,  
     findSalesDataOfYear,
     findSalesDataOfMonth
 }

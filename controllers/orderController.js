@@ -237,7 +237,7 @@
   
                       const orderUpdate = await orderDb.findByIdAndUpdate(
                           { _id: orderid },
-                          { $set: { "products.$[].paymentStatus": "success" } }
+                          { $set: { "products.$[].paymentStatus": "Pending" } }
                       );
   
                       if (req.session.code) {
@@ -321,7 +321,7 @@
 
             // Update order payment status and ID
             await orderDb.findByIdAndUpdate(orderId, {
-                $set: { 'products.$[].paymentStatus': 'success', paymentId: details.payment.razorpay_payment_id }
+                $set: { 'products.$[].paymentStatus': 'Pending', paymentId: details.payment.razorpay_payment_id }
             });
 
             // Handle coupon usage if applicable

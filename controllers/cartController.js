@@ -19,7 +19,7 @@ const addToCart = async (req, res) => {
         const { _id: userId } = await userDb.findById(user_id);
 
         // Check if the product is already in the cart
-        const cartData = await cartDb.findOne({ userId: userId, 'products.productId': productId });
+        const cartData = await cartDb.findOne({ user: userId, 'products.productId': productId });
 
         if (cartData) {
             // Product is already in the cart
@@ -49,7 +49,11 @@ const addToCart = async (req, res) => {
         };
 
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
-        await cartDb.findOneAndUpdate({ user: userId }, update, options);
+        const updatedCart = await cartDb.findOneAndUpdate({ user: userId }, update, options);
+
+        if (!updatedCart) {
+            return res.status(500).json({ error: 'Failed to update cart' });
+        }
 
         res.json({ success: true });
 
@@ -69,7 +73,7 @@ const loadCart = async (req, res) => {
         const userData = await userDb.findById({ _id: id });                
         const userId = userData._id;
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-        console.log("cartData",cartData);
+        // console.log("cartData",cartData);
 
         // console.log('cartData',cartData);
         if (req.session.user_id) {

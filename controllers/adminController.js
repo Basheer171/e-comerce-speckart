@@ -8,6 +8,253 @@ const productDb = require('../models/productModel');
 const Admin = require('../models/adminModel')
 
 
+const {
+    findIncome,
+    countSales,
+    findSalesData,
+    findSalesDataOfYear,
+    findSalesDataOfMonth,
+    formatNum,
+  } = require("../helpers/orderHelper");
+  
+  // =======================================================rendering the admin home================================================================
+  
+  const loadDashboard = async (req, res) => {
+    try {
+      const today = new Date();
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      const firstDayOfPreviousMonth = new Date(today.getFullYear(),today.getMonth() - 1,1); 
+
+      const jan1OfTheYear = new Date(today.getFullYear(), 0, 1);
+  
+      const totalIncome = await findIncome();
+      const thisMonthIncome = await findIncome(firstDayOfMonth);
+      const thisYearIncome = await findIncome(jan1OfTheYear);
+  
+      const totalUsersCount = formatNum(await User.find({}).count());
+      const usersOntheMonth = formatNum(await User.find({ updatedAt: { $gte: firstDayOfMonth } }).count());
+      // console.log("usersOntheMonth",usersOntheMonth);
+  
+      const totalSalesCount = formatNum(await countSales());
+      // console.log("totalSalesCount",totalSalesCount);
+      const salesOnTheYear = formatNum(await countSales(jan1OfTheYear));
+      // console.log("salesOnTheYear",salesOnTheYear);
+      const salesOnTheMonth = formatNum(await countSales(firstDayOfMonth));
+      // console.log("salesOnTheMonth",salesOnTheMonth);
+      const salesOnPrevMonth = formatNum( await countSales(firstDayOfPreviousMonth, firstDayOfPreviousMonth));
+      // console.log("salesOnPrevMonth",salesOnPrevMonth);
+  
+      let salesYear = 2023;
+      if (req.query.salesYear) {
+        salesYear = parseInt(req.query.salesYear);
+      }
+  
+      if (req.query.year) {
+        salesYear = parseInt(req.query.year);
+        displayValue = req.query.year;
+        xDisplayValue = "Months";
+      }
+  
+      let monthName = "";
+      if (req.query.month) {
+        salesMonth = "Weeks"; 
+        monthName = getMonthName(req.query.month);
+        console.log("monthName",monthName);
+        displayValue = `${salesYear} - ${monthName}`;
+      }
+  
+      const totalYears = await orderDb.aggregate([
+        {
+          $group: {
+            _id: {
+              createdAt: { $dateToString: { format: "%Y", date: "$createdAt" } },
+            },
+          },
+        },
+        { $sort: { "_id:createdAt": -1 } },
+      ]);
+
+      const displayYears = [];
+  
+      totalYears.forEach((year) => {
+        displayYears.push(year._id.createdAt);
+      });
+  
+      let orderData;
+  
+      if (req.query.year && req.query.month) {
+        
+        orderData = await findSalesDataOfMonth(salesYear, req.query.month);
+        console.log("orderData1",orderData);
+      } else if (req.query.year && !req.query.month) {
+        orderData = await findSalesDataOfYear(salesYear);
+        console.log("orderData2",orderData);
+      } else {
+        orderData = await findSalesData();
+        console.log("orderData3",orderData);
+      }
+  
+      let months = [];
+      let sales = [];
+  
+      if (req.query.year && req.query.month) {
+        orderData.forEach((year) => {
+          months.push(`Week ${year._id.weekNumber}`);
+        });
+        orderData.forEach((sale) => {
+          sales.push(Math.round(sale.sales));
+        });
+      } else if (req.query.year && !req.query.month) {
+        orderData.forEach((month) => {
+          months.push(getMonthName(month._id.createdAt));
+        });
+        orderData.forEach((sale) => {
+          sales.push(Math.round(sale.sales));
+        });
+      } else {
+        orderData.forEach((year) => {
+          months.push(year._id.createdAt);
+        });
+        orderData.forEach((sale) => {
+          sales.push(Math.round(sale.sales));
+        });
+      }
+  
+      let totalSales = sales.reduce((acc, curr) => (acc += curr), 0);
+  
+      let categories = [];
+      let categorySales = [];
+  
+      const categoryData = await orderDb.aggregate([
+        { $match: { "products.orderStatus": "Delivered" } },
+        { $unwind: "$products" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "populatedProduct",
+          },
+        },
+        {
+          $unwind: "$populatedProduct",
+        },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "populatedProduct.category",
+            foreignField: "_id",
+            as: "populatedCategory",
+          },
+        },
+        {
+          $unwind: "$populatedCategory",
+        },
+        {
+          $group: {
+            _id: "$populatedCategory.name",
+            sales: { $sum: "$totalAmount" },
+          },
+        },
+      ]);
+      console.log("categoryData/////////",categoryData);
+      categoryData.forEach((cat) => {
+        categories.push(cat._id), categorySales.push(cat.sales);
+      });
+      // aggregation to take the payment data
+      let paymentData = await orderDb.aggregate([
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            $or: [
+              { "products.orderStatus": "Delivered" },
+              { paymentStatus: "success" },
+            ],
+            paymentMethod: { $exists: true },
+          },
+        },
+        {
+          $group: {
+            _id: "$paymentMethod",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+  
+      let paymentMethods = [];
+      let paymentCount = [];
+  
+      paymentData.forEach((data) => {
+        paymentMethods.push(data._id);
+        paymentCount.push(data.count);
+      });
+      let orderDataToDownload = await orderDb.find({ "products.orderStatus": "Delivered" }).sort({ createdAt: 1 }).populate("products.productId");
+      // console.log("orderDataToDownload",orderDataToDownload );
+      if (req.query.fromDate && req.query.toDate) {
+        const { fromDate, toDate } = req.query;
+
+        console.log("fromDate",fromDate);
+        console.log("toDate",toDate);
+
+        orderDataToDownload = await orderDb.find({"products.orderStatus": "Delivered",createdAt: { $gte: fromDate, $lte: toDate },}).sort({ createdAt: 1 });
+      }
+  
+      res.render("home", {
+        totalUsersCount,
+        usersOntheMonth,
+        totalSalesCount,
+        salesOnTheYear,
+        totalIncome,
+        thisMonthIncome,
+        thisYearIncome,
+        salesOnTheMonth,
+        salesOnPrevMonth,
+        salesYear,
+        displayYears,
+        totalSales,
+        months,
+        sales,
+        categories,
+        categorySales,
+        paymentMethods,
+        paymentCount,
+        orderDataToDownload,
+      });
+    } catch (error) {
+      console.log(error);
+      res.render("500");
+    }
+  };
+
+  function getMonthName(monthNumber) {
+    if (typeof monthNumber === "string") {
+      monthNumber = parseInt(monthNumber);
+    }
+  
+    if (monthNumber < 1 || monthNumber > 12) {
+      return "Invalid month number";
+    }
+  
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+  
+    return monthNames[monthNumber - 1];
+  }
+
 //adding secure password bcrypt
 
 const securePassword = async (password) => {
@@ -101,23 +348,7 @@ const verifyLogin = async (req, res) => {
 
 // dashboard for user details
 
-const loadDashboard = async (req, res) => {
-    try {
-        const adminData = await Admin.findById({ _id: req.session.user_id });
 
-        if (!adminData) {
-            // If adminData is not found, render a 404 page
-            res.render('login',) // Assuming '404' is the name of your 404 page template
-            return;
-        }
-
-        res.render('home');
-    } catch (error) {  
-        console.error(error.message);
-        // Render a 500 error page if an unexpected error occurs
-        res.status(500).render('500'); // Assuming '500' is the name of your 500 error page template
-    }
-};
 
 //logout in admin home 
 
