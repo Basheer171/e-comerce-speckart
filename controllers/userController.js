@@ -97,12 +97,7 @@
           req.session.secondName = req.body.secondName;
           req.session.mobile = req.body.mobile;
           req.session.email = req.body.email;
-          if (
-            req.body.firstName &&
-            req.body.email &&
-            req.session.secondName &&
-            req.session.mobile
-          ) {
+          if (req.body.firstName && req.body.email && req.session.secondName && req.session.mobile ) {
             if (req.body.password === req.body.cpassword) {
               req.session.password = spassword;
               req.session.otp = {
@@ -424,8 +419,11 @@
 
   const loadHome = async(req,res)=>{
       try{
-        const productData = await Product.find({is_active:true})
-        .populate('offer')
+        const productData = await Product.find()
+        .populate({ path: "category", populate: { path: "offer" } })
+        .populate('brandName')
+        .populate('offer');
+        // console.log("productData",productData);
           // console.log('profuct data',productData);
           const categoryData = await category.find({is_block:false})
       
@@ -628,62 +626,64 @@
   //==================================== to load the shop page =================================================//
 
   const loadShop = async (req, res) => {
-      try {
+    try {
+        // Extract search, category, and brand filters from query parameters
+        const search = req.query.search || '';
+        const categoryFilter = req.query.category ? req.query.category.split(',') : [];
+        const brandFilter = req.query.brand ? req.query.brand.split(',') : [];
+        const page = parseInt(req.query.page) || 1;
+        const limit = 8;
 
-        // Search
-        var search='';
-        if(req.query.search){
-            search=req.query.search;
-        }
-
-        // Pagination
-        var page=1;
-        if(req.query.page){
-            page =req.query.page;
-        }
-
-        const limit=8;
-
-        const user =  await User.findById(req.session.user_id);
-        const categoryData = await category.find({is_block:false});
-          const brandData = await Brand.find({is_block:false});
-          const products = await Product.find({
+        // Construct the query to find products
+        const query = {
             is_active: true,
             $or: [
-              { name: { $regex: '.*' + search + '.*', $options: 'i' } },
-              // { category: { $regex: '.*' + search + '.*', $options: 'i' } },
-              // { brandName: { $regex: '.*' + search + '.*', $options: 'i' } },
+                { name: { $regex: '.*' + search + '.*', $options: 'i' } }
             ]
-          })
-          .limit(limit)
-          .skip((page - 1) * limit)
-          .exec();
-          
-          
+        };
 
-          // Count of pages
-          const count = await Product.find({
-            is_active:true,
-            $or:[
-                {name:{$regex:'.*'+search+'.*',$options:'i'}},
-                // {category:{$regex:'.*'+search+'.*',$options:'i'}},
-                // {brandName:{$regex:'.*'+search+'.*',$options:'i'}},
-            ]
-        }).countDocuments()
+        // Add category filter if there are selected categories
+        if (categoryFilter.length > 0) {
+            query.category = { $in: categoryFilter };
+        }
 
+        // Add brand filter if there are selected brands
+        if (brandFilter.length > 0) {
+            query.brandName = { $in: brandFilter };
+        }
+
+        // Find products with filters
+        const products = await Product.find(query)
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
+
+        // Count of pages
+        const count = await Product.find(query).countDocuments();
+
+        // Fetch category and brand data
+        const categoryData = await category.find({ is_block: false });
+        const brandData = await Brand.find({ is_block: false });
+
+        // Render the shop page with the filtered products and other data
         res.render('shop', {
-          user,
-          products,
-          categoryData,
-          brandData,
-          totalPages:Math.ceil(count/limit),  //Ex:- count of document/limit (9/6 = 1.5 => 2)
-          currentPage:page,   // page 1
-          title:'shop'});
-
-      } catch (error) {
+            user: await User.findById(req.session.user_id),
+            products,
+            categoryData,
+            brandData,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            title: 'shop',
+            search,
+            categoryFilter,
+            brandFilter
+        });
+    } catch (error) {
         console.log(error);
-      }   
-    };
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
   const profileLoad = async (req,res)=>{
     try {

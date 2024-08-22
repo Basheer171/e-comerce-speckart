@@ -2,9 +2,14 @@ const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
 const Brand = require('../models/brandModel');
 const Offer = require('../models/offerModel')
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 
 
+
+    
 // View Product page
 const viewProduct = async (req, res) => {
     try {
@@ -12,6 +17,7 @@ const viewProduct = async (req, res) => {
             .populate({ path: "category", populate: { path: "offer" } })
             .populate('brandName')
             .populate('offer');
+                // console.log("product",product);
         
         const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
         
@@ -56,13 +62,13 @@ const addProduct = async(req,res)=>{
          
         const image = []
         for(i=0;i<req.files.length && i<4;i++){
-            image[i] = req.files[i].filename;
+            filename = req.files[i].filename;
             
-        //     await sharp(path.join(__dirname,'../public/adminAssets/images',filename))
-        //         .resize(300, 300)
-        //         .toFile(path.join(__dirname,'../public/adminAssets/images', 'resized-'+filename));
+            await sharp(path.join(__dirname,'../public/userImages',filename))
+                .resize(300, 300)
+                .toFile(path.join(__dirname,'../public/userImages', 'resized-'+filename));
 
-        //     image[i]='resized-'+filename;
+            image[i]='resized-'+filename;
         }
 
         if(req.files.length>4){
@@ -82,6 +88,7 @@ const addProduct = async(req,res)=>{
         });
         
         const productData = await newProduct.save();
+        // console.log("productData",productData);
         if (productData) {
 
             res.redirect('/admin/view-product')
@@ -118,16 +125,38 @@ const editProduct = async(req,res)=>{
         const id = req.body.id;
         const productName = req.body.productName;  
         const categoryName = req.body.category;   
-        const brandName = req.body.brand;         
+        const brandName = req.body.brand;      
         const qty = req.body.qty;
         const description = req.body.description;
         const price = req.body.price;
         const image = [];
 
-        for(i=0;i<req.files.length;i++){
-            image[i] = req.files[i].filename;
-        }
+        // Check if files are uploaded
+        if (req.files && req.files.length > 0) {
+            for (let i = 0; i < req.files.length; i++) {
+                const filename = req.files[i].filename;
 
+                // Resize image to 300x300 pixels
+                await sharp(path.join(__dirname, '../public/userImages', filename))
+                    .resize(300, 300)
+                    .toFile(path.join(__dirname, '../public/userImages', 'resized-' + filename));
+            
+                image[i] = 'resized-' + filename;
+
+            }
+        } else {
+            // No new files uploaded, maintain existing image
+            const existingProduct = await Product.findOne({_id:id});
+
+            if (existingProduct && existingProduct.image) {
+                if(Array.isArray(existingProduct.image)){
+
+                    image = existingProduct.image;
+                }else{
+                    image = [existingProduct.image];
+                }
+            }
+        }
         const updatedData = await Product.findByIdAndUpdate({_id:id},
             {$set:{
                 name: productName,          

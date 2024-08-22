@@ -193,8 +193,6 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Description</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Image</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Update</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Offers</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Action</th>
 
                                         </tr>
@@ -207,23 +205,8 @@
                                             <td><p class="text-sm font-weight-bold mb-0 truncate"><%= cat.description %></p></td>
                                             <td><img src="/public/userImages/<%= cat.image %>" class="avatar avatar-sm me-3" alt="category image"></td>
                                             <td><a href="/admin/edit-category?id=<%= cat._id %>" class="btn btn-warning btn-sm">Edit</a></td>
-                                            <td>
-                                                <% if (cat.offer) { %>
-                                                    <span class="<% if (cat.offer.status) { %> text-success text-sm <% } else { %> text-warning text-sm <% } %>">
-                                                        <%= cat.offer.status ? 'Active' : 'Inactive' %>
-                                                    </span>
-                                                    <p class="text-info text-sm"><%= cat.offer.offerName %><br><span class="text-warning text-sm"><%= cat.offer.percentage %>% Discount</span></p>
-                                                <% } else { %>
-                                                    <span class="text-info text-xs">No Offer Applied</span>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if(cat.offer){%>
-                                                  <a href="#" onclick="removeOffer('<%=cat._id%>')"><span class="badge badge-sm bg-gradient-danger">Remove Offer</a></span>
-                                                  <% }else{%>
-                                                    <a href="#" class="badge badge-sm bg-gradient-success open-offer-modal" data-bs-toggle="modal" data-bs-target="#offerModal" data-cat-id="<%=cat._id%>">Apply offer</a>
-                                                  <% } %>
-                                                </td>
+                                           
+                                          
                                             
                                             <td class="align-middle text-center text-sm">
                                                 <% if (!cat.is_block) { %>

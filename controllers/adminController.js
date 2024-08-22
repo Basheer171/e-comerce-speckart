@@ -59,7 +59,7 @@ const {
       if (req.query.month) {
         salesMonth = "Weeks"; 
         monthName = getMonthName(req.query.month);
-        console.log("monthName",monthName);
+        // console.log("monthName",monthName);
         displayValue = `${salesYear} - ${monthName}`;
       }
   
@@ -85,13 +85,13 @@ const {
       if (req.query.year && req.query.month) {
         
         orderData = await findSalesDataOfMonth(salesYear, req.query.month);
-        console.log("orderData1",orderData);
+        // console.log("orderData1",orderData);
       } else if (req.query.year && !req.query.month) {
         orderData = await findSalesDataOfYear(salesYear);
-        console.log("orderData2",orderData);
+        // console.log("orderData2",orderData);
       } else {
         orderData = await findSalesData();
-        console.log("orderData3",orderData);
+        // console.log("orderData3",orderData);
       }
   
       let months = [];
@@ -157,7 +157,7 @@ const {
           },
         },
       ]);
-      console.log("categoryData/////////",categoryData);
+      // console.log("categoryData/////////",categoryData);
       categoryData.forEach((cat) => {
         categories.push(cat._id), categorySales.push(cat.sales);
       });
@@ -195,8 +195,8 @@ const {
       if (req.query.fromDate && req.query.toDate) {
         const { fromDate, toDate } = req.query;
 
-        console.log("fromDate",fromDate);
-        console.log("toDate",toDate);
+        // console.log("fromDate",fromDate);
+        // console.log("toDate",toDate);
 
         orderDataToDownload = await orderDb.find({"products.orderStatus": "Delivered",createdAt: { $gte: fromDate, $lte: toDate },}).sort({ createdAt: 1 });
       }

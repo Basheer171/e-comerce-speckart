@@ -277,7 +277,7 @@
                                                 <p class="text-xs font-weight-bold mb-0">&#x20B9; <%= data.product.price * data.orderDetails.quantity %></p>
                                               </td>
                                               <td>
-                                                <img src="/public/userImages/<%= data.product.image %>" class="avatar avatar-sm me-3 border-radius-lg" alt="">
+                                                <img src="/public/userImages/<%= data.product.image[0] %>" class="avatar avatar-sm me-3 border-radius-lg" alt="">
                                               </td>
                                               <td>
                                                 <% if(data.orderDetails.orderStatus === 'Placed') { %>

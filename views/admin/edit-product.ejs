@@ -133,7 +133,6 @@
                     <!-- Edit Product Form -->
                     <form action="/admin/edit-product" enctype="multipart/form-data" method="post" id="editProductForm">
                       <div class="row">
-                        <!-- Product Name Input -->
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Product Name</div>
@@ -141,14 +140,13 @@
                             <div id="productNameError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Category Name Dropdown -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Category Name</div>
                             <select id="category" name="category" required>
                               <% category.forEach(cat => { %>
-                                <option value="<%= cat.categoryName %>">
+                                <option value="<%= cat._id %>" <%= productData.category.equals(cat._id) ? 'selected' : '' %>>
                                   <%= cat.categoryName %>
                                 </option>
                               <% }); %>
@@ -156,14 +154,13 @@
                             <div id="categoryError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Brand Dropdown -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Brand</div>
                             <select id="brand" name="brand" required>
                               <% brandData.forEach(brand => { %>
-                                <option value="<%= brand.brandName %>">
+                                <option value="<%= brand._id %>" <%= productData.brandName.equals(brand._id) ? 'selected' : '' %>>
                                   <%= brand.brandName %>
                                 </option>
                               <% }); %>
@@ -171,8 +168,7 @@
                             <div id="brandError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Quantity Input -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Quantity</div>
@@ -180,8 +176,7 @@
                             <div id="qtyError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Specification Input -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Specification</div>
@@ -189,8 +184,7 @@
                             <div id="descriptionError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Price Input -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">Price</div>
@@ -198,27 +192,34 @@
                             <div id="priceError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- New Image Input -->
+                    
                         <div class="col-md-3 py-4">
                           <div class="form-group">
                             <div class="form-label rounded">New Image</div>
-                            <img src="/public/userImages/<%= productData.image %>" alt="Old Image" style="width: 100px;">
-                            <input type="file" name="image" id="image" multiple accept="image/*" required>
+                            <% productData.image.forEach(img => { %>
+                              <img src="/public/userImages/<%= img %>" alt="Old Image" style="width: 100px;">
+                            <% }); %>
+                            <input type="file" name="image" id="image" multiple accept="image/*">
                             <div id="imageError" class="error-message text-danger"></div>
                           </div>
                         </div>
-        
-                        <!-- Additional form elements with corresponding IDs and error messages -->
-        
-                        <!-- Hidden ID Input -->
+                    
                         <div class="col-md-3 py-4">
                           <input type="hidden" name="id" value="<%= productData._id %>">
-                          <!-- Update Button -->
+                          <div class="form-check py-4">
+                            <div class="form-label rounded">Action</div>
+                            <input class="form-check-input" type="radio" name="is_active" value="1" <%= productData.is_active ? 'checked' : '' %>>
+                            <label class="form-check-label" for="flexRadioDefault1">List</label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="is_active" value="0" <%= !productData.is_active ? 'checked' : '' %>>
+                            <label class="form-check-label" for="flexRadioDefault2">Unlist</label>
+                          </div>
                           <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                       </div>
                     </form>
+                    
                   </div>
                 </div>
               </div>

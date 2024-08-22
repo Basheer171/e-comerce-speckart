@@ -1,6 +1,17 @@
 const express = require("express");
 const admin_route = express();
 
+const admiauth = require("../middleware/adminAuth");
+
+const adminController = require("../controllers/adminController");
+const categoryController = require("../controllers/categoryController");
+const brandController = require("../controllers/brandController");
+const productController = require("../controllers/productController");
+const couponController = require("../controllers/couponController");
+const offerController = require("../controllers/offerController")
+const fileUpload = require('../middleware/fileUpload')
+
+
 
 
 const bodyParser = require("body-parser");
@@ -14,6 +25,8 @@ const multer = require("multer");
 const path = require("path");
 
 admin_route.use('/public',express.static('public'));
+
+
 
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
@@ -41,16 +54,6 @@ const upload = multer({
         }
     }
 });
-
-const admiauth = require("../middleware/adminAuth");
-
-const adminController = require("../controllers/adminController");
-const categoryController = require("../controllers/categoryController");
-const brandController = require("../controllers/brandController");
-const productController = require("../controllers/productController");
-const couponController = require("../controllers/couponController");
-const offerController = require("../controllers/offerController")
-
 
 
 

@@ -42,8 +42,8 @@
                                 <div class="row">
                                     <figure class="product-main-image">
                                         <img id="product-zoom"
-                                            src="/public/userImages/<%= product.image %>"
-                                            data-zoom-image="/public/userImages/<%= product.image %>"
+                                            src="/public/userImages/<%= product.image[0] %>"
+                                            data-zoom-image="/public/userImages/<%= product.image[0] %>"
                                             alt="product image" />
                                     </figure>
                                     <!-- End .product-main-image -->
@@ -52,28 +52,28 @@
                                         <a class="product-gallery-item active" href="#"
                                             data-image="/public/products/images/<%= product.image %>"
                                             data-zoom-image="/public/userImages/<%= product.image %>">
-                                            <img src="/public/userImages/<%= product.image %>"
+                                            <img src="/public/userImages/<%= product.image[0] %>"
                                                 alt="product side" />
                                         </a>
 
                                         <a class="product-gallery-item" href="#"
                                             data-image="/public/products/images/<%= product.image %>"
                                             data-zoom-image="/public/products/images/<%= product.image %>">
-                                            <img src="/public/userImages/<%= product.image %>"
+                                            <img src="/public/userImages/<%= product.image[1] %>"
                                                 alt="product cross" />
                                         </a>
 
                                         <a class="product-gallery-item" href="#"
                                             data-image="/public/products/images/<%= product.image %>"
                                             data-zoom-image="/public/products/images/<%= product.image %>">
-                                            <img src="/public/userImages/<%= product.image %>"
+                                            <img src="/public/userImages/<%= product.image[2] %>"
                                                 alt="product with model" />
                                         </a>
 
                                         <a class="product-gallery-item" href="#"
                                             data-image="/public/products/images/<%= product.image %>"
                                             data-zoom-image="/public/products/images/<%= product.image %>">
-                                            <img src="/public/userImages/<%= product.image %>"
+                                            <img src="/public/userImages/<%= product.image[3] %>"
                                                 alt="product back" />
                                         </a>
                                     </div>
@@ -243,4 +243,23 @@
             }
         });
     }
+
+    $(document).ready(function() {
+    $("#product-zoom").elevateZoom({
+        gallery: 'product-zoom-gallery', 
+        cursor: 'pointer', 
+        galleryActiveClass: 'active', 
+        imageCrossfade: true, 
+        loadingIcon: 'https://www.elevateweb.co.uk/spinner.gif'
+    });
+    
+    // Pass the zoomed image to Fancybox when clicked
+    $("#product-zoom").bind("click", function(e) {  
+      var ez = $('#product-zoom').data('elevateZoom'); 
+      $.fancybox(ez.getGalleryList());
+      return false;
+    });
+});
+
+
 </script>

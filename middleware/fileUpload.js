@@ -1,34 +1,25 @@
-const multer = require("multer");
+const multer = require('multer')
+const path = require('path')
 
 
 
-const storage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,path.join(__dirname, '../public/userImages'));
+
+const storageBanner = multer.diskStorage({
+    destination:function(req,file,callbacks){
+        callbacks(null,path.join(__dirname, '../public/products/banner/temp'))
     },
-    filename:function(req,file,cb){
-        const name = Date.now()+'-'+file.originalname;
-        cb(null,name);
+    filename:function(req,file,callbacks){
+        const  name = Date.now()+"-"+file.originalname;
+        callbacks(null,name)
     }
-});
+  })
+  
+  const uploadBanner = multer({storage:storageBanner})
 
-const upload = multer({
-    storage:storage,
-    fileFilter:(req,file,cb)=>{
-        if(file.mimetype==="image/png"||
-            file.mimetype==="image/jpg"||
-            file.mimetype==="image/jpeg"||
-            file.mimetype==="image/webp"||
-            file.mimetype==="image/avif"
-        ){
-            cb(null,true)
-        }else{
-            cb(null,false);
-            return cb(new Error("Only .png, .jpg, .jpeg, .webp format allowed."));
-        }
-    }
-});
 
-module.exports = {
-    upload,
+
+
+  module.exports={
+    
+    uploadBanner
 }
