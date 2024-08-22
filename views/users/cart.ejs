@@ -101,45 +101,50 @@
                         </div><!-- End .cart-bottom -->
                     </div><!-- End .col-lg-9 -->
 
-                    <aside class="col-lg-3">
+                    <aside class="col-lg-3" >
                         <div class="summary summary-cart">
                             <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
                             <table class="table table-summary">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Total</th>
+        </tr>
+    </thead>
 
-                                <tbody>
-                                    <% if (cart && cart.products && cart.products.length > 0) { %>
-                                        <% cart.products.forEach((data) => { %>
-                                            <tr>
-                                                <td><a href="/product?id=<%= data.productId._id %>">
-                                                    <%= data.productId.name %>
-                                                </a></td>
-                                                <td>₹<%= data.totalPrice %></td>
-                                            </tr>
-                                        <% }) %>
+    <tbody>
+        <% if (cart && cart.products && cart.products.length > 0) { %>
+            <% cart.products.forEach((data) => { %>
+                <tr>
+                    <td><a href="/product?id=<%= data.productId._id %>">
+                        <%= data.productId.name %>
+                    </a></td>
+                    <td>₹<%= data.totalPrice %></td>
+                </tr>
+            <% }) %>
 
-                                        <tr>
-                                            <td>Shipping:</td>
-                                            <td>Free shipping</td>
-                                        </tr>
+            <tr>
+                <td>Shipping:</td>
+                <td>Free shipping</td>
+            </tr>
 
-                                        <tr class="summary-subtotal">
-                                            <td>Subtotal:</td>
-                                            <td>₹<%= Total %></td>
-                                        </tr><!-- End .summary-subtotal -->
+            <tr class="summary-subtotal">
+                <td>Subtotal:</td>
+                <td>₹<%= Total %></td>
+            </tr><!-- End .summary-subtotal -->
 
-                                        <tr class="summary-total">
-                                            <td>Total:</td>
-                                            <td>₹<%= Total %></td>
-                                        </tr><!-- End .summary-total -->
-                                    <% } %>
-                                </tbody>
-                            </table><!-- End .table table-summary -->
+            <tr class="summary-total">
+                <td>Total:</td>
+                <td>₹<%= Total %></td>
+            </tr><!-- End .summary-total -->
+        <% } else { %>
+            <tr>
+                <td colspan="2" class="text-center">Your cart is empty.</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table><!-- End .table table-summary -->
+
 
                             <div class="text-center mt-3">
                                 <a href="checkout" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
@@ -167,74 +172,73 @@
 <script>
     // Function cart count
     function cartCount(productId, user, count) {
-        // Get the DOM element representing the quantity
-        const quantityElement = document.getElementById(productId);
+    const quantityElement = document.getElementById(productId);
+    const quantity = parseInt(quantityElement.innerHTML);
 
-        // Parse the current quantity value as an integer
-        const quantity = parseInt(quantityElement.innerHTML);
-
-        // Check if the count is -1 and the quantity is already 1, prevent further decrease
-        if (count === -1 && quantity === 1) {
-            return;
-        }
-
-        // Make an AJAX request to the server to update the cart quantity
-        $.ajax({
-            url: '/cart-quantity',
-            method: 'post',
-            data: {
-                product: productId,
-                user: user,
-                count: count,
-            }
-        }).done(data => {
-            // Check if the cart quantity was successfully updated
-            if (data.changeSuccess) {
-                // Reload the cart content in the HTML element with the ID 'reloadDiv'
-                $('#reloadDiv').load('/cart #reloadDiv');
-            } else if (data.check) {
-                // If there is an issue (e.g., product out of stock), show an error using SweetAlert
-                swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Out of stock",
-                });
-            } else {
-                // If there is a general error, show a warning using SweetAlert
-                swal.fire({
-                    position: "center",
-                    icon: "warning",
-                    text: data.message,
-                    timer: 1500,
-                    showConfirmButton: false,
-                });
-            }
-        });
+    if (count === -1 && quantity === 1) {
+        return;
     }
+
+    $.ajax({
+        url: '/cart-quantity',
+        method: 'post',
+        data: {
+            product: productId,
+            user: user,
+            count: count,
+        }
+    }).done(data => {
+        if (data.changeSuccess) {
+            $('#reloadDiv').load('/cart #reloadDiv', function() {
+                // Update the total price in the summary
+                $('.summary-total td').text('₹' + data.updatedTotal);
+            });
+        } else if (data.check) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Out of stock",
+            });
+        } else {
+            Swal.fire({
+                position: "center",
+                icon: "warning",
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        }
+    });
+}
+
 
     // Remove product from cart
     function removeProduct(productId) {
-        $.ajax({
-            url: '/remove-product',
-            method: 'post',
-            data: {
-                product: productId
-            },
-        }).done(data => {
-            if (data) {
-                $('#reloadDiv').load('/cart #reloadDiv');
+    $.ajax({
+        url: '/remove-product',
+        method: 'post',
+        data: {
+            product: productId
+        },
+    }).done(data => {
+        if (data.success) {
+            $('#reloadDiv').load('/cart #reloadDiv', function() {
+                // Update the total price in the summary
+                $('.summary-total td').text('₹' + data.updatedTotal);
+            });
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Item Removed Successfully',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            } else {
-                console.log('Item remove failed');
-            }
-        });
-    }
+            Swal.fire({
+                icon: 'success',
+                title: 'Item Removed Successfully',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else {
+            console.log('Item remove failed');
+        }
+    });
+}
+
 </script>
 
 <%- include('../layouts/user/footer.ejs') %>
