@@ -9,51 +9,19 @@ const brandController = require("../controllers/brandController");
 const productController = require("../controllers/productController");
 const couponController = require("../controllers/couponController");
 const offerController = require("../controllers/offerController")
-const fileUpload = require('../middleware/fileUpload')
+const upload = require('../middleware/fileUpload')
 
-
-
-
-const bodyParser = require("body-parser");
-admin_route.use(bodyParser.json());
-admin_route.use(bodyParser.urlencoded({extended:true}));
-
+admin_route.use(express.json());
+admin_route.use(express.urlencoded({extended:true}));
 admin_route.set('view engine','ejs');
 admin_route.set('views','./views/admin');
 
-const multer = require("multer");
-const path = require("path");
+
 
 admin_route.use('/public',express.static('public'));
 
 
 
-const storage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,path.join(__dirname, '../public/userImages'));
-    },
-    filename:function(req,file,cb){
-        const name = Date.now()+'-'+file.originalname;
-        cb(null,name);
-    }
-});
-
-const upload = multer({
-    storage:storage,
-    fileFilter:(req,file,cb)=>{
-        if(file.mimetype==="image/png"||
-            file.mimetype==="image/jpg"||
-            file.mimetype==="image/jpeg"||
-            file.mimetype==="image/webp"||
-            file.mimetype==="image/avif"
-        ){
-            cb(null,true)
-        }else{
-            cb(null,false);
-            return cb(new Error("Only .png, .jpg, .jpeg, .webp format allowed."));
-        }
-    }
-});
 
 
 

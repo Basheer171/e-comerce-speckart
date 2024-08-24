@@ -199,6 +199,7 @@ const {
         // console.log("toDate",toDate);
 
         orderDataToDownload = await orderDb.find({"products.orderStatus": "Delivered",createdAt: { $gte: fromDate, $lte: toDate },}).sort({ createdAt: 1 });
+              console.log("orderDataToDownload",orderDataToDownload );
       }
   
       res.render("home", {

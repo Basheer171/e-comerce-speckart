@@ -1,25 +1,35 @@
-const multer = require('multer')
-const path = require('path')
+// multerConfig.js
+const multer = require("multer");
+const path = require("path");
 
-
-
-
-const storageBanner = multer.diskStorage({
-    destination:function(req,file,callbacks){
-        callbacks(null,path.join(__dirname, '../public/products/banner/temp'))
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../public/userImages'));
     },
-    filename:function(req,file,callbacks){
-        const  name = Date.now()+"-"+file.originalname;
-        callbacks(null,name)
+    filename: function (req, file, cb) {
+        const name = Date.now() + '-' + file.originalname;
+        cb(null, name);
     }
-  })
-  
-  const uploadBanner = multer({storage:storageBanner})
+});
 
+const fileFilter = (req, file, cb) => {
+    if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg" ||
+        file.mimetype === "image/webp" ||
+        file.mimetype === "image/avif"
+    ) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+        return cb(new Error("Only .png, .jpg, .jpeg, .webp, and .avif formats are allowed."));
+    }
+};
 
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter
+});
 
-
-  module.exports={
-    
-    uploadBanner
-}
+module.exports = upload;
