@@ -6,11 +6,9 @@ const userSchema = new mongoose.Schema({
 
     firstName: {
         type: String,
-        required: true
     },
     secondName: {
         type: String,
-        required: true
     },
     email: {
         type: String,
@@ -18,7 +16,6 @@ const userSchema = new mongoose.Schema({
     },
     mobile: {
         type: String,
-        required: true
     },
     image: {
         type: String,
@@ -26,7 +23,6 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     is_admin: {
         type: Number,

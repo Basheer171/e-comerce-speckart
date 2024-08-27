@@ -3,7 +3,9 @@ const user_route = express();
 const session = require("express-session");
 const path = require("path")
 const config = require("../config/config");
-
+const User = require('../models/userModel')
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const passport =require('passport')
 
 const auth = require("../middleware/auth");
 const fetchUserData = require("../middleware/userData")
@@ -34,6 +36,69 @@ const couponController = require('../controllers/couponController')
 
 user_route.use(fetchUserData)
 
+passport.use(new googleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret:process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL:"/auth/google/callback"
+},async (accessToken,refreshToken,profile,done) => {
+  // console.log(accessToken);
+  // console.log(refreshToken);
+  // console.log(profile);
+  try {
+    const user = await User.findOne({email: profile.emails[0].value});    
+    
+    if(user) {
+      done(null,user);
+    } else {
+      const newUser = new User({
+        email: profile.emails[0].value,
+        firstName: profile.displayName,
+        isVerified:1,
+      });
+
+      await newUser.save();
+      done(null,newUser);
+    }
+  } catch (error) {
+    done(error,false);
+  }
+}
+))
+
+passport.serializeUser((user,done) => {
+  done(null,user.id);
+})
+
+
+passport.deserializeUser(async(id,done)=> {
+  try {
+    const user= await User.findById(id);
+    done(null,user);
+  } catch (error) {
+    done(error,false);
+  }
+})
+
+
+user_route.get('/auth/google',passport.authenticate('google',{
+  scope:["profile","email"]
+}));
+
+user_route.get('/auth/google/callback',passport.authenticate('google',{
+  failureRedirect:'/login'
+}),async function (req,res) {
+  // console.log(req.user.email);
+  const userEmail = req.user.email;
+  const user = await User.findOne({email:userEmail});
+
+  if(user){
+    req.session.user_id = user._id;
+    res.redirect('/')
+  } else {
+    res.redirect('/login')
+  }
+
+})
 
 
 user_route.get('/register',auth.isLogout, userController.loadRegister);
