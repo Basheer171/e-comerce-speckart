@@ -386,7 +386,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">User</th>
                     <th scope="col">OrderId</th>
-                    <th scope="col">Products</th>
+                    <!-- <th scope="col">Products</th> -->
                     <!-- <th scope="col">Price</th> -->
                     <th scope="col">Total Price</th>
                     <th scope="col">Payment</th>
@@ -410,15 +410,6 @@
                           <%=order._id%>
 
                         </td>
-
-                        <td>
-                          <% order.products.forEach((pdt)=> { %>
-                            <p style="text-align: center;">
-                              <%= pdt.productId.productName %>  <%= pdt.quantity %>
-                            </p>
-                            <% }) %>
-                        </td>
-
                         <td>
                           &#8377;<%=order.totalAmount %>
 

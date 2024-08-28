@@ -1,4 +1,33 @@
 <%- include('../layouts/admin/header.ejs') %>
+<style>
+  .image-preview {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  .image-preview img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+  }
+  .btn-delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(255, 0, 0, 0.5);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+  }
+</style>
 
   <body class="g-sidenav-show  bg-gray-200">
 
@@ -195,10 +224,16 @@
                     
                         <div class="col-md-3 py-4">
                           <div class="form-group">
-                            <div class="form-label rounded">New Image</div>
-                            <% productData.image.forEach(img => { %>
-                              <img src="/public/userImages/<%= img %>" alt="Old Image" style="width: 100px;">
-                            <% }); %>
+                            <div class="form-label rounded">Existing Images</div>
+                            <div id="imagePreviews">
+                              <% productData.image.forEach((img, index) => { %>
+                                <div class="image-preview" data-image-src="<%= img %>">
+                                  <img src="/public/userImages/<%= img %>" alt="Product Image"/>
+                                  <button type="button" class="btn-delete" onclick="removeImage(this)">X</button>
+                                  <input type="hidden" name="imagesToDelete[]" value="<%= img %>">
+                                </div>
+                              <% }) %>
+                            </div>
                             <input type="file" name="image" id="image" multiple accept="image/*">
                             <div id="imageError" class="error-message text-danger"></div>
                           </div>
@@ -244,6 +279,24 @@
                             </div>
                           </div> -->
       </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script>
+        function removeImage(imageSrc) {
+          // Remove the image element
+          const imageElement = Array.from(document.querySelectorAll('.image-preview')).find(img => img.querySelector('img').src === imageSrc);
+          if (imageElement) {
+            imageElement.remove();
+          }
+          
+          // Mark image for deletion
+          const hiddenInput = document.querySelector(`input[name="imagesToDelete[]"][value="${imageSrc}"]`);
+          if (hiddenInput) {
+            hiddenInput.remove();
+          }
+        }
+      </script>
+
       <script>
         function validateForm() {
           return (

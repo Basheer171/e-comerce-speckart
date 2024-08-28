@@ -195,8 +195,8 @@ const {
       if (req.query.fromDate && req.query.toDate) {
         const { fromDate, toDate } = req.query;
 
-        // console.log("fromDate",fromDate);
-        // console.log("toDate",toDate);
+        console.log("fromDate",fromDate);
+        console.log("toDate",toDate);
 
         orderDataToDownload = await orderDb.find({"products.orderStatus": "Delivered",createdAt: { $gte: fromDate, $lte: toDate },}).sort({ createdAt: 1 });
               console.log("orderDataToDownload",orderDataToDownload );

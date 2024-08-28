@@ -9,7 +9,7 @@ const sharp = require('sharp');
 const viewCategory = async (req, res) => {
     try {
         const categoryData = await Category.find({}).populate('offer').exec();
-        console.log("categoryData",categoryData)
+        // console.log("categoryData",categoryData)
         const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
         if(categoryData)
 
