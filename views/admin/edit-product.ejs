@@ -1,32 +1,36 @@
 <%- include('../layouts/admin/header.ejs') %>
 <style>
-  .image-preview {
-    position: relative;
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-  .image-preview img {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-  }
-  .btn-delete {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: rgba(255, 0, 0, 0.5);
-    border: none;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 14px;
-  }
+  .image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Adjust the spacing between previews */
+}
+
+.preview-wrapper {
+  position: relative;
+  width: 100px; /* Set the desired width for previews */
+  height: 100px; /* Set the desired height for previews */
+  overflow: hidden; /* Hide overflow to ensure the image fits within the wrapper */
+}
+
+.preview-img {
+  width: 100%; /* Ensure the image fits the wrapper width */
+  height: 100%; /* Ensure the image fits the wrapper height */
+  object-fit: cover; /* Cover the wrapper while preserving the aspect ratio */
+}
+
+.delete-btn {
+  position: absolute;
+  top: 5px; /* Adjust the position as needed */
+  right: 5px; /* Adjust the position as needed */
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 2px 5px;
+}
+  
 </style>
 
   <body class="g-sidenav-show  bg-gray-200">
@@ -76,7 +80,7 @@
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">branding_watermark</i>
           </div>
-          <span class="nav-link-text ms-1">Porducts</span>
+          <span class="nav-link-text ms-1">products</span>
         </a>
       </li>
       <li class="nav-item">
@@ -224,20 +228,20 @@
                     
                         <div class="col-md-3 py-4">
                           <div class="form-group">
-                            <div class="form-label rounded">Existing Images</div>
-                            <div id="imagePreviews">
-                              <% productData.image.forEach((img, index) => { %>
-                                <div class="image-preview" data-image-src="<%= img %>">
-                                  <img src="/public/userImages/<%= img %>" alt="Product Image"/>
-                                  <button type="button" class="btn-delete" onclick="removeImage(this)">X</button>
-                                  <input type="hidden" name="imagesToDelete[]" value="<%= img %>">
-                                </div>
-                              <% }) %>
-                            </div>
-                            <input type="file" name="image" id="image" multiple accept="image/*">
+                            <div class="form-label rounded">New Image</div>
+                            <% productData.image.forEach(img => { %>
+                              <img src="/public/userImages/<%= img %>" alt="Old Image" style="width: 100px;">
+                            <% }); %>
+                          <!-- Image input and preview container -->
+                        <input type="file" name="image" id="image" multiple accept="image/*">
+                        <div class="image-preview-container my-2">
+                          <!-- Previews will be injected here by JavaScript -->
+                        </div>
+
                             <div id="imageError" class="error-message text-danger"></div>
                           </div>
                         </div>
+                        
                     
                         <div class="col-md-3 py-4">
                           <input type="hidden" name="id" value="<%= productData._id %>">
@@ -279,22 +283,43 @@
                             </div>
                           </div> -->
       </main>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+     
       <script>
-        function removeImage(imageSrc) {
-          // Remove the image element
-          const imageElement = Array.from(document.querySelectorAll('.image-preview')).find(img => img.querySelector('img').src === imageSrc);
-          if (imageElement) {
-            imageElement.remove();
-          }
-          
-          // Mark image for deletion
-          const hiddenInput = document.querySelector(`input[name="imagesToDelete[]"][value="${imageSrc}"]`);
-          if (hiddenInput) {
-            hiddenInput.remove();
-          }
-        }
+        document.getElementById("image").addEventListener("change", function (event) {
+          const files = event.target.files;
+          const previewContainer = document.querySelector(".image-preview-container");
+  
+          // Clear any existing previews
+          previewContainer.innerHTML = "";
+  
+          // Loop through each selected file
+          Array.from(files).forEach((file, index) => {
+            const reader = new FileReader();
+  
+            reader.onload = function (e) {
+              const previewWrapper = document.createElement("div");
+              previewWrapper.className = "preview-wrapper";
+  
+              const img = document.createElement("img");
+              img.src = e.target.result;
+              img.className = "preview-img";
+  
+              const deleteButton = document.createElement("button");
+              deleteButton.textContent = "Delete";
+              deleteButton.className = "delete-btn";
+              deleteButton.addEventListener("click", function () {
+                previewWrapper.remove();
+                // Optionally remove the file from the input (not implemented here)
+              });
+  
+              previewWrapper.appendChild(img);
+              previewWrapper.appendChild(deleteButton);
+              previewContainer.appendChild(previewWrapper);
+            };
+  
+            reader.readAsDataURL(file);
+          });
+        });
       </script>
 
       <script>

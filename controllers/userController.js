@@ -690,6 +690,7 @@
       const userId = req.session.user_id
       const userData = await User.findById(userId) ;
       const addressData = await addressModel.findOne({userId : req.session.user_id})
+      console.log("addressData",addressData)
         res.render('profile',{ user: userData,address:addressData})
       
     } catch (error) {

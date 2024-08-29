@@ -104,72 +104,71 @@ const addProduct = async(req,res)=>{
 }
 
 // Edit product Load
-const editProductLoad = async(req,res)=>{
+const editProductLoad = async (req, res) => {
     try {
         const id = req.query.id;
-        const productData = await Product.findById({_id:id});
-        // console.log(productData);
+        const productData = await Product.findById({_id: id});
         const category = await Category.find();
-        // console.log('/////',category);
         const brandData = await Brand.find();
-        res.render('edit-product',{message:'Edit Product',productData,category,brandData});
+        res.render('edit-product', {
+            message: 'Edit Product',
+            productData,
+            category,
+            brandData
+        });
     } catch (error) {
         console.log(error);
     }
 }
 
 
+
 // Edit Product
-const editProduct = async(req,res)=>{
+const editProduct = async (req, res) => {
     try {
         const id = req.body.id;
-        const productName = req.body.productName;  
-        const categoryName = req.body.category;   
-        const brandName = req.body.brand;      
+        const productName = req.body.productName;
+        const categoryName = req.body.category;
+        const brandName = req.body.brand;
         const qty = req.body.qty;
         const description = req.body.description;
         const price = req.body.price;
-        const image = [];
+        let image = [];
 
         // Check if files are uploaded
         if (req.files && req.files.length > 0) {
-            for (let i = 0; i < req.files.length; i++) {
-                const filename = req.files[i].filename;
+            for (let i = 0; i < req.files.length; i++) {    
+                let filename = req.files[i].filename;
 
                 // Resize image to 300x300 pixels
                 await sharp(path.join(__dirname, '../public/userImages', filename))
                     .resize(300, 300)
                     .toFile(path.join(__dirname, '../public/userImages', 'resized-' + filename));
-            
+                
                 image[i] = 'resized-' + filename;
-
             }
         } else {
-            // No new files uploaded, maintain existing image
-            const existingProduct = await Product.findOne({_id:id});
-
+            // Maintain existing images if no new files are uploaded
+            let existingProduct = await Product.findOne({_id: id});
             if (existingProduct && existingProduct.image) {
-                if(Array.isArray(existingProduct.image)){
-
-                    image = existingProduct.image;
-                }else{
-                    image = [existingProduct.image];
-                }
+                image = Array.isArray(existingProduct.image) ? existingProduct.image : [existingProduct.image];
             }
         }
-        const updatedData = await Product.findByIdAndUpdate({_id:id},
-            {$set:{
-                name: productName,          
-                category: categoryName,     
-                brandName: brandName,      
+
+        const updatedData = await Product.findByIdAndUpdate({_id: id}, {
+            $set: {
+                name: productName,
+                category: categoryName,
+                brandName: brandName,
                 qty: qty,
                 description: description,
                 price: price,
                 image: image,
                 is_active: req.body.is_active
-            }});
+            }
+        });
 
-        if(updatedData){
+        if (updatedData) {
             res.redirect('/admin/view-product');
         } else {
             res.render('edit-product', { message: 'Something went wrong' });
@@ -178,6 +177,7 @@ const editProduct = async(req,res)=>{
         console.log(error);
     }
 }
+
 
 // Product List/Unlist
 const productListorUnlist = async(req,res)=>{
