@@ -152,8 +152,8 @@
               <td>₹ <%= product.quantity * product.productId.price %></td>
               <td>
                 <% if (product.orderStatus !== 'Cancelled' && product.orderStatus !== 'Delivered') { %>
-                  <button id="cancelButton_<%= product.productId._id %>" class="btn btn-custom btn-custom-danger" onclick="cancelOrder('<%= orders._id %>', '<%= product.productId._id %>', 'cancelButton_<%= product.productId._id %>')">Cancel</button>
-                <% } else if (product.orderStatus === 'Delivered') { %>
+                  <button id="cancelButton_<%= product.productId._id %>" class="btn btn-custom btn-custom-danger" onclick="cancelOrder('<%= orders._id %>', '<%= product.productId._id %>', 'cancelButton_<%= product.productId._id %>', ' <%= product.quantity * product.productId.price %>')">Cancel</button>
+                  <% } else if (product.orderStatus === 'Delivered') { %>
                   <button class="btn btn-custom btn-custom-success" disabled>Delivered</button>
                 <% } else { %>
                   <button class="btn btn-custom btn-custom-danger" disabled>Cancelled</button>
@@ -163,7 +163,7 @@
             </tr>
           <% }); %>
         <% } %>
-        <tr>
+        <tr> 
           <td colspan="4">Subtotal</td>
           <td colspan="2" class="text-end">₹ <%= orders.totalAmount %></td>
         </tr>
@@ -206,7 +206,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
-  function cancelOrder(uniqueId, productId, buttonId) {
+  function cancelOrder(uniqueId, productId, buttonId, total) {
+    console.log("uniqueId", uniqueId);
+    console.log("productId", productId);
+    console.log("totalAmount", total);
     Swal.fire({
       title: 'Are you sure?',
       text: 'You want to cancel this order?',
@@ -220,7 +223,7 @@
         $.ajax({
           url: '/cancelOrder',
           method: 'post',
-          data: { uniqueId, productId },
+          data: { uniqueId, productId, total },  // Include totalAmount here
           success: function (response) {
             if (response.cancel == 1) {
               location.reload(); // Reload the page to reflect the change
@@ -237,5 +240,6 @@
     });
   }
 </script>
+
 
 <%- include('../layouts/user/footer.ejs') %>

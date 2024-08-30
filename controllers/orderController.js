@@ -193,6 +193,7 @@
   
           const orderData = await order.save();
           const orderid = order._id;
+        //   console.log("placeorderid",orderid)
   
           if (orderData) {
               if (paymentMethod === 'COD') {
@@ -415,50 +416,90 @@
   //======================= cancelorder =======================
   const cancelOrder = async (req, res) => {
     try {
-        const { uniqueId, productId } = req.body;
-
-        const orderData = await orderDb.findOne({ _id: uniqueId });
-
-        if (!orderData) {
-            return res.status(404).json({ message: "Order not found" });
+      const { uniqueId, productId, total } = req.body;
+      const userId = req.session.user_id; // Assuming the user ID is stored in the session
+  
+      // Retrieve the order data by unique ID
+      const orderData = await orderDb.findOne({ _id: uniqueId });
+  
+      if (!orderData) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+  
+      // Find the specific product within the order
+      const productInfo = orderData.products.find(
+        (product) => product.productId.toString() === productId
+      );
+  
+      if (!productInfo) {
+        return res.status(404).json({ message: "Product not found in the order" });
+      }
+  
+      // Check if the order status is "Delivered"
+      if (productInfo.orderStatus === 'Delivered') {
+        return res.status(400).json({ message: "Cannot cancel a delivered order" });
+      }
+  
+      // Update the product's order status to "Cancelled" and save the changes
+      productInfo.orderStatus = "Cancelled";
+      productInfo.updatedAt = Date.now();
+      await orderData.save();
+  
+      // Increase the product quantity in the inventory
+      const quantityToIncrease = productInfo.quantity;
+      const product = await productDb.findById(productId);
+  
+      if (!product) {
+        return res.status(404).json({ message: "Product not found in the database" });
+      }
+  
+      product.qty += quantityToIncrease; // Increase the quantity in the inventory
+      await product.save(); // Save the updated product data
+  
+      // Wallet refund logic only if the payment method is not COD
+      if (orderData.paymentMethod !== 'COD') {
+        const amount = parseInt(total);
+        const userData = await userDb.findOne({ _id: userId });
+  
+        if (!userData) {
+          return res.status(404).json({ message: "User not found" });
         }
-
-        const productInfo = orderData.products.find(
-            (product) => product.productId.toString() === productId
+  
+        const totalWalletBalance = userData.wallet + amount;
+  
+        // Update user wallet and wallet history
+        const result = await userDb.findOneAndUpdate(
+          { _id: userId },
+          {
+            $inc: { wallet: amount },
+            $push: {
+              walletHistory: {
+                transactionDate: new Date(),
+                transactionAmount: amount,
+                transactionDetails: 'Cancelled Product Amount Credited',
+                transactionType: 'Credit',
+                currentBalance: totalWalletBalance,
+              },
+            },
+          },
+          { new: true }
         );
-
-        if (!productInfo) {
-            return res.status(404).json({ message: "Product not found in the order" });
+  
+        if (!result) {
+          return res.status(404).json({ message: "Failed to update wallet" });
         }
-
-        // Check if the order status is "Delivered"
-        if (productInfo.orderStatus === 'Delivered') {
-            return res.status(400).json({ message: "Cannot cancel a delivered order" });
-        }
-
-        productInfo.orderStatus = "Cancelled";
-        await orderData.save();
-
-        const quantityToIncrease = productInfo.quantity;
-        const product = await productDb.findById(productId);
-
-        if (!product) {
-            return res.status(404).json({ message: "Product not found in the database" });
-        }
-
-        product.qty += quantityToIncrease;
-        await product.save();
-
-        res.json({ cancel: 1 });
+  
+        console.log('Wallet updated, new balance:', totalWalletBalance);
+      }
+  
+      // Return a success response
+      res.json({ cancel: 1, message: "Order canceled and amount credited to wallet" });
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
+      console.log(error.message);
+      res.status(500).send('Internal Server Error');
     }
   };
-
-
-
-
+  
   module.exports = {
       loadCheckout,
       editAddressLoad,

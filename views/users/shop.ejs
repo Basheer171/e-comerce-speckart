@@ -1,200 +1,218 @@
-<%- include('../layouts/user/header.ejs') -%>
-<main class="main">
-    <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
-        <div class="container">
-            <h1 class="page-title">Shop<span> Elevating Style, One Step at a Time</span></h1>
-        </div><!-- End .container -->
-    </div><!-- End .page-header -->
-    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
-            </ol>
-        </div><!-- End .container -->
-    </nav><!-- End .breadcrumb-nav -->
+    <%- include('../layouts/user/header.ejs') -%>
+    <main class="main">
+        <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+            <div class="container">
+                <h1 class="page-title">Shop<span> Elevating Style, One Step at a Time</span></h1>
+            </div><!-- End .container -->
+        </div><!-- End .page-header -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+            <div class="container">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
+                </ol>
+            </div><!-- End .container -->
+        </nav><!-- End .breadcrumb-nav -->
 
-    <div class="page-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9">
-                    <div class="products mb-3">
-                        <div class="row justify-content-center">
-                            <% for (let i = 0; i < products.length; i++) { %>
-                                <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item" data-brand="<%= products[i].brandName %>" data-category="<%= products[i].category %>">
-                                    <div class="product product-7 text-center">
-                                        <figure class="product-media">
-                                            <a href="/product?id=<%= products[i]._id %>">
-                                                <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image">
-                                                <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image-hover">
-                                            </a>
-                                            <div class="product-action-vertical">
-                                                <a href="#" style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
-                                            </div><!-- End .product-action-vertical -->
-                                        </figure><!-- End .product-media -->
-                                        <div class="product-body">
-                                            <h3 class="product-title"><a><%= products[i].name %></a></h3><!-- End .product-title -->
-                                            <div class="product-price">₹<%= products[i].price %></div><!-- End .product-price -->
-                                        </div><!-- End .product-body -->
-                                        <div class="product-action">
-                                            <a class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')" id="addToCartBtn_<%= products[i]._id %>"><span>add to cart</span></a>
-                                        </div><!-- End .product-action -->
-                                    </div><!-- End .product -->
-                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-                            <% } %>
-                        </div>
-                    </div>
-
-                    <div class="store-filter clearfix">
-                        <ul class="pagination justify-content-center">
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <% if (currentPage == i) { %>
-                                    <li class="page-item active"><a class="page-link" href="?page=<%= i %>&search=<%= search %>&category=<%= categoryFilter.join(',') %>&brand=<%= brandFilter.join(',') %>"><%= i %></a></li>
-                                <% } else { %>
-                                    <li class="page-item"><a class="page-link" href="?page=<%= i %>&search=<%= search %>&category=<%= categoryFilter.join(',') %>&brand=<%= brandFilter.join(',') %>"><%= i %></a></li>
+        <div class="page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div class="products mb-3">
+                            <div class="row justify-content-center">
+                                <% for (let i = 0; i < products.length; i++) { %>
+                                    <div class="col-6 col-md-4 col-lg-4 col-xl-3 product-item" data-brand="<%= products[i].brandName %>" data-category="<%= products[i].category %>">
+                                        <div class="product product-7 text-center">
+                                            <figure class="product-media">
+                                                <a href="/product?id=<%= products[i]._id %>">
+                                                    <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image">
+                                                    <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image-hover">
+                                                </a>
+                                                <div class="product-action-vertical">
+                                                    <a href="#" style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                                                </div><!-- End .product-action-vertical -->
+                                            </figure><!-- End .product-media -->
+                                            <div class="product-body">
+                                                <h3 class="product-title"><a><%= products[i].name %></a></h3><!-- End .product-title -->
+                                                <div class="product-price">₹<%= products[i].price %></div><!-- End .product-price -->
+                                            </div><!-- End .product-body -->
+                                            <div class="product-action">
+                                                <a class="btn-product btn-cart" onclick="addToCart('<%= products[i]._id %>')" id="addToCartBtn_<%= products[i]._id %>"><span>add to cart</span></a>
+                                            </div><!-- End .product-action -->
+                                        </div><!-- End .product -->
+                                    </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
                                 <% } %>
-                            <% } %>
-                        </ul>
-                    </div>
-                </div><!-- End .col-lg-9 -->
-                <aside class="col-lg-3 order-lg-first">
-                    <div class="sidebar sidebar-shop">
-                        <div class="widget widget-collapsible">
-                            <h3 class="widget-title">
-                                <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-                                    Category
-                                </a>
-                            </h3><!-- End .widget-title -->
-                            <div class="collapse show" id="widget-1">
-                                <div class="widget-body">
-                                    <div class="filter-items filter-items-count">
-                                        <% categoryData.forEach((category, index) => { %>
-                                            <div class="checkbox-filter">
-                                                <div class="input-checkbox">
-                                                    <input type="checkbox" id="category-<%= index + 1 %>" value="<%= category._id %>" <%= categoryFilter.includes(category._id.toString()) ? 'checked' : '' %> name="category">
-                                                    <label for="category-<%= index + 1 %>">
-                                                        <span></span>
-                                                        <%= category.categoryName %>
-                                                    </label>    
+                            </div>
+                        </div>
+
+                      <!-- Pagination -->
+<div class="store-filter clearfix">
+    <ul class="pagination justify-content-center">
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <% if (currentPage == i) { %>
+                <li class="page-item active"><a class="page-link" href="?page=<%= i %>&search=<%= search %>&category=<%= categoryFilter.join(',') %>&brand=<%= brandFilter.join(',') %>&sort=<%= sort %>"><%= i %></a></li>
+            <% } else { %>
+                <li class="page-item"><a class="page-link" href="?page=<%= i %>&search=<%= search %>&category=<%= categoryFilter.join(',') %>&brand=<%= brandFilter.join(',') %>&sort=<%= sort %>"><%= i %></a></li>
+            <% } %>
+        <% } %>
+    </ul>
+</div>
+                    </div><!-- End .col-lg-9 -->
+                    <aside class="col-lg-3 order-lg-first">
+                        <div class="sidebar sidebar-shop">
+                            <div class="widget widget-collapsible">
+                                <h3 class="widget-title">
+                                    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                        Category
+                                    </a>
+                                </h3>
+                                <div class="collapse show" id="widget-1">
+                                    <div class="widget-body">
+                                        <div class="filter-items filter-items-count">
+                                            <% categoryData.forEach((category, index) => { %>
+                                                <div class="checkbox-filter">
+                                                    <div class="input-checkbox">
+                                                        <input type="checkbox" id="category-<%= index + 1 %>" value="<%= category._id %>" <%= categoryFilter.includes(category._id.toString()) ? 'checked' : '' %> name="category">
+                                                        <label for="category-<%= index + 1 %>">
+                                                            <span></span>
+                                                            <%= category.categoryName %>
+                                                        </label>    
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        <% }) %>
-                                    </div><!-- End .filter-items -->
-                                </div><!-- End .widget-body -->
-                            </div><!-- End .collapse -->
-                        </div><!-- End .widget -->
-                        <div class="widget widget-collapsible">
-                            <h3 class="widget-title">
-                                <a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="true" aria-controls="widget-4">
-                                    Brand
-                                </a>
-                            </h3><!-- End .widget-title -->
-                            <div class="collapse show" id="widget-4">
-                                <div class="widget-body">
-                                    <div class="filter-items">
-                                        <% brandData.forEach((brand, index) => { %>
-                                            <div class="checkbox-filter">
-                                                <div class="input-checkbox">
-                                                    <input type="checkbox" id="brand-<%= index + 1 %>" value="<%= brand._id %>" <%= brandFilter.includes(brand._id.toString()) ? 'checked' : '' %> class="brand-checkbox" name="brand">
-                                                    <label for="brand-<%= index + 1 %>">
-                                                        <span></span>
-                                                        <%= brand.brandName %>
-                                                    </label>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget widget-collapsible">
+                                <h3 class="widget-title">
+                                    <a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="true" aria-controls="widget-4">
+                                        Brand
+                                    </a>
+                                </h3>
+                                <div class="collapse show" id="widget-4">
+                                    <div class="widget-body">
+                                        <div class="filter-items">
+                                            <% brandData.forEach((brand, index) => { %>
+                                                <div class="checkbox-filter">
+                                                    <div class="input-checkbox">
+                                                        <input type="checkbox" id="brand-<%= index + 1 %>" value="<%= brand._id %>" <%= brandFilter.includes(brand._id.toString()) ? 'checked' : '' %> class="brand-checkbox" name="brand">
+                                                        <label for="brand-<%= index + 1 %>">
+                                                            <span></span>
+                                                            <%= brand.brandName %>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        <% }) %>
-                                    </div><!-- End .filter-items -->
-                                </div><!-- End .widget-body -->
-                            </div><!-- End .collapse -->
-                        </div><!-- End .widget -->
-                    </div><!-- End .sidebar sidebar-shop -->
-                </aside><!-- End .col-lg-3 -->
-            </div><!-- End .row -->
-        </div><!-- End .container -->
-    </div><!-- End .page-content -->
-</main><!-- End .main -->
-<%- include('../layouts/user/footer.ejs') -%>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="/path/to/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
-    $(document).ready(function () {
-        const initialProducts = $('.product-item');
-
-        // Attach a change event handler to brand checkboxes
-        $('.brand-checkbox').on('change', function () {
-            updateProductDisplay();
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Price Sorting Dropdown -->
+<div class="sort-by-price">
+    <label for="price-sort">Sort by Price:</label>
+    <select id="price-sort" name="sort">
+        <option value="" <%= !sort ? 'selected' : '' %>>Default</option>
+        <option value="asc" <%= sort === 'asc' ? 'selected' : '' %>>Low to High</option>
+        <option value="desc" <%= sort === 'desc' ? 'selected' : '' %>>High to Low</option>
+    </select>
+</div>
+                        </div><!-- End .sidebar sidebar-shop -->
+                    </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+    <%- include('../layouts/user/footer.ejs') -%>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="/path/to/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+          $(document).ready(function () {
+        $('#price-sort').on('change', function () {
+            const sortOrder = $(this).val();
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('sort', sortOrder);
+            window.location.href = currentUrl.toString();
         });
-
-        // Attach a change event handler to category checkboxes
-        $('[name="category"]').on('change', function () {
-            updateProductDisplay();
-        });
-
-        // Function to update the product display based on selected filters
-        function updateProductDisplay() {
-            const selectedBrands = $('.brand-checkbox:checked').map(function () {
-                return $(this).val().trim();
-            }).get();
-
-            const selectedCategories = $('[name="category"]:checked').map(function () {
-                return $(this).val().trim();
-            }).get();
-
-            if (selectedBrands.length > 0 || selectedCategories.length > 0) {
-                initialProducts.hide();
-
-                initialProducts.each(function () {
-                    const productBrand = $(this).data('brand').trim();
-                    const productCategory = $(this).data('category').trim();
-
-                    if (
-                        (selectedBrands.length === 0 || selectedBrands.includes(productBrand)) &&
-                        (selectedCategories.length === 0 || selectedCategories.includes(productCategory))
-                    ) {
-                        $(this).show();
-                    }
-                });
-            } else {
-                initialProducts.show();
-            }
-        }
     });
+        $(document).ready(function () {
+            const initialProducts = $('.product-item');
 
-    function addToCart(id) {
-        if ($(`#addToCartBtn_${id}`).hasClass('disabled')) {
-            console.log('Product already in the cart');
-            return;
-        }
+            // Attach a change event handler to brand checkboxes
+            $('.brand-checkbox').on('change', function () {
+                updateProductDisplay();
+            });
 
-        $(`#addToCartBtn_${id}`).addClass('disabled');
+            // Attach a change event handler to category checkboxes
+            $('[name="category"]').on('change', function () {
+                updateProductDisplay();
+            });
 
-        $.ajax({
-            url: "/addTocart",
-            method: "post",
-            data: {
-                id: id
-            },
-        }).done((data) => {
-            if (data.success) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Item has been added to Cart',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            } else {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Failed to add the product',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+            // Function to update the product display based on selected filters
+            function updateProductDisplay() {
+                const selectedBrands = $('.brand-checkbox:checked').map(function () {
+                    return $(this).val().trim();
+                }).get();
 
-                $(`#addToCartBtn_${id}`).removeClass('disabled');
+                const selectedCategories = $('[name="category"]:checked').map(function () {
+                    return $(this).val().trim();
+                }).get();
+
+                if (selectedBrands.length > 0 || selectedCategories.length > 0) {
+                    initialProducts.hide();
+
+                    initialProducts.each(function () {
+                        const productBrand = $(this).data('brand').trim();
+                        const productCategory = $(this).data('category').trim();
+
+                        if (
+                            (selectedBrands.length === 0 || selectedBrands.includes(productBrand)) &&
+                            (selectedCategories.length === 0 || selectedCategories.includes(productCategory))
+                        ) {
+                            $(this).show();
+                        }
+                    });
+                } else {
+                    initialProducts.show();
+                }
             }
         });
-    }
-</script>
+
+        function addToCart(id) {
+            if ($(`#addToCartBtn_${id}`).hasClass('disabled')) {
+                console.log('Product already in the cart');
+                return;
+            }
+
+            $(`#addToCartBtn_${id}`).addClass('disabled');
+
+            $.ajax({
+                url: "/addTocart",
+                method: "post",
+                data: {
+                    id: id
+                },
+            }).done((data) => {
+                if (data.success) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Item has been added to Cart',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Failed to add the product',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    $(`#addToCartBtn_${id}`).removeClass('disabled');
+                }
+            });
+        }
+    </script>

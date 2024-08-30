@@ -627,62 +627,75 @@
 
   const loadShop = async (req, res) => {
     try {
-        // Extract search, category, and brand filters from query parameters
         const search = req.query.search || '';
         const categoryFilter = req.query.category ? req.query.category.split(',') : [];
         const brandFilter = req.query.brand ? req.query.brand.split(',') : [];
-        const page = parseInt(req.query.page) || 1;
+        const page = parseInt(req.query.page, 10) || 1;
         const limit = 8;
+        const skip = (page - 1) * limit;
+        const sort = req.query.sort || ''; // Get sorting parameter
 
-        // Construct the query to find products
+        // Construct the query with filters
         const query = {
             is_active: true,
-            $or: [
-                { name: { $regex: '.*' + search + '.*', $options: 'i' } }
-            ]
+            name: { $regex: search, $options: 'i' }
         };
 
-        // Add category filter if there are selected categories
         if (categoryFilter.length > 0) {
             query.category = { $in: categoryFilter };
         }
 
-        // Add brand filter if there are selected brands
         if (brandFilter.length > 0) {
             query.brandName = { $in: brandFilter };
         }
 
-        // Find products with filters
+        // Sorting
+        let sortOption = {};
+        if (sort === 'asc') {
+            sortOption.price = 1; // Ascending
+        } else if (sort === 'desc') {
+            sortOption.price = -1; // Descending
+        }
+
+        // Fetch filtered products with pagination and sorting
         const products = await Product.find(query)
+            .sort(sortOption)
             .limit(limit)
-            .skip((page - 1) * limit)
+            .skip(skip)
             .exec();
 
-        // Count of pages
-        const count = await Product.find(query).countDocuments();
+        // Get the total count of filtered products for pagination calculation
+        const count = await Product.countDocuments(query).exec();
 
         // Fetch category and brand data
-        const categoryData = await category.find({ is_block: false });
-        const brandData = await Brand.find({ is_block: false });
+        const categoryData = await category.find({ is_block: false }).exec();
+        const brandData = await Brand.find({ is_block: false }).exec();
+
+        // Fetch user data if needed
+        const user = await User.findById(req.session.user_id).exec();
 
         // Render the shop page with the filtered products and other data
         res.render('shop', {
-            user: await User.findById(req.session.user_id),
+            user,
             products,
             categoryData,
             brandData,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
-            title: 'shop',
+            title: 'Shop',
             search,
             categoryFilter,
-            brandFilter
+            brandFilter,
+            sort // Pass sort parameter to the view
         });
     } catch (error) {
-        console.log(error);
+        console.error('Error loading shop page:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+
 
 
   const profileLoad = async (req,res)=>{
@@ -690,7 +703,7 @@
       const userId = req.session.user_id
       const userData = await User.findById(userId) ;
       const addressData = await addressModel.findOne({userId : req.session.user_id})
-      console.log("addressData",addressData)
+      // console.log("addressData",addressData)
         res.render('profile',{ user: userData,address:addressData})
       
     } catch (error) {
