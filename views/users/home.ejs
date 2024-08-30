@@ -165,7 +165,7 @@
                         <div class="row">
                             <!-- shop -->
                             <% categoryData.forEach(cat=>{ %>   
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-3 col-xs-6"> 
                                     <div class="shop">
                                         <div class="shop-img">
                                             <img src="/public/userImages/<%=cat.image[0]%>" alt="">
@@ -211,7 +211,7 @@
                                                     top: 20px; 
                                                     left: 20px; 
                                                     background-color: red;
-                                                    color: white;
+                                                    color: white;       
                                                     padding-left: 10px;
                                                     padding-right: 10px;
                                                     ">
@@ -219,6 +219,9 @@
                                                     </div>
                                                     <%}%>
                                             </a>
+                                            <div class="product-action-vertical">
+                                                <button class="btn-product-icon btn-wishlist" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" id="addtoWishList_<%= products[i]._id %>" ></button>
+                                            </div><!-- End .product-action-vertical -->
                                         </figure><!-- End .product-media -->
                                         
                                         <div class="product-body">
@@ -311,6 +314,69 @@
                             }
                         });
                     }
+                    function addtoWishList(productId, userId) {
+    // Disable the wishlist button to prevent multiple clicks
+    $(`#addtoWishList_${productId}`).addClass('disabled');
+
+    $.ajax({
+        url: "/addToWishlist", // The backend route that handles the wishlist logic
+        method: "POST",
+        data: {
+            productId: productId,
+            userId: userId
+        },
+    }).done((data) => {
+        console.log(data);
+        if (data.success) {
+            // Product added to wishlist successfully
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: data.message, // Message from the backend
+                showConfirmButton: false,
+                timer: 1000
+            });
+
+        } else if (data.alreadyInWishlist) {
+            // Product is already in the wishlist
+            Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: data.message, // Message from the backend
+                showConfirmButton: false,
+                timer: 1000
+            });
+
+        } else {
+            // Some error occurred
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'An error occurred, please try again later.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        // Enable the wishlist button after showing the message
+        $(`#addtoWishList_${productId}`).removeClass('disabled');
+
+    }).fail((jqXHR, textStatus) => {
+        // Handle any errors returned by the server
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Failed to add item to Wishlist. Please try again later.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        // Enable the wishlist button if an AJAX error occurs
+        $(`#addtoWishList_${productId}`).removeClass('disabled');
+    });
+}
+
+
                 </script>
                 
                 

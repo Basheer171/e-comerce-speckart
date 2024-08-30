@@ -29,7 +29,7 @@
                                                     <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image-hover">
                                                 </a>
                                                 <div class="product-action-vertical">
-                                                    <a href="#" style="cursor: pointer;" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" class="btn-product-icon btn-wishlist "><span>add to wishlist</span></a>
+                                                    <a class="btn-product-icon btn-wishlist " onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" id="addtoWishList_<%= products[i]._id %>" ><span>add to wishlist</span></a>
                                                 </div><!-- End .product-action-vertical -->
                                             </figure><!-- End .product-media -->
                                             <div class="product-body">

@@ -27,7 +27,7 @@ user_route.use('/public',express.static('public'));
 
 
 
-
+const wishListController = require("../controllers/whishlistController")
 const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
@@ -194,6 +194,12 @@ user_route.post('/profile/addMoneyToWallet',auth.isLogin, userController.addMone
 user_route.post('/verifyWalletpayment',auth.isLogin, userController.verifyWalletpayment);
 user_route.get('/walletHistory', auth.isLogin, userController.walletHistory)
 
+
+//============================== wishList Related ==========================//
+
+
+user_route.get('/wishlist',auth.isLogin,wishListController.load_whislist);
+user_route.post('/addToWishlist',auth.isLogin,wishListController.addToWishlist);
 
 
 
