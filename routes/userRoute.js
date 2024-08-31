@@ -200,6 +200,7 @@ user_route.get('/walletHistory', auth.isLogin, userController.walletHistory)
 
 user_route.get('/wishlist',auth.isLogin,wishListController.load_whislist);
 user_route.post('/addToWishlist',auth.isLogin,wishListController.addToWishlist);
+user_route.post('/wishlist/remove',auth.isLogin,wishListController.remove_wishItem);
 
 
 

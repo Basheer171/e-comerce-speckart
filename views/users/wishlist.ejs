@@ -1,92 +1,193 @@
-<%- include('../layouts/user/header.ejs') %>
+<%- include('../layouts/user/header.ejs') -%>
+<main class="main">
+  <div class="page-header text-center" style="background-image: url('/public/userAssets/assets/images/page-header-bg.jpg')">
+      <div class="container">
+          <h1 class="page-title text-dar">My Wishlist</h1>
+      </div><!-- End .container -->
+  </div><!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav">
+      <div class="container">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+          </ol>
+      </div><!-- End .container -->
+  </nav><!-- End .breadcrumb-nav -->
+  <div class="page-content">
+      <div class="container">
+          <%if(item!=0){%>
 
+          <table class="table table-wishlist table-mobile">
+              <thead>
+                  <tr class="table" id="wish">
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Stock Status</th>
+                      <th></th>
+                      <th></th>
+                  </tr>
+              </thead>
 
-        <main class="main">
-        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-        		<div class="container">
-        			<h1 class="page-title">Wishlist<span>Shop</span></h1>
-        		</div><!-- End .container -->
-        	</div><!-- End .page-header -->
-            <nav aria-label="breadcrumb" class="breadcrumb-nav">
-                <div class="container">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
-                    </ol>
-                </div><!-- End .container -->
-            </nav><!-- End .breadcrumb-nav -->
+              <tbody>
+                 <%for(i=0;i<item.length;i++){%>
+                 
+                  <tr>
+                      <td class="product-col">
+                          <div class="product">
+                              <figure class="product-media">
+                                  <a href="#">
+                                      <img src="/public/userImages/<%=item[i].product.image[0]%>"
+                                          alt="Product image">
+                                  </a>
+                              </figure>
 
-            <div class="page-content">
-            	<div class="container">
-					<table class="table table-wishlist table-mobile">
-						<thead>
-							<tr>
-								<th>Product</th>
-								<th>Price</th>
-								<th>Stock Status</th>
-							</tr>
-						</thead>
+                              <h3 class="product-title">
+                                  <a href="#"><%=item[i].product.name%></a>
+                              </h3><!-- End .product-title -->
+                          </div><!-- End .product -->
+                      </td>
+                      <td class="price-col">₹<%=item[i].product.price%></td>
+                      <%if(item[i].product.qty==0){%>
+                      <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
+                      <%}else{%>
+                      <td class="stock-col"><span class="in-stock">In stock</span></td>
+                      <%}%>
+                      <td class="action-col">
+                          <%if(item[i].product.qty==0){%>
+                              <button style="color: rgb(107, 107, 107);" disabled class="btn btn-block btn-outline-primary-2"><i
+                                  class="icon-cart-plus"></i>Add to Cart</button>
+                          <%}else{%>    
+                          <button onclick="addToCart('<%=item[i].product._id%>','<%= user %>')" id="addToCartBtn_<%= item[i]._id %>" class="btn btn-block btn-outline-primary-2"><i
+                                  class="icon-cart-plus"></i>Add to Cart</button>
+                           <%}%>       
+                      </td>
+                      <td class="remove-col">
+						<button onclick="removeWishItem('<%=item[i].product._id%>')" class="btn-remove">
+							<i class="icon-close"></i>
+						</button>
+					</td>
+					
+                  </tr>
+                  <%}%>
+                  <br>
+                  
+                  
+                  
+              </tbody>
+              
+          </table><!-- End .table table-wishlist -->
+          <div class="row">
+            <div class="col-md-6 mb-3 mt-2">
+              <a href="/shop" class="btn btn-outline-dark btn-block">
+                <span>CONTINUE SHOPPING</span>
+                <i class="icon-refresh"></i>
+              </a>
+            </div>
+            <div class="col-md-6 mb-3 mt-2">
+              <a href="/cart" class="btn btn-outline-dark btn-block">
+                <span>GO TO CART</span>
+                <i class="icon-shopping-cart"></i>
+              </a>
+            </div>
+          </div>
+          
+          <%}else{%>
+              <div class="price-col w-100 my-5 text-center text-light">
+                  <i class="fa-regular fa-bookmark " style="font-size: 60px;"></i> <br><p class="mt-2 text-light"  style="font-size: 20px;">Your Wishlist is Empty</p>
+                  <a href="/shop" class="btn btn-outline-dark px-5 mt-3">CONTINUE SHOPPING</a>
+              </div>
+          <%}%>
+         
+          
+      </div><!-- End .container -->
+  </div><!-- End .page-content -->
+</main><!-- End .main -->
 
-						<tbody>
-							<tr>
-								<td class="product-col">
-									<div class="product">
-										<figure class="product-media">
-											<a href="#">
-												<img src="assets/images/products/table/product-1.jpg" alt="Product image">
-											</a>
-										</figure>
+</main>
+<%- include('../layouts/user/footer.ejs') -%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-										<h3 class="product-title">
-											<a href="#">Beige knitted elastic runner shoes</a>
-										</h3><!-- End .product-title -->
-									</div><!-- End .product -->
-								</td>
-								<td class="price-col">$84.00</td>
-								<td class="stock-col"><span class="in-stock">In stock</span></td>
-								<td class="action-col">
-                                    <div class="dropdown">
-									<button class="btn btn-block btn-outline-primary-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon-list-alt"></i>Select Options
-                                    </button>
+<script>
+	function removeWishItem(productId) {
+		$.ajax({
+			url: '/wishlist/remove',  // Ensure this URL matches your route
+			method: 'POST',
+			data: { productId: productId },
+			success: function(response) {
+				console.log("response", response);
+				if (response.status === "remove") {
+					// Successfully removed the item from the wishlist
+					Swal.fire({
+						icon: 'success',
+						title: 'Item Removed',
+						text: 'Item removed from wishlist',
+						showConfirmButton: false, // Hide the confirm button
+						timer: 2000, // Display for 3 seconds
+						willClose: () => {
+							location.reload();  // Reload the page to update the wishlist display
+						}
+					});
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Failed to Remove',
+						text: 'Failed to remove the item from wishlist',
+						showConfirmButton: false, // Hide the confirm button
+						timer: 3000 // Display for 3 seconds
+					});
+				}
+			},
+			error: function(xhr, status, error) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Error',
+					text: 'Error removing wishlist item: ' + error,
+					showConfirmButton: false, // Hide the confirm button
+					timer: 3000 // Display for 3 seconds
+				});
+			}
+		});
+	}
 
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">First option</a>
-                                        <a class="dropdown-item" href="#">Another option</a>
-                                        <a class="dropdown-item" href="#">The best option</a>
-                                      </div>
-                                    </div>
-								</td>
-								<td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-							</tr>
-							
-						</tbody>
-					</table><!-- End .table table-wishlist -->
-	            	<div class="wishlist-share">
-	            		<div class="social-icons social-icons-sm mb-2">
-	            			<label class="social-label">Share on:</label>
-	    					<a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-	    					<a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
-	    					<a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
-	    					<a href="#" class="social-icon" title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
-	    					<a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
-	    				</div><!-- End .soial-icons -->
-	            	</div><!-- End .wishlist-share -->
-            	</div><!-- End .container -->
-            </div><!-- End .page-content -->
-        </main><!-- End .main -->
+    function addToCart(id) {
+        console.log("firsttime id",id)
+            if ($(`#addToCartBtn_${id}`).hasClass('disabled')) {
+                console.log('Product already in the cart');
+                return;
+            }
 
-       
-    </div><!-- End .page-wrapper -
-    <!-- Plugins JS File -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.hoverIntent.min.js"></script>
-    <script src="assets/js/jquery.waypoints.min.js"></script>
-    <script src="assets/js/superfish.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <!-- Main JS File -->
-    <script src="assets/js/main.js"></script>
+            $(`#addToCartBtn_${id}`).addClass('disabled');
 
-    <%- include('../layouts/user/footer.ejs') %>
+            $.ajax({
+                url: "/addTocart",
+                method: "post",
+                data: {
+                    id: id
+                },
+            }).done((data) => {
+                if (data.success) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Item has been added to Cart',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Failed to add the product',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    $(`#addToCartBtn_${id}`).removeClass('disabled');
+                }
+            });
+        }
+        
+	</script>
+	
+	
