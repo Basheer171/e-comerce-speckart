@@ -31,6 +31,9 @@ admin_route.post('/',adminController.verifyLogin);
 
 admin_route.get('/home',admiauth.isLogin,adminController.loadDashboard);
 
+admin_route.get('/sales-report', adminController.loadSalesReport);
+
+
 admin_route.get('/logout',admiauth.isLogin,adminController.logout);
 
 // admin_route.get('/forget',auth.isLogout,adminController.forgetLoad);

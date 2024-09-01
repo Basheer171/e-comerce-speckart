@@ -23,6 +23,7 @@ const {
     try {
       const today = new Date();
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      // console.log("firstDayOfMonth",firstDayOfMonth)
       const firstDayOfPreviousMonth = new Date(today.getFullYear(),today.getMonth() - 1,1); 
 
       const jan1OfTheYear = new Date(today.getFullYear(), 0, 1);
@@ -255,6 +256,32 @@ const {
   
     return monthNames[monthNumber - 1];
   }
+
+  // New function to load the sales report
+const loadSalesReport = async (req, res) => {
+  try {
+      let orderDataToDownload;
+
+      if (req.query.fromDate && req.query.toDate) {
+          const { fromDate, toDate } = req.query;
+          orderDataToDownload = await orderDb.find({
+              "products.orderStatus": "Delivered",
+              createdAt: { $gte: fromDate, $lte: toDate }
+          }).sort({ createdAt: 1 }).populate("products.productId");
+      } else {
+          orderDataToDownload = await orderDb.find({ "products.orderStatus": "Delivered" })
+              .sort({ createdAt: 1 })
+              .populate("products.productId");
+      }
+
+      res.render("sales-report", {
+          orderDataToDownload,
+      });
+  } catch (error) {
+      console.error("Error loading sales report:", error);
+      res.status(500).render("500");
+  }
+};
 
 //adding secure password bcrypt
 
@@ -767,6 +794,7 @@ module.exports = {
     loadLogin,
     verifyLogin,
     loadDashboard,
+    loadSalesReport,
     logout,
     // forgetLoad,
     // forgetVerify,
