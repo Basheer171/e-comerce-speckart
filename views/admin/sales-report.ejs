@@ -114,6 +114,7 @@
 
 
    
+    
     <!-- Main Content Area -->
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <div class="container-fluid py-4">
@@ -152,7 +153,7 @@
                                         <button onclick="exportReportToExcel()" class="btn btn-success">Export Excel <i class="bi bi-file-earmark-spreadsheet"></i></button>
                                     </div>
                                     <div class="table-responsive p-0">
-                                        <table class="table align-items-center mb-4">
+                                        <table id="sortTable" class="table align-items-center mb-4">
                                             <thead>
                                                 <tr style="background-color: rgb(227, 225, 225);">
                                                     <th class="text-uppercase text-xxs font-weight-bolder ps-2" style="color: black;">No</th>
@@ -189,6 +190,7 @@
 
     <!-- JavaScript for Export and Print Functions -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.8/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         function exportReportToExcel() {
             const table = document.getElementById("sortTable");
@@ -225,5 +227,6 @@
             setTimeout(function () { newWin.close(); }, 10);
         }
     </script>
+</body>
 
 <%- include('../layouts/admin/footer.ejs') %>

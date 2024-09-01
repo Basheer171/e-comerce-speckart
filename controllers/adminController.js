@@ -25,6 +25,8 @@ const {
       const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       // console.log("firstDayOfMonth",firstDayOfMonth)
       const firstDayOfPreviousMonth = new Date(today.getFullYear(),today.getMonth() - 1,1); 
+      // console.log("firstDayOfPreviousMonth",firstDayOfPreviousMonth);
+      
 
       const jan1OfTheYear = new Date(today.getFullYear(), 0, 1);
   
@@ -42,7 +44,7 @@ const {
       // console.log("salesOnTheYear",salesOnTheYear);
       const salesOnTheMonth = formatNum(await countSales(firstDayOfMonth));
       // console.log("salesOnTheMonth",salesOnTheMonth);
-      const salesOnPrevMonth = formatNum( await countSales(firstDayOfPreviousMonth, firstDayOfPreviousMonth));
+      const salesOnPrevMonth = formatNum( await countSales(firstDayOfPreviousMonth));
       // console.log("salesOnPrevMonth",salesOnPrevMonth);
   
       let salesYear = 2023;
