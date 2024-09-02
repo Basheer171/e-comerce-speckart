@@ -64,6 +64,11 @@
                                 <p style="color: #000; font-weight: 500;">Email Address      : <%= user.email %></p>
                                 <!-- <p style="color: #000; font-weight: 500;">Phone Number : <%= user.mobile %> </p> -->
                                 <p style="color: #000; font-weight: 500;">Country: India</p>
+                                <div>
+                                    <p style="color: #000; font-weight: 500;">Your Referral Code:</p>
+                                    <input type="text" id="referralCodeInput" value="<%=user.referralCode%>" readonly>
+                                    <button onclick="copyToClipboard()"><i class="fas fa-copy"></i>copy</button>
+                                </div>
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
@@ -306,6 +311,26 @@
         return password.length >= minLength && noSpaces;
     }
     
+    function copyToClipboard() {
+            // Get the input field
+            var copyText = document.getElementById("referralCodeInput");
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+            // Copy the text inside the text field
+            document.execCommand("copy");
+            
+            Swal.fire({
+        icon: 'success',
+        title: 'Referral Code Copied!',
+        showConfirmButton: false,
+        timer: 1500  // The alert will close after 1.5 seconds
+    });
+    
+        }
+
     function removeAddress(id) {
     // Display confirmation dialog
     Swal.fire({
