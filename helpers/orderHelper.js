@@ -27,7 +27,7 @@ const Orders = require('../models/orderModels')
                     }
                 }
             }
-            // console.log("totalIncome",totalIncome);
+            console.log("totalIncome",totalIncome);
             return formatNum(totalIncome);
 
         } catch (error) {

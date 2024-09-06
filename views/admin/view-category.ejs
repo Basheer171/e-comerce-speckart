@@ -51,7 +51,7 @@
         <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
             target="_blank"></a>
         <img src="/public/assets/images/icons/sacecart-01 1.png" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold text-white">Material Dashboard</span>
+        <span class="ms-1 font-weight-bold text-white"></span>
         </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">
@@ -201,35 +201,81 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Description</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Image</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Update</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Offers</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">Action</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder  ps-2">apply</th>
+
 
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% categoryData.forEach((cat, index) => { %>
-                                        <tr>
-                                            <td><%= index + 1 %></td>
-                                            <td><%= cat.categoryName %></td>
-                                            <td><p class="text-sm font-weight-bold mb-0 truncate"><%= cat.description %></p></td>
-                                            <td><img src="/public/userImages/<%= cat.image %>" class="avatar avatar-sm me-3" alt="category image"></td>
-                                            <td><a href="/admin/edit-category?id=<%= cat._id %>" class="btn btn-warning btn-sm">Edit</a></td>
-                                           
-                                          
+                                        <% let counter = 1; %>
+                                        <% if (categoryData.length > 0) { %>
+                                          <% for (let i = 0; i < categoryData.length; i++) { %>
+                                            <% let cat = categoryData[i]; %>
+                                            <% var now = new Date(); %>
+                                            <% var active = "No Offer"; %>
+                                        
+                                            <% if (cat.offer) { %>
+                                              <% if (cat.offer.startingDate && cat.offer.expiryDate && cat.offer.status) { %>
+                                                <% if (cat.offer.startingDate < now && cat.offer.expiryDate > now) { 
+                                                  active = "Active";
+                                                } else if (cat.offer.startingDate > now) {
+                                                  active = "Upcoming";
+                                                } else if (cat.offer.expiryDate < now) {
+                                                  active = "Expired";
+                                                } %>
+                                              <% } %>
+                                            <% } %>
                                             
-                                            <td class="align-middle text-center text-sm">
-                                                <% if (!cat.is_block) { %>
-                                                <span class="badge badge-sm bg-gradient-success">Listed</span>
+                                            <tr>
+                                              <td>
+                                                <p class="text-xs font-weight-bold mb-0"><%= counter %></p>
+                                              </td>
+                                              <td>
+                                                <p class="text-xs font-weight-bold mb-0"><%= cat.categoryName %></p>
+                                              </td>
+                                              <td>
+                                                <p class="text-xs font-weight-bold mb-0"><%= cat.description %></p>
+                                              </td>
+                                              <td>
+                                                <img src="/public/userIMages/<%= cat.image %>" class="avatar avatar-sm me-3 border-radius-lg" alt="">
+                                              </td>
+                                              <td>
+                                                <p class="text-xs font-weight-bold mb-0"><a href="/admin/edit-category?id=<%= cat._id %>">Edit</a></p>
+                                              </td>
+                                              <td>
+                                                <% if (cat.offer) { %>
+                                                  <span class="<% if (active === 'Active') { %>text-success text-sm<% } else if (active === 'Upcoming') { %>text-warning text-sm<% } else { %>text-primary text-sm<% } %>">
+                                                    <%= active %>
+                                                  </span>
+                                                  <p class="text-info text-sm"> <%= cat.offer.offerName %><br><span class="text-warning text-sm"><%= cat.offer.percentage %>% Discount</span></p>
                                                 <% } else { %>
-                                                <span class="badge badge-sm bg-gradient-danger">Unlisted</span>
+                                                  <span class="text-info text-sm">No Offer Applied</span>
                                                 <% } %>
-                                                <% if (!cat.is_block) { %>
-                                                <a href="/admin/is_blockCategory?id=<%= cat._id %>" class="btn btn-danger btn-sm mt-1">Unlist</a>
+                                              </td>
+                                              <td>
+                                                <% if (cat.offer) { %>
+                                                  <a href="#" onclick="removeOffer('<%= cat._id %>')"><span class="badge badge-sm bg-gradient-danger">Remove Offer</span></a>
                                                 <% } else { %>
-                                                <a href="/admin/is_blockCategory?id=<%= cat._id %>" class="btn btn-success btn-sm mt-1">List</a>
+                                                  <a href="#" class="badge badge-sm bg-gradient-success open-offer-modal" data-bs-toggle="modal" data-bs-target="#offerModal" data-cat-id="<%= cat._id %>">Apply offer</a>
                                                 <% } %>
-                                            </td>
-                                        </tr>
-                                        <% }); %>
+                                              </td>
+                                              <% if (cat.is_block == false) { %>
+                                                <td class="text-sm">
+                                                  <a href="/admin/is_blockCategory?id=<%= cat._id %>">
+                                                    <span class="badge badge-sm bg-gradient-success">List</span></a>
+                                                </td>
+                                              <% } else { %>
+                                                <td class="text-sm">
+                                                  <a href="/admin/is_blockCategory?id=<%= cat._id %>">
+                                                    <span class="badge badge-sm bg-gradient-danger">Unlist</span></a>
+                                                </td>
+                                              <% } %>
+                                              <% counter++; %>
+                                          <% } %>
+                                        <% } %>
+                                        
                                     </tbody>
                                 </table>
                             </div>
@@ -310,6 +356,7 @@
 
 <script>
     function applyOffer(offerId) {
+        console.log("offerId",offerId)
         const cid = document.getElementById('offer-modal_1').getAttribute('cid');
         $.ajax({
             url: '/admin/applyOffer',

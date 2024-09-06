@@ -156,7 +156,7 @@
             referralCode: req.session.referralCode,
             is_verified: 1,
           });
-    
+          
           const result = await user.save();
     
           // Process referral rewards if a referring user exists
@@ -214,7 +214,7 @@
             });
     
             req.session.otp.code = newDigit;
-            const newExpiry = currentTime + 45;
+            const newExpiry = currentTime + 60;
             req.session.otp.expiry = newExpiry;
             sendVerificationEmail(req.session.email, req.session.otp.code);
     
@@ -456,9 +456,10 @@
         .populate('offer');
         // console.log("productData",productData);
           // console.log('profuct data',productData);
-          const categoryData = await category.find({is_block:false})
-      
-          
+
+          const categoryData = await category.find({is_block:false}).populate("offer")
+          // console.log("categoryData",categoryData);
+
           res.render('home',{ 
               user:req.session.user_id,
               products : productData,   

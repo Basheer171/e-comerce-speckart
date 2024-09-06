@@ -30,13 +30,14 @@ const addToCart = async (req, res) => {
         if (!productData) {
             return res.status(404).json({ error: 'Product not found' });
         }
-
+        
         let productPrice = productData.price;
 
         if (productData.offer && productData.discountedPrice) {
             productPrice = productData.discountedPrice;
         }
-
+        
+        
         const update = {
             $addToSet: {
                 products: {
@@ -73,7 +74,6 @@ const loadCart = async (req, res) => {
         const userData = await userDb.findById({ _id: id });                
         const userId = userData._id;
         const cartData = await cartDb.findOne({ user: userId }).populate("products.productId");
-        // console.log("cartData",cartData);
 
         // console.log('cartData',cartData);
         if (req.session.user_id) {
@@ -82,7 +82,7 @@ const loadCart = async (req, res) => {
                 const Total = cartData.products.reduce((acc, product) => {
                     return acc + product.price * product.quantity;  
                 }, 0);
-                res.render('cart', { user: userId, cart: cartData, Total });
+                res.render('cart', { user: userId, cart: cartData, Total});
             } else {
                 res.render('cart', { user: userId, cart: [], Total: 0 });
             }

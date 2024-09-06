@@ -6,10 +6,9 @@ const config = require("../config/config");
 const User = require('../models/userModel')
 const googleStrategy = require('passport-google-oauth20').Strategy;
 const passport =require('passport')
-
+const shortid = require("shortid")
 const auth = require("../middleware/auth");
 const fetchUserData = require("../middleware/userData")
-
 // view and model connecting in controller
 
 user_route.set('view engine','ejs');
@@ -32,7 +31,7 @@ const userController = require("../controllers/userController");
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const orderController = require('../controllers/orderController');
-const couponController = require('../controllers/couponController')
+const couponController = require('../controllers/couponController');
 
 user_route.use(fetchUserData)
 
@@ -46,7 +45,8 @@ passport.use(new googleStrategy({
   // console.log(profile);
   try {
     const user = await User.findOne({email: profile.emails[0].value});    
-    
+    const referalcode = shortid.generate();
+
     if(user) {
       done(null,user);
     } else {
@@ -54,10 +54,11 @@ passport.use(new googleStrategy({
         email: profile.emails[0].value,
         firstName: profile.displayName,
         isVerified:1,
+        referralCode: referalcode
       });
 
-      await newUser.save();
-      done(null,newUser);
+      const savedUser = await newUser.save();
+      done(null,savedUser);
     }
   } catch (error) {
     done(error,false);

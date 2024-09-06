@@ -21,6 +21,7 @@ const viewProduct = async (req, res) => {
         
         const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
         
+        
         res.render('view-product', {
             title: 'Product Details',
             product,

@@ -42,8 +42,8 @@
                                                     </h3><!-- End .product-title -->
                                                 </div><!-- End .product -->
                                             </td>
-                                            <% if (data.productId.offer && data.productId.discountedPrice) { %>
-                                                <td><del class="text-danger text-sm">₹ <%= data.productId.price %></del> ₹ <%= data.productId.discountedPrice %></td>
+                                            <% if (data.productId.offer && data.productId.discountedPrice ||data.productId.category.offer && data.productId.categoryDiscountedPrice) { %>
+                                                <td><del class="text-danger text-sm">₹ <%= data.productId.price %></del> ₹ <%= data.productId.discountedPrice || data.totalPrice %></td>
                                             <% } else { %>
                                                 <td>₹ <%= data.productId.price %></td>
                                             <% } %>

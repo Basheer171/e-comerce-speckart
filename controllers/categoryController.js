@@ -11,6 +11,8 @@ const viewCategory = async (req, res) => {
         const categoryData = await Category.find({}).populate('offer').exec();
         // console.log("categoryData",categoryData)
         const availableOffers = await Offer.find({ status: true, expiryDate: { $gte: new Date() } });
+        // console.log("availableOffers",availableOffers);
+        
         if(categoryData)
 
         res.render('view-category', {
@@ -43,10 +45,10 @@ const addCategory = async (req, res) => {
     try {
       const categoryName = req.body.categoryName;
       const description = req.body.description;
-      const images = '';
+      let images = '';
   
       if (req.file) {
-        const filename = req.file.filename;
+        let filename = req.file.filename;
 
         // Resize image to 300x300 pixels
         await sharp(path.join(__dirname, '../public/userImages', filename))

@@ -206,18 +206,22 @@
                                         <figure class="product-media">
                                             <a href="/product?id=<%= products[i]._id %>">
                                                 <img src="/public/userImages/<%= products[i].image[0] %>" alt="Product image" class="product-image">
-                                                <%if (products[i].offer ){%>
-                                                    <div class="product-lable-badge" style=" position: absolute;
-                                                    top: 20px; 
-                                                    left: 20px; 
-                                                    background-color: red;
-                                                    color: white;       
-                                                    padding-left: 10px;
-                                                    padding-right: 10px;
-                                                    ">
-                                                      <span class="product-lable" style="font-size: 12px;"><%= products[i].offer.percentage %> % OFF</span>
+                                                <% if (products[i].offer || products[i].category.offer) { %>
+                                                    <% if (products[i].offer) { %>
+                                                    <div style="position: absolute; top: 20px; left: 20px; background-color: red; color: white; padding-left: 10px; padding-right: 10px;">
+                                                        <%= products[i].offer.percentage %> % OFF
                                                     </div>
-                                                    <%}%>
+                                                    <% } %>
+                                                    
+                                                    <% if (products[i].category.offer) { %>
+                                                    <div style="position: absolute; top: 20px; left: 20px; background-color: red; color: white; padding-left: 10px; padding-right: 10px;">
+                                                        <%= products[i].category.offer.percentage %> % OFF 
+                                                    </div>
+                                                    <% } %>
+                                                <% } %>
+                                                
+                                                
+                                                
                                             </a>
                                             <div class="product-action-vertical">
                                                 <button class="btn-product-icon btn-wishlist" onclick="addtoWishList('<%= products[i]._id %>','<%= user %>')" id="addtoWishList_<%= products[i]._id %>" ></button>
@@ -228,10 +232,10 @@
                                             <!-- Debugging: Output product name and price -->
                                             <h3 class="product-title"><a><%= products[i].name %></a></h3><!-- End .product-title -->
                                             
-                                            <% if (products[i].offer) { %>
+                                            <% if (products[i].offer || products[i].category.offer) { %>
                                                 <div class="product-price">
                                                     <del> ₹<%= products[i].price %></del>
-                                                    <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice) %></span>
+                                                    <span class="mx-3">₹<%= Math.floor(products[i].discountedPrice || products[i].categoryDiscountedPrice) %></span>
                                                 </div><!-- End .product-price -->
                                             <% } else { %>
                                                 <div class="product-price">

@@ -160,7 +160,7 @@ const {
           },
         },
       ]);
-      // console.log("categoryData/////////",categoryData);
+      console.log("categoryData/////////",categoryData);
       categoryData.forEach((cat) => {
         categories.push(cat._id), categorySales.push(cat.sales);
       });
@@ -173,7 +173,7 @@ const {
           $match: {
             $or: [
               { "products.orderStatus": "Delivered" },
-              { paymentStatus: "success" },
+              { paymentStatus: "Complete" },
             ],
             paymentMethod: { $exists: true },
           },
@@ -618,7 +618,7 @@ const userBlockorActive = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send('Server error');
-    }
+    } 
 };
 
 // Load View Orders Page
@@ -630,6 +630,7 @@ const loadViewOrders = async (req, res) => {
             for (let productValue of order.products) {
                 const productId = productValue.productId;
                 const productData = await productDb.findById(productId);
+                // console.log("productData",productData)
                 const userDetails = await User.findOne({ firstName: order.userName });
         
                 if (productData) {
@@ -697,7 +698,7 @@ const viewOrderDetails = async (req, res) => {
         let paymentStatus = productDetails.paymentStatus; // Default to existing payment status
         // console.log("paymentStatus",paymentStatus);
         if (productDetails.orderStatus === 'Delivered') {
-            paymentStatus = 'success';
+            paymentStatus = 'Complete';
         }else{
             paymentStatus = "Pending"
         }
@@ -718,6 +719,7 @@ const viewOrderDetails = async (req, res) => {
             date: orderDetails.date,
         };
 
+
         // Render the view-ordersDetails EJS template with the data
         res.render('view-ordersDetails', {
             message: 'View Order Details',
@@ -737,7 +739,11 @@ const viewOrderDetails = async (req, res) => {
 const changeOrderStatus = async (req, res) => {
     try {
         const { status, orderId, productId } = req.body;
+      console.log("status",status);
+      console.log("orderId",orderId);
+      console.log("status",status);
 
+      
         // Find the order details in the database
         const orderDetails = await orderDb.findById(orderId);
         if (!orderDetails) {

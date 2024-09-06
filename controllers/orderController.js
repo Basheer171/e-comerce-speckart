@@ -136,7 +136,7 @@
         console.log(error);
         // Handle the error appropriately, you might want to send an error response or call the 'next' middleware
         res.status(500).json({ error: 'Internal Server Error' });
-      }
+      } 
     };
     
     const placeOrder = async (req, res) => {
@@ -163,6 +163,8 @@
               quantity: productItem.quantity,
               orderStatus: 'Placed',
               statusLevel: 1,
+              totalPrice:productItem.quantity * productItem.price,
+              productPrice:productItem.price,
               paymentStatus: 'Pending',
           }));
   
@@ -456,7 +458,7 @@
       product.qty += quantityToIncrease; // Increase the quantity in the inventory
       await product.save(); // Save the updated product data
   
-      // Wallet refund logic only if the payment method is not COD
+      // refund logic only if its not COD
       if (orderData.paymentMethod !== 'COD') {
         const amount = parseInt(total);
         const userData = await userDb.findOne({ _id: userId });
