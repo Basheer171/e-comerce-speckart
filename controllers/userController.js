@@ -117,12 +117,7 @@
             const referralCode = shortid.generate();
             req.session.referralCode = referralCode; // Store the new user's referral code
       
-            if (
-              req.body.firstName &&
-              req.body.email &&
-              req.session.secondName &&
-              req.session.mobile
-            ) {
+            if (req.body.firstName && req.body.email && req.session.secondName && req.session.mobile) {
               if (req.body.password === req.body.cpassword) {
                 req.session.password = spassword;
                 req.session.otp = {
@@ -131,9 +126,9 @@
                 };
                 // Send OTP to the user's email
                 sendVerificationEmail(req.session.email, req.session.otp.code);
-                res.render("otpPage");
+                res.render("otpPage", { message: "" }); // Ensure 'message' is passed even when empty
               } else {
-                res.render("signup");
+                res.render("signup", { message: "Passwords do not match" });
               }
             }
           }
@@ -142,95 +137,87 @@
         }
       };
       
-    //==================code for verifying the otp=========================================================================//
-
-    const verifyOTP = async (req, res) => {
-      try {
-        if (req.body.otp === req.session.otp.code) {
-          const user = new User({
-            firstName: req.session.firstName,
-            secondName: req.session.secondName,
-            email: req.session.email,
-            mobile: req.session.mobile,
-            password: req.session.password,
-            referralCode: req.session.referralCode,
-            is_verified: 1,
-          });
-          
-          const result = await user.save();
-    
-          // Process referral rewards if a referring user exists
-          if (req.session.referralUserId) {
-            const referringUser = await User.findById(req.session.referralUserId);
-    
-            const reward = 100;
-    
-            // Update referring user's wallet
-            referringUser.wallet += reward;
-            referringUser.walletHistory.push({
-              transactionDate: new Date(),
-              transactionAmount: reward,
-              transactionDetails: 'Referral Reward',
-              transactionType: 'Credit',
+      // OTP verification
+      const verifyOTP = async (req, res) => {
+        try {
+          if (req.body.otp === req.session.otp.code) {
+            const user = new User({
+              firstName: req.session.firstName,
+              secondName: req.session.secondName,
+              email: req.session.email,
+              mobile: req.session.mobile,
+              password: req.session.password,
+              referralCode: req.session.referralCode,
+              is_verified: 1,
             });
-    
-            await referringUser.save();
-    
-            // Update new user's wallet
-            result.wallet += reward;
-            result.walletHistory.push({
-              transactionDate: new Date(),
-              transactionAmount: reward,
-              transactionDetails: 'Referral Reward',
-              transactionType: 'Credit',
-            });
-            await result.save();
+      
+            const result = await user.save();
+      
+            // Process referral rewards if a referring user exists
+            if (req.session.referralUserId) {
+              const referringUser = await User.findById(req.session.referralUserId);
+      
+              const reward = 100;
+      
+              // Update referring user's wallet
+              referringUser.wallet += reward;
+              referringUser.walletHistory.push({
+                transactionDate: new Date(),
+                transactionAmount: reward,
+                transactionDetails: 'Referral Reward',
+                transactionType: 'Credit',
+              });
+      
+              await referringUser.save();
+      
+              // Update new user's wallet
+              result.wallet += reward;
+              result.walletHistory.push({
+                transactionDate: new Date(),
+                transactionAmount: reward,
+                transactionDetails: 'Referral Reward',
+                transactionType: 'Credit',
+              });
+              await result.save();
+            }
+      
+            res.redirect("/login");
+          } else {
+            // If OTP does not match, render the page with the error message
+            res.render("otpPage", { message: "Invalid OTP. Please try again." });
           }
-    
-          res.redirect("/login");
-        } else {
-          res.render("otpPage", { message: "Invalid OTP" });
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    
+      };
+      
 
     //============================ to resend the OTP ======================================================================//
 
   const resendOTP = async (req, res) => {
-      try {
-        const currentTime = Date.now() / 1000;
-        if (req.session.otp.expiry != null) {
-          if (currentTime > req.session.otp.expiry) {
-            console.log(expired, req.session.otp.expiry);
-            const newDigit = otpGenerator.generate(6, {
-              digits: true,
-              alphabets: false,
-              specialChars: false,
-              upperCaseAlphabets: false,
-              lowerCaseAlphabets: false,
-            });
+  try {
+    const currentTime = Date.now() / 1000;
     
-            req.session.otp.code = newDigit;
-            const newExpiry = currentTime + 60;
-            req.session.otp.expiry = newExpiry;
-            sendVerificationEmail(req.session.email, req.session.otp.code);
-    
-            res.render("otpPage", { message: "message:OTP has send" });
-          } else {
-            res.render("otpPage", {
-              message: "You can request a new otp after old otp expires",
-            });
-          }
-        } else {
-          res.send("please Register again");
-        }
-      } catch (error) {
-        console.log(error);
+    if (req.session.otp && req.session.otp.expiry) {
+      if (currentTime > req.session.otp.expiry) {
+        const newOtp = generateOTP();
+        req.session.otp.code = newOtp;
+        req.session.otp.expiry = currentTime + 60; // New expiry time
+        
+        await sendVerificationEmail(req.session.email, newOtp);
+        res.render("otpPage", { message: "OTP has been sent" });
+      } else {
+        res.render("otpPage", { message: "You can request a new OTP after the current one expires" });
       }
-    };
+    } else {
+      res.redirect("/register"); // Redirect if OTP session is missing
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server error while resending OTP");
+  }
+};
+
     
 
 
