@@ -1,39 +1,42 @@
 const Orders = require('../models/orderModels')
 
 
+const findIncome = async (startDate = new Date('1990-01-01'), endDate = new Date()) => {
+    try {
+        const ordersData = await Orders.find({
+            $or: [
+                { "products.orderStatus": "Delivered" },
+                { "createdAt": { $gte: startDate, $lt: endDate } },
+                { "paymentStatus": "success" }
+            ]
+        });
 
+        let totalIncome = 0;
 
-
-
-    const findIncome = async(startDate = new Date('1990-01-01'), endDate = new Date()) => {
-        try {
-            // console.log("something",startDate, endDate);
-
-            const ordersData = await Orders.find(
-                {
-                    $or: [
-                        { "products.orderStatus": "Delivered" },
-                        { "createdAt": { $gte: startDate, $lt: endDate } },
-                        { "paymentStatus": "success" }
-                    ]
-                }
-            );
-            
-            let totalIncome = 0;
-            for (const order of ordersData) {
+        for (const order of ordersData) {
+            if (order.discount && order.discount > 0) {
+                // If a coupon was applied, calculate income using totalAmount after discount
                 for (const pdt of order.products) {
-                    if (pdt.orderStatus === 'Delivered'|| pdt.paymentStatus === 'success') {
+                    if (pdt.orderStatus === 'Delivered' || pdt.paymentStatus === 'Complete') {
                         totalIncome += parseInt(order.totalAmount);
+                    }
+                }  } else {
+                // If no coupon, sum the total prices of delivered products
+                for (const pdt of order.products) {
+                    if (pdt.orderStatus === 'Delivered' || pdt.paymentStatus === 'Complete') {
+                        totalIncome += parseInt(pdt.totalPrice);
                     }
                 }
             }
-            // console.log("totalIncome",totalIncome);
-            return formatNum(totalIncome);
-
-        } catch (error) {
-            throw error;
         }
+
+        return formatNum(totalIncome);
+
+    } catch (error) {
+        throw error;
     }
+};
+
 
 
 

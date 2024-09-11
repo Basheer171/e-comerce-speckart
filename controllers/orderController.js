@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
   const couponDb = require('../models/coupenModel')
   const Razorpay = require("razorpay");
   const crypto = require('crypto');
+const { log } = require('console');
 
 
   var razorpayInstance = new Razorpay({
@@ -155,6 +156,8 @@ const mongoose = require('mongoose');
           const code = req.body.code;
   
           const uniNum = Math.floor(Math.random() * 900000) + 100000;
+          // console.log("uniNum////////",uniNum);
+          
           const status = paymentMethod === 'COD' ? 'placed' : 'pending';
   
           const today = new Date();
@@ -426,6 +429,7 @@ const mongoose = require('mongoose');
       const { uniqueId, productId, total } = req.body;
       const userId = req.session.user_id; // Assuming the user ID is stored in the session
       //  console.log("productId/////////",productId);
+      //  console.log("total///////",total);
        
       // Retrieve the order data by unique ID
       const orderData = await orderDb.findOne({ _id: uniqueId });
@@ -518,7 +522,7 @@ const productReturn = async (req, res) => {
     
 
     const returnAmout = req.body.totalPrice;
-    // console.log("returnAmout",returnAmout);
+    console.log("returnAmout",returnAmout);
     
     const returnReason = req.body.reason
     // console.log("returnReason",returnReason);
