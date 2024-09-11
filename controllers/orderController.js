@@ -522,7 +522,7 @@ const productReturn = async (req, res) => {
     
 
     const returnAmout = req.body.totalPrice;
-    console.log("returnAmout",returnAmout);
+    // console.log("returnAmout",returnAmout);
     
     const returnReason = req.body.reason
     // console.log("returnReason",returnReason);
@@ -534,7 +534,7 @@ const productReturn = async (req, res) => {
     const userData = await userDb.findOne({})
     let totalWalletBalance = userData.wallet + amount
     const productIdToCancel = req.query.productId;
-    console.log("productIdToCancel",productIdToCancel)
+    // console.log("productIdToCancel",productIdToCancel)
 
     const result = await userDb.findByIdAndUpdate(
       { _id: req.session.user_id },
