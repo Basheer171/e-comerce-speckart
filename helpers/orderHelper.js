@@ -27,7 +27,7 @@ const Orders = require('../models/orderModels')
                     }
                 }
             }
-            console.log("totalIncome",totalIncome);
+            // console.log("totalIncome",totalIncome);
             return formatNum(totalIncome);
 
         } catch (error) {
@@ -173,7 +173,7 @@ const findSalesDataOfYear = async(year) => {
 
         const orderData = await Orders.aggregate(pipeline)
 
-        console.log("findSalesDataOfYear : ",orderData);
+        // console.log("findSalesDataOfYear : ",orderData);
         return orderData
 
     } catch (error) {
@@ -192,7 +192,7 @@ const  formatNum = (num) => {
     if (num >= 10000000) {
         return (num / 10000000).toFixed(2) + ' Cr';
     } else if (num >= 100000) {
-        return (num / 100000).toFixed(2) + ' L';
+        return (num / 100000).toFixed(2) + ' L';    
     } else if(num >= 1000){
         return (num / 1000).toFixed(2) + ' K '
     } else {

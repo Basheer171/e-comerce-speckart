@@ -1,4 +1,7 @@
+const mongoose = require('mongoose');
+
   const userDb = require('../models/userModel')
+
   const addressDb = require('../models/addressModel');
   const addressModel = require('../models/addressModel');
   const cartDb = require('../models/cartModel');
@@ -166,6 +169,8 @@
               totalPrice:productItem.quantity * productItem.price,
               productPrice:productItem.price,
               paymentStatus: 'Pending',
+              'returnOrderStatus.status': 'none',
+              'returnOrderStatus.reason': 'none',
           }));
   
           // Calculate the discount amount if a coupon is applied
@@ -407,7 +412,7 @@
   // console.log('userData',userData);
   const orderData = await orderDb.findOne({_id:id}).populate("products.productId")
 //   console.log('orderDat',orderData.products);
-  res.render('orderDetails',{user:userData, orders:orderData})
+  res.render('orderDetails',{ orders:orderData})
     } catch (error) {
       
       console.log(error);
@@ -420,7 +425,8 @@
     try {
       const { uniqueId, productId, total } = req.body;
       const userId = req.session.user_id; // Assuming the user ID is stored in the session
-  
+      //  console.log("productId/////////",productId);
+       
       // Retrieve the order data by unique ID
       const orderData = await orderDb.findOne({ _id: uniqueId });
   
@@ -501,6 +507,98 @@
       res.status(500).send('Internal Server Error');
     }
   };
+
+  
+// ==============================================================return user order============================================================
+
+const productReturn = async (req, res) => {
+  try {
+    const orderId = req.query.orderid
+    // console.log("orderId",orderId);
+    
+
+    const returnAmout = req.body.totalPrice;
+    // console.log("returnAmout",returnAmout);
+    
+    const returnReason = req.body.reason
+    // console.log("returnReason",returnReason);
+    
+    const amount = parseInt(returnAmout)
+    const orderData = await orderDb.findOne({ _id: orderId })
+
+    const products = orderData.products
+    const userData = await userDb.findOne({})
+    let totalWalletBalance = userData.wallet + amount
+    const productIdToCancel = req.query.productId;
+    console.log("productIdToCancel",productIdToCancel)
+
+    const result = await userDb.findByIdAndUpdate(
+      { _id: req.session.user_id },
+      {
+        $inc: { wallet: amount },
+        $push: {
+          walletHistory: {
+            transactionDate: new Date(),
+            transactionAmount: amount,
+            transactionDetails: 'Returned Product Amount Credited.',
+            transactionType: 'Credit',
+            currentBalance: totalWalletBalance
+          }
+        }
+      },
+      { new: true }
+    )
+
+    if (result) {
+      let updateQuery
+      if (orderData.paymentMethod === 'COD') {
+        updateQuery = {
+          $set: {
+            'products.$.returnOrderStatus.reason': returnReason,
+            'products.$.orderStatus': 'Returned',
+            'products.$.statusLevel': 6,
+            'products.$.paymentStatus': 'Refund'
+          }
+        }
+      } else {
+        updateQuery = {
+          $set: {
+          'products.$.returnOrderStatus.reason': returnReason,
+          'products.$.orderStatus': 'Returned',
+          'products.$.statusLevel': 6,
+          'products.$.paymentStatus': 'Refund'
+          }
+        }
+      }
+
+      const updatedData = await orderDb.updateOne(
+        { _id: orderId, 'products.productId': productIdToCancel },
+        updateQuery
+      )
+
+      if (updatedData) {
+        for (let i = 0; i < products.length; i++) {
+          const productId = products[i].productId
+          const quantity = products[i].quantity
+          await productDb.findByIdAndUpdate(
+            { _id: productId },
+            { $inc: { qty: quantity } }
+          )
+        }
+        res.redirect('/orders')
+      } else {
+        console.log('Order not updated')
+      }
+    } else {
+      console.log('User not found')
+    }
+  } catch (error) {
+    console.log(error)
+    res.render('500')
+  }
+}
+
+
   
   module.exports = {
       loadCheckout,
@@ -512,5 +610,6 @@
       loadPlaceOrder,
       loadOrderPage,
       loadOrderDetail,
-      cancelOrder
+      cancelOrder,
+      productReturn
   }

@@ -184,7 +184,8 @@ user_route.post('/placeOrder',auth.isLogin,orderController.placeOrder);
 user_route.get('/orderPlace/:id',auth.isLogin,orderController.loadPlaceOrder );
 user_route.get('/orders',auth.isLogin,orderController.loadOrderPage );
 user_route.get('/orderDetails',auth.isLogin,orderController.loadOrderDetail );
-user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder)
+user_route.post('/cancelOrder',auth.isLogin,orderController.cancelOrder);
+user_route.post( "/productReturn",auth.isLogin,orderController.productReturn);
 
   user_route.get('/coupon', auth.isLogin, couponController.couponUserPageLoad);
   user_route.post('/couponApply', auth.isLogin, couponController.applyCoupon);

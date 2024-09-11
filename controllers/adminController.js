@@ -160,7 +160,7 @@ const {
           },
         },
       ]);
-      console.log("categoryData/////////",categoryData);
+      // console.log("categoryData/////////",categoryData);
       categoryData.forEach((cat) => {
         categories.push(cat._id), categorySales.push(cat.sales);
       });
@@ -699,9 +699,13 @@ const viewOrderDetails = async (req, res) => {
         // console.log("paymentStatus",paymentStatus);
         if (productDetails.orderStatus === 'Delivered') {
             paymentStatus = 'Complete';
-        }else{
+        }else if(productDetails.orderStatus === 'Returned'){
+          paymentStatus = "Refund"
+        }
+        else{
             paymentStatus = "Pending"
         }
+
         // console.log("paymentStatus",paymentStatus);
 
         // Prepare data to pass to the template
@@ -739,9 +743,8 @@ const viewOrderDetails = async (req, res) => {
 const changeOrderStatus = async (req, res) => {
     try {
         const { status, orderId, productId } = req.body;
-      console.log("status",status);
-      console.log("orderId",orderId);
-      console.log("status",status);
+      // console.log("orderId",orderId);
+      // console.log("status",status);
 
       
         // Find the order details in the database
@@ -779,6 +782,7 @@ const changeOrderStatus = async (req, res) => {
         if (selectedStatus === 'Delivered') {
             orderDetails.products[0].paymentStatus = paymentStatusMap[selectedStatus];
         }
+       
         // Save the updated order details
         const result = await orderDetails.save();
         // console.log("result",result);

@@ -185,20 +185,23 @@
                                                   <p class="text-xs text-danger font-weight-bold mb-0">Cancelled</p>
                                                 <% } else if(data.orderDetails.orderStatus === 'OutforDelivery') { %>
                                                   <p class="text-xs text-info font-weight-bold mb-0">OutforDelivery</p>
+                                                <% } else if(data.orderDetails.orderStatus === 'Returned') { %>
+                                                  <p class="text-xs text-info font-weight-bold mb-0">Returned</p>
                                                 <% } %>
                                                
                                               </td>
                                               <td>
-                                                <% if(data.orderDetails.paymentStatus === 'success') { %>
-                                                  <p class="text-xs text-success font-weight-bold mb-0">success</p>
-                                                <% } else if(data.orderDetails.paymentStatus === 'Pending') { %>
+                                                <% if(data.orderDetails.paymentStatus === 'Pending') { %>
                                                   <p class="text-xs font-weight-bold mb-0">Pending</p>
                                                 <% } else if(data.orderDetails.paymentStatus === 'Failed') { %>
                                                   <p class="text-xs font-weight-bold mb-0">Failed</p>
-                                                <% } else if (data.orderDetails.paymentStatus === 'Complete'){%>
-                                                    <p class="text-xs font-weight-bold mb-0">success</p>
-                                                <%}%>
+                                                <% } else if(data.orderDetails.paymentStatus === 'Complete'){ %>
+                                                  <p class="text-xs font-weight-bold mb-0">Complete</p>
+                                                <% } else if(data.orderDetails.paymentStatus === 'Refund') { %>
+                                                  <p class="text-xs font-weight-bold mb-0">Refund</p>
+                                                <% } %>
                                               </td>
+                                              
                                               <td class="text-sm">
                                                 <% if(data.orderDetails.orderStatus === 'Cancelled') { %>
                                                   <span class="badge badge-sm bg-gradient-secondary">No Action</span>
