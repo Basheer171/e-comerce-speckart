@@ -49,7 +49,7 @@ var productSchema = new mongoose.Schema({
     },
     categoryDiscountedPrice:{
         type:Number,
-    }
+    },
 },{ timestamps: true });
 
 //Export the model

@@ -15,6 +15,9 @@ const {
     findSalesDataOfYear,
     findSalesDataOfMonth,
     formatNum,
+    getTopSellingProducts,
+    getTopSellingCategories,
+    getTopSellingBrands
   } = require("../helpers/orderHelper");
   
   // =======================================================rendering the admin home================================================================
@@ -376,7 +379,6 @@ const verifyLogin = async (req, res) => {
 };
 
 
-// dashboard for user details
 
 
 
@@ -394,79 +396,6 @@ const logout = async (req, res) => {
     }
 }
 
-// //admin forget password load
-
-// const forgetLoad = async (req, res) => {
-//     try {
-
-//         res.render('forget');
-
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
-
-
-// // forget verified
-// const forgetVerify = async (req, res) => {
-//     try {
-//         const email = req.body.email;
-//         const userData = await User.findOne({ email: email });
-
-//         if (userData) {
-//             if (userData.is_admin === 0) {
-//                 res.render('forget', { message: 'Email is incorrect' });
-//             } else {
-//                 const randomString = randomstring.generate();
-//                 const updatedData = await User.updateOne({ email: email }, { $set: { token: randomString } });
-//                 sendResetPasswordMail(userData.name, userData.email, randomString);
-//                 return res.render('forget', { message: 'Please check your email to reset password.' });
-//             }
-//         } else {
-//             res.render('forget', { message: 'Email is incorrect' });
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// };
-
-
-// //forget password load
-
-// const forgetPasswordLoad = async (req, res) => {
-//     try {
-
-//         const token = req.query.token;
-
-//         const tokenData = User.findOne({ token: token });
-//         if (tokenData) {
-//             res.render('forget-password', { user_id: tokenData._id });
-//         } else {
-//             res.render('404', { message: "Invalid Link" });
-//         }
-
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
-// const resetPassword = async (req, res) => {
-
-//     try {
-
-//         const password = req.body.password;
-//         const user_id = req.body.user_id;
-
-//         const securePass = await securePassword(password);
-//         const updatedData = await User.findByIdAndUpdate({ _id: user_id }, { $set: { password: securePass, token: '' } });
-
-//         res.redirect('/admin');
-
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
 
 //admin dashboard user details
 
@@ -620,6 +549,7 @@ const userBlockorActive = async (req, res) => {
         res.status(500).send('Server error');
     } 
 };
+
 
 // Load View Orders Page
 const loadViewOrders = async (req, res) => {
@@ -797,7 +727,22 @@ const changeOrderStatus = async (req, res) => {
 };
 
 
+const top_sellers = async (req, res) => {
+  try {
+      const products = await getTopSellingProducts();
+      const categories = await getTopSellingCategories();
+      const brands = await getTopSellingBrands();
 
+      res.render('top-sellers', { 
+          message: 'Top Sellers', 
+          products, 
+          categories,
+          brands
+      });
+  } catch (error) {
+      res.status(500).send('Failed to load top sellers');
+  }
+};
 
 
 
@@ -822,5 +767,6 @@ module.exports = {
     userBlockorActive,
     loadViewOrders,
     viewOrderDetails,
-    changeOrderStatus
+    changeOrderStatus,
+    top_sellers
 }

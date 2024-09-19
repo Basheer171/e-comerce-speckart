@@ -84,7 +84,8 @@ const addProduct = async(req,res)=>{
             price:price,
             qty:qty,
             description:description,
-            image:image
+            image:image,
+            
             
         });
         

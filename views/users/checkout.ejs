@@ -22,7 +22,8 @@
                     <div class="checkout-discount">
                         <form action="#">
                             <input type="text" class="form-control" required id="checkout-discount-input">
-                            <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here                      </form>
+                            <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here
+                        </form>
                     </div><!-- End .checkout-discount -->
 
                     <div class="row">
@@ -406,73 +407,92 @@
 
         $(document).ready(function () {
             $('#placeOrderBtn').on('click', function (event) {
-                event.preventDefault();
+    event.preventDefault(); // Prevent the form from submitting by default
 
-                var selectedAddress = $('.address-checkbox:checked').val();
-                var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
-                var totalAmount = '<%= Total %>';
+    var selectedAddress = $('.address-checkbox:checked').val();
+    var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+    var totalAmount = parseFloat('<%= Total %>') || 0;  // Ensure totalAmount is a number
+    var totalAmount1 = parseFloat(document.getElementById('newTotal').textContent) || 0;  // Ensure totalAmount1 is a number
 
-                if (!selectedAddress) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Address Missing',
-                        text: 'Please select an address.',
-                    }); 
-                    return;
-                }
+    console.log("totalAmount", totalAmount);
 
-                if (!selectedPaymentMethod) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Payment Method Missing',
-                        text: 'Please select a payment method.',
-                    });
-                    return;
-                }
+    // Check if the payment method is COD and total amount is less than ₹1000
+    if (selectedPaymentMethod === "COD" && (totalAmount <=999 && totalAmount1 <=999)) {
+        // Prevent form submission if COD is selected and amount is less than ₹1000
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cash on Delivery Unavailable',
+            text: 'Cash on Delivery is available only for purchases above ₹1000.',
+        });
+        return; // Exit the function to stop further execution
+    }
 
-                var dataToSend = {
-                    address: selectedAddress,
-                    paymentMethod: selectedPaymentMethod,
-                    totalAmount: totalAmount
-                };
+    // Validate the selected address
+    if (!selectedAddress) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Address Missing',
+            text: 'Please select an address.',
+        });
+        return;
+    }
 
-                $.ajax({
-                    type: "POST",
-                    url: "/placeOrder",
-                    data: dataToSend,
-                    success: function (response) {
-                        if (response.success === true) {
-                            Swal.fire({
-                                title: "Your order has been successfully completed.",
-                                icon: "success",
-                                showConfirmButton: false,
-                                timer: 1500,
-                                didClose: () => {
-                                    window.location.href = `orderPlace/${response.orderid}`;
-                                }
-                            });
-                        } else if (response.walletFailed === true) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Insufficient Balance In Your Wallet",
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                        } else if (response.message) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message,
-                            });
-                        } else {
-                            razorPayment(response.order);
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Error placing order:', error);
+    // Validate the selected payment method
+    if (!selectedPaymentMethod) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Payment Method Missing',
+            text: 'Please select a payment method.',
+        });
+        return;
+    }
+
+    var dataToSend = {
+        address: selectedAddress,
+        paymentMethod: selectedPaymentMethod,
+        totalAmount: totalAmount,
+        totalAmount1: totalAmount1
+    };
+
+    // Send AJAX request to place the order
+    $.ajax({
+        type: "POST",
+        url: "/placeOrder",
+        data: dataToSend,
+        success: function (response) {
+            if (response.success === true) {
+                Swal.fire({
+                    title: "Your order has been successfully completed.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    didClose: () => {
+                        window.location.href = `orderPlace/${response.orderid}`;
                     }
                 });
-            });
+            } else if (response.walletFailed === true) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Insufficient Balance In Your Wallet",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else if (response.message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                });
+            } else {
+                razorPayment(response.order);
+            }
+        },
+        error: function (error) {
+            console.error('Error placing order:', error);
+        }
+    });
+});
+
 
             function razorPayment(order) {
                 var options = {

@@ -184,11 +184,152 @@ const findSalesDataOfYear = async(year) => {
     }
 }
 
+const getTopSellingProducts = async () => {
+    try {
+        const topProductsPipeline = [
+            { $unwind: "$products" },
+            { $match: { "products.orderStatus": "Delivered" } },
+            {
+                $group: {
+                    _id: "$products.productId",
+                    totalQuantity: { $sum: "$products.quantity" },
+                    totalSales: { $sum: "$products.totalPrice" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },
+            {
+                $project: {
+                    productName: "$productDetails.name",
+                    productImage: "$productDetails.image",
+                    totalQuantity: 1,
+                    totalSales: 1
+                }
+            },
+            { $sort: { totalQuantity: -1 } },
+            { $limit: 10 }
+        ];
+
+        const topProducts = await Orders.aggregate(topProductsPipeline);
+        return topProducts;
+    } catch (error) {
+        throw error;
+    }
+};
 
 
 
 
+const getTopSellingCategories = async () => {
+    try {
+        const topCategoriesPipeline = [
+            { $unwind: "$products" },  // Unwind the products array
+            { $match: { "products.orderStatus": "Delivered" } },  // Filter by delivered products
+            { 
+                $lookup: {
+                    from: "products",  // Lookup the 'products' collection
+                    localField: "products.productId",  // Match the productId in Orders
+                    foreignField: "_id",  // Match it with the _id in the Product collection
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },  // Unwind the fetched product details
+            { 
+                $group: {
+                    _id: "$productDetails.category",  // Group by the product's categoryId
+                    totalQuantity: { $sum: "$products.quantity" },
+                    totalSales: { $sum: "$products.totalPrice" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "categories",  // Lookup the category collection
+                    localField: "_id",  // Match the category _id
+                    foreignField: "_id",  // Lookup in the categories collection
+                    as: "categoryDetails"
+                }
+            },
+            { $unwind: "$categoryDetails" },  // Unwind category details
+            { 
+                $project: {
+                    categoryName: "$categoryDetails.categoryName",
+                    categoryImage:"$categoryDetails.image",
+                    totalQuantity: 1,
+                    totalSales: 1
+                }
+            },
+            { $sort: { totalQuantity: -1 } },  // Sort by total quantity sold
+            { $limit: 10 }  // Limit to the top 10
+        ];
 
+        const topCategories = await Orders.aggregate(topCategoriesPipeline);
+        // console.log("topCategories", topCategories);
+        
+        return topCategories;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+
+const getTopSellingBrands = async () => {
+    try {
+        const topBrandsPipeline = [
+            { $unwind: "$products" },  // Unwind the products array
+            { $match: { "products.orderStatus": "Delivered" } },  // Filter by delivered products
+            { 
+                $lookup: {
+                    from: "products",  // Lookup the 'products' collection
+                    localField: "products.productId",  // Match the productId in Orders
+                    foreignField: "_id",  // Match it with the _id in the Product collection
+                    as: "productDetails"
+                }
+            },
+            { $unwind: "$productDetails" },  // Unwind the fetched product details
+            { 
+                $group: {
+                    _id: "$productDetails.brandName",  // Group by the product's brandId
+                    totalQuantity: { $sum: "$products.quantity" },
+                    totalSales: { $sum: "$products.totalPrice" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "brands",  // Lookup the brands collection
+                    localField: "_id",  // Match the brand _id
+                    foreignField: "_id",  // Lookup in the brands collection
+                    as: "brandDetails"
+                }
+            },
+            { $unwind: "$brandDetails" },  // Unwind brand details
+            { 
+                $project: {
+                    brandName: "$brandDetails.brandName",
+                    brandImage:"$brandDetails.image",
+                    totalQuantity: 1,
+                    totalSales: 1
+                }
+            },
+            { $sort: { totalQuantity: -1 } },  // Sort by total quantity sold
+            { $limit: 10 }  // Limit to the top 10
+        ];
+
+        const topBrands = await Orders.aggregate(topBrandsPipeline);
+        // console.log("topBrands", topBrands);
+        
+        return topBrands;
+    } catch (error) {
+        throw error;
+    }
+};
 
 
 const  formatNum = (num) => {
@@ -210,5 +351,8 @@ module.exports = {
     countSales,
     findSalesData,  
     findSalesDataOfYear,
-    findSalesDataOfMonth
+    findSalesDataOfMonth,
+    getTopSellingProducts,
+    getTopSellingCategories,
+    getTopSellingBrands
 }

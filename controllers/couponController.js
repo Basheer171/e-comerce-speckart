@@ -247,7 +247,7 @@ const applyCoupon = async(req, res)=>{
             }
         }
 
-        if (userExist) {
+        if (!userExist) {
             res.json({ user: true });
         } else {
             const couponData = await couponDb.findOne({ couponCode: code });

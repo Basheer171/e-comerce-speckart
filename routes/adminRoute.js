@@ -51,6 +51,7 @@ admin_route.post('/edit-user',adminController.updateUsers);
 admin_route.get('/delete-user',adminController.deleteUser);
 admin_route.get('/view-users',admiauth.isLogin,adminController.viewUsers);
 admin_route.get('/is_blockUser',adminController.userBlockorActive);
+admin_route.get('/top-sellers',adminController.top_sellers);
 
 
 admin_route.get('/view-category',admiauth.isLogin,categoryController.viewCategory);

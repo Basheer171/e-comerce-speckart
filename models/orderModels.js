@@ -42,7 +42,7 @@ const orderSchema = new mongoose.Schema({
                 type:Number
 
             },
-            totalPrice:{
+            totalPrice:{    
                 type:Number
             },
             orderStatus:{
@@ -73,7 +73,7 @@ const orderSchema = new mongoose.Schema({
             updatedAt:{
                 type:Date,
                 default:Date.now
-            }
+            },
 
         },
     ],
@@ -104,6 +104,9 @@ const orderSchema = new mongoose.Schema({
         type:Date,
         required:true
     },
+    couponDiscount:{
+        type:Number
+    }
 
 },{timestamps:true});
 

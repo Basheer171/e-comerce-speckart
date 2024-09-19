@@ -149,15 +149,14 @@ const { log } = require('console');
           const address = req.body.address;
           const cartData = await cartDb.findOne({ user: userId });
           const total = parseInt(req.body.totalAmount, 10);
+          const couponDiscount = parseInt(req.body.totalAmount1, 10);
+  
           const paymentMethod = req.body.paymentMethod;
           const userData = await userDb.findOne({ _id: userId });
           const name = userData.firstName;
           const walletBalance = userData.wallet;
-          const code = req.body.code;
-  
           const uniNum = Math.floor(Math.random() * 900000) + 100000;
-          // console.log("uniNum////////",uniNum);
-          
+  
           const status = paymentMethod === 'COD' ? 'placed' : 'pending';
   
           const today = new Date();
@@ -169,24 +168,31 @@ const { log } = require('console');
               quantity: productItem.quantity,
               orderStatus: 'Placed',
               statusLevel: 1,
-              totalPrice:productItem.quantity * productItem.price,
-              productPrice:productItem.price,
+              totalPrice: productItem.quantity * productItem.price,
+              productPrice: productItem.price,
               paymentStatus: 'Pending',
               'returnOrderStatus.status': 'none',
               'returnOrderStatus.reason': 'none',
           }));
   
-          // Calculate the discount amount if a coupon is applied
           let discountAmount = 0;
           if (req.session.code) {
               const coupon = await couponDb.findOne({ couponCode: req.session.code });
               if (coupon) {
                   discountAmount = coupon.discountAmount;
+                  await couponDb.updateOne(
+                      { couponCode: req.session.code },
+                      { $inc: { usersLimit: -1 }, $push: { usedUsers: userId } }
+                  );
               }
           }
   
-          // Calculate the final amount after applying the discount
           const finalAmount = total - discountAmount;
+  
+          // Wallet validation
+          if (paymentMethod === 'wallet' && walletBalance < finalAmount) {
+              return res.json({ walletFailed: true });
+          }
   
           const order = new orderDb({
               deliveryDetails: address,
@@ -199,88 +205,69 @@ const { log } = require('console');
               date: new Date(),
               expectedDelivery: deliveryDate,
               discount: discountAmount,
+              couponDiscount: couponDiscount
           });
   
           const orderData = await order.save();
           const orderid = order._id;
-        //   console.log("placeorderid",orderid)
   
-          if (orderData) {
-              if (paymentMethod === 'COD') {
-                  for (const item of cartData.products) {
-                      const productId = item.productId._id;
-                      const quantity = parseInt(item.quantity, 10);
-                      await productDb.updateOne(
-                          { _id: productId },
-                          { $inc: { qty: -quantity } }
-                      );
-                  }
-                  await cartDb.deleteOne({ user: req.session.user_id });
-                  res.json({ success: true, orderid });
-              } else if (paymentMethod === 'online') {
-
-                  const razorpayOrder = await razorpayInstance.orders.create({
-                      amount: finalAmount * 100, // Amount in paise
-                      currency: 'INR',
-                      receipt: `order_rcptid_${orderid}`
-                  });
-                  res.json({ order: razorpayOrder, orderid });
-              } else if (paymentMethod === 'wallet') {
-                  // Wallet payment method
-                  if (walletBalance >= finalAmount) {
-                      const totalWalletBalance = walletBalance - finalAmount;
-                      const result = await userDb.findOneAndUpdate(
-                          { _id: userId },
-                          {
-                              $inc: { wallet: -finalAmount },
-                              $push: {
-                                  walletHistory: {
-                                      transactionDate: new Date(),
-                                      transactionAmount: total,
-                                      transactionDetails: "Purchased Product Amount.",
-                                      transactionType: "Debit",
-                                      currentBalance: totalWalletBalance,
-                                  },
-                              },
-                          },
-                          { new: true }
-                      );
-  
-                      const orderUpdate = await orderDb.findByIdAndUpdate(
-                          { _id: orderid },
-                          { $set: { "products.$[].paymentStatus": "Pending" } }
-                      );
-  
-                      if (req.session.code) {
-                          const coupon = await couponDb.findOne({ couponCode: req.session.code });
-                          const disAmount = coupon.discountAmount;
-                          await orderDb.updateOne(
-                              { _id: orderid },
-                              { $set: { discount: disAmount } }
-                          );
-                          res.json({ success: true, orderid });
-                      } else if (result) {
-                          await cartDb.deleteOne({ user: req.session.user_id });
-                          for (let i = 0; i < cartProducts.length; i++) {
-                              const productId = cartProducts[i].productId;
-                              const quantity = cartProducts[i].quantity;
-                              await productDb.findOneAndUpdate(
-                                  { _id: productId },
-                                  { $inc: { qty: -quantity } }
-                              );
-                          }
-                          res.json({ success: true, orderid });
-                      } else {
-                          res.json({ success: true, orderid });
-                      }
-                  } else {
-                      res.json({ walletFailed: true });
-                  }
-              } else {
-                  res.status(400).send('Invalid payment method');
+          if (paymentMethod === 'COD') {
+              for (const item of cartData.products) {
+                  const productId = item.productId._id;
+                  const quantity = parseInt(item.quantity, 10);
+                  await productDb.updateOne(
+                      { _id: productId },
+                      { $inc: { qty: -quantity } }
+                  );
               }
+              await cartDb.deleteOne({ user: req.session.user_id });
+              return res.json({ success: true, orderid });
+          } else if (paymentMethod === 'online') {
+              const razorpayOrder = await razorpayInstance.orders.create({
+                  amount: finalAmount * 100, // Amount in paise
+                  currency: 'INR',
+                  receipt: `order_rcptid_${orderid}`
+              });
+              return res.json({ order: razorpayOrder, orderid });
+          } else if (paymentMethod === 'wallet') {
+              // Deduct from wallet
+              const totalWalletBalance = walletBalance - finalAmount;
+              await userDb.findOneAndUpdate(
+                  { _id: userId },
+                  {
+                      $inc: { wallet: -finalAmount },
+                      $push: {
+                          walletHistory: {
+                              transactionDate: new Date(),
+                              transactionAmount: finalAmount,
+                              transactionDetails: "Purchased Product Amount.",
+                              transactionType: "Debit",
+                              currentBalance: totalWalletBalance,
+                          },
+                      },
+                  },
+                  { new: true }
+              );
+  
+              await orderDb.findByIdAndUpdate(
+                  { _id: orderid },
+                  { $set: { "products.$[].paymentStatus": "Pending" } }
+              );
+  
+              // Delete cart and update inventory
+              await cartDb.deleteOne({ user: req.session.user_id });
+              for (let i = 0; i < cartProducts.length; i++) {
+                  const productId = cartProducts[i].productId;
+                  const quantity = cartProducts[i].quantity;
+                  await productDb.findOneAndUpdate(
+                      { _id: productId },
+                      { $inc: { qty: -quantity } }
+                  );
+              }
+  
+              return res.json({ success: true, orderid });
           } else {
-              res.status(400).send('Failed to place the order');
+              return res.status(400).send('Invalid payment method');
           }
       } catch (error) {
           console.log(error);
@@ -289,6 +276,8 @@ const { log } = require('console');
           }
       }
   };
+  
+  
   
   const verifyPayment = async (req, res) => {
     try {
@@ -424,93 +413,98 @@ const { log } = require('console');
   }
 
   //======================= cancelorder =======================
-  const cancelOrder = async (req, res) => {
-    try {
-      const { uniqueId, productId, total } = req.body;
-      const userId = req.session.user_id; // Assuming the user ID is stored in the session
-      //  console.log("productId/////////",productId);
-      //  console.log("total///////",total);
-       
-      // Retrieve the order data by unique ID
-      const orderData = await orderDb.findOne({ _id: uniqueId });
-  
-      if (!orderData) {
-        return res.status(404).json({ message: "Order not found" });
+ //======================= cancelorder =======================
+const cancelOrder = async (req, res) => {
+  try {
+    const { uniqueId, productId, total } = req.body;
+    const userId = req.session.user_id; // Assuming the user ID is stored in the session
+    
+    // Retrieve the order data by unique ID
+    const orderData = await orderDb.findOne({ _id: uniqueId });
+
+    if (!orderData) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Find the specific product within the order
+    const productInfo = orderData.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    if (!productInfo) {
+      return res.status(404).json({ message: "Product not found in the order" });
+    }
+
+    // Check if the order status is "Delivered"
+    if (productInfo.orderStatus === 'Delivered') {
+      return res.status(400).json({ message: "Cannot cancel a delivered order" });
+    }
+
+    // Update the product's order status to "Cancelled" and save the changes
+    productInfo.orderStatus = "Cancelled";
+    productInfo.updatedAt = Date.now();
+    await orderData.save();
+
+    // Increase the product quantity in the inventory
+    const quantityToIncrease = productInfo.quantity;
+    const product = await productDb.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found in the database" });
+    }
+
+    product.qty += quantityToIncrease; // Increase the quantity in the inventory
+    await product.save(); // Save the updated product data
+
+    // Refund logic only if it's not COD
+    if (orderData.paymentMethod !== 'COD') {
+      let amountToCredit = parseInt(total); // Start with the original total amount
+      
+      // Apply coupon discount if present
+      if (orderData.discount && orderData.discount > 0) {
+        amountToCredit -= orderData.discount; // Subtract coupon discount
       }
-  
-      // Find the specific product within the order
-      const productInfo = orderData.products.find(
-        (product) => product.productId.toString() === productId
-      );
-  
-      if (!productInfo) {
-        return res.status(404).json({ message: "Product not found in the order" });
+
+      const userData = await userDb.findOne({ _id: userId });
+
+      if (!userData) {
+        return res.status(404).json({ message: "User not found" });
       }
-  
-      // Check if the order status is "Delivered"
-      if (productInfo.orderStatus === 'Delivered') {
-        return res.status(400).json({ message: "Cannot cancel a delivered order" });
-      }
-  
-      // Update the product's order status to "Cancelled" and save the changes
-      productInfo.orderStatus = "Cancelled";
-      productInfo.updatedAt = Date.now();
-      await orderData.save();
-  
-      // Increase the product quantity in the inventory
-      const quantityToIncrease = productInfo.quantity;
-      const product = await productDb.findById(productId);
-  
-      if (!product) {
-        return res.status(404).json({ message: "Product not found in the database" });
-      }
-  
-      product.qty += quantityToIncrease; // Increase the quantity in the inventory
-      await product.save(); // Save the updated product data
-  
-      // refund logic only if its not COD
-      if (orderData.paymentMethod !== 'COD') {
-        const amount = parseInt(total);
-        const userData = await userDb.findOne({ _id: userId });
-  
-        if (!userData) {
-          return res.status(404).json({ message: "User not found" });
-        }
-  
-        const totalWalletBalance = userData.wallet + amount;
-  
-        // Update user wallet and wallet history
-        const result = await userDb.findOneAndUpdate(
-          { _id: userId },
-          {
-            $inc: { wallet: amount },
-            $push: {
-              walletHistory: {
-                transactionDate: new Date(),
-                transactionAmount: amount,
-                transactionDetails: 'Cancelled Product Amount Credited',
-                transactionType: 'Credit',
-                currentBalance: totalWalletBalance,
-              },
+
+      const totalWalletBalance = userData.wallet + amountToCredit;
+
+      // Update user wallet and wallet history
+      const result = await userDb.findOneAndUpdate(
+        { _id: userId },
+        {
+          $inc: { wallet: amountToCredit },
+          $push: {
+            walletHistory: {
+              transactionDate: new Date(),
+              transactionAmount: amountToCredit,
+              transactionDetails: 'Cancelled Product Amount Credited',
+              transactionType: 'Credit',
+              currentBalance: totalWalletBalance,
             },
           },
-          { new: true }
-        );
-  
-        if (!result) {
-          return res.status(404).json({ message: "Failed to update wallet" });
-        }
-  
-        console.log('Wallet updated, new balance:', totalWalletBalance);
+        },
+        { new: true }
+      );
+
+      if (!result) {
+        return res.status(404).json({ message: "Failed to update wallet" });
       }
-  
-      // Return a success response
-      res.json({ cancel: 1, message: "Order canceled and amount credited to wallet" });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).send('Internal Server Error');
+
+      console.log('Wallet updated, new balance:', totalWalletBalance);
     }
-  };
+
+    // Return a success response
+    res.json({ cancel: 1, message: "Order canceled and amount credited to wallet" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
   
 // ==============================================================return user order============================================================
@@ -524,8 +518,13 @@ const productReturn = async (req, res) => {
     const returnAmout = req.body.totalPrice;
     // console.log("returnAmout",returnAmout);
     
-    const returnReason = req.body.reason
-    // console.log("returnReason",returnReason);
+    const returnReasonDropdown = req.body.reasonDropdown;
+    // console.log("returnReasonDropdown??????",returnReasonDropdown)
+    const returnReasonText = req.body.reasonText;
+    // console.log("returnReasonText!!!!!!!!!!!!!!!!!!",returnReasonText)
+    // Use the dropdown reason if selected, otherwise use the text area reason
+    const returnReason = returnReasonDropdown || returnReasonText;
+    // console.log("returnReason",returnReason)
     
     const amount = parseInt(returnAmout)
     const orderData = await orderDb.findOne({ _id: orderId })
@@ -602,6 +601,20 @@ const productReturn = async (req, res) => {
   }
 }
 
+const invoice = async (req, res, next) => {
+  try {
+    const orderId = req.query.id
+    const order = await orderDb
+      .findOne({ _id: orderId })
+      .populate('products.productId')
+    order.products.forEach(product => {})
+
+    res.render('invoice', { order })
+  } catch (error) {
+    next(error)
+  }
+}
+
 
   
   module.exports = {
@@ -615,5 +628,6 @@ const productReturn = async (req, res) => {
       loadOrderPage,
       loadOrderDetail,
       cancelOrder,
-      productReturn
+      productReturn,
+      invoice
   }

@@ -19,7 +19,7 @@
     <!-- /container -->
   </div>
   <!-- /BREADCRUMB -->
-
+ 
   <style type="text/css">
     body {
       background: #f8f9fa;
@@ -96,9 +96,11 @@
   </style>
 
   <div class="container my-5">
-    <div class="order-header">
-      <h2 class="h4">Your tracking ID is: #<%= orders.uniqueId %>
-      </h2>
+    <div class="order-header d-flex justify-content-between align-items-center">
+      <h2 class="h4">Your tracking ID is: #<%= orders.uniqueId %></h2>
+      <a href="/invoice?id=<%= orders._id %>" class="btn btn-custom btn-custom-success">
+        <i class="bi bi-download"></i> Download Invoice
+      </a>
     </div>
     <div class="card mb-4 p-4">
       <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -112,13 +114,9 @@
           </span>
           <span class="badge bg-info">SHIPPING</span>
         </div>
-        <!-- <div>
-        <button class="btn btn-primary me-3">
-          <i class="bi bi-download"></i> Invoice
-        </button>
-      </div> -->
+       
       </div>
-
+1
       <table class="table table-borderless">
         <thead>
           <tr>
@@ -187,30 +185,44 @@
                                       data-bs-target="#returnModal_<%= product._id %>">Return</button>
 
                                     <!-- Return Modal -->
-                                    <div class="modal fade" id="returnModal_<%= product._id %>" tabindex="-1"
-                                      aria-labelledby="returnModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="returnModal_<%= product._id %>" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
                                       <div class="modal-dialog">
                                         <div class="modal-content">
                                           <div class="modal-header">
                                             <h5 class="modal-title" id="returnModalLabel">Return Product</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                              aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                           </div>
                                           <div class="modal-body">
-                                            <form
-                                              action="/productReturn?orderid=<%= orders._id %>&productId=<%= product.productId._id %>"
-                                              method="post">
+                                            <form action="/productReturn?orderid=<%= orders._id %>&productId=<%= product.productId._id %>" method="post">
                                               <input type="hidden" 
-                                              value="<%= product.quantity * (product.productId.offer && product.productId.discountedPrice ? product.productId.discountedPrice : product.productId.price) %>" 
-                                              name="totalPrice">
+                                                     value="<%= product.quantity * (product.productId.offer && product.productId.discountedPrice ? product.productId.discountedPrice : product.productId.price) %>" 
+                                                     name="totalPrice">
+                                              
                                               <div class="mb-3">
-                                                <label for="return-reason" class="form-label">Reason for return:</label>
-                                                <textarea class="form-control" id="return-reason" name="reason"
-                                                  placeholder="e.g., Not in good condition" required></textarea>
+                                                <label for="return-reason-dropdown" class="form-label">Select a reason for return:</label>
+                                                <select class="form-select" id="return-reason-dropdown" name="reasonDropdown">
+                                                  <option value="" disabled selected>Select a reason</option>
+                                                  <option value="Wrong item delivered">Wrong item delivered</option>
+                                                  <option value="Damaged product">Damaged product</option>
+                                                  <option value="Product not as described">Product not as described</option>
+                                                  <option value="Size/fit issue">Size/fit issue</option>
+                                                  <option value="Defective or not working">Defective or not working</option>
+                                                  <option value="Missing accessories or parts">Missing accessories or parts</option>
+                                                  <option value="Quality not up to the mark">Quality not up to the mark</option>
+                                                  <option value="Received used product">Received used product</option>
+                                                  <option value="Ordered by mistake">Ordered by mistake</option>
+                                                  <option value="Product doesn't suit my needs">Product doesn't suit my needs</option>
+                                                </select>
                                               </div>
+                                    
+                                              <div class="mb-3">
+                                                <label for="return-reason-textarea" class="form-label">Or provide a custom reason:</label>
+                                                <textarea class="form-control" id="return-reason-textarea" name="reasonText"
+                                                          placeholder="e.g., Not in good condition"></textarea>
+                                              </div>
+                                    
                                               <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                  data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                               </div>
                                             </form>
@@ -218,6 +230,8 @@
                                         </div>
                                       </div>
                                     </div>
+                                    
+                                    
                                     <% }else if (product.orderStatus==='Returned' ) { %>
                                       <button class="btn btn-custom btn-custom-danger" disabled>Returned</button>
                                       <% }else { %>
