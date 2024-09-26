@@ -92,7 +92,7 @@
       
           const userCheck = await User.findOne({ email: req.body.email });
           if (userCheck) {
-            res.render("signup", { message: "User already exists" });
+            res.render("registration", { message: "User already exists" });
           } else {
             const spassword = await securePassword(req.body.password);
             req.session.firstName = req.body.firstName;
@@ -107,7 +107,7 @@
               if (referringUser) {
                 req.session.referralUserId = referringUser._id; // Store referring user's ID in session
               } else {
-                res.render("signup", {
+                res.render("registration", {
                   message: "Invalid referral code. Please use a valid code.",
                 });
                 return; // Exit early if the referral code is invalid
@@ -128,7 +128,7 @@
                 sendVerificationEmail(req.session.email, req.session.otp.code);
                 res.render("otpPage", { message: "" }); // Ensure 'message' is passed even when empty
               } else {
-                res.render("signup", { message: "Passwords do not match" });
+                res.render("registration", { message: "Passwords do not match" });
               }
             }
           }

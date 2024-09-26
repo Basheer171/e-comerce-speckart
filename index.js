@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/user_management_system");
+mongoose.connect("mongodb+srv://mubasheertcs:basheer123@cluster0.phybh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/SPECKART");
 
 const path = require("path");
 const nocache = require("nocache");

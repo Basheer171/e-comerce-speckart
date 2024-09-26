@@ -221,71 +221,66 @@ const couponUserPageLoad = async(req, res)=>{
 
 
 // --------------------------------- Function for applying coupon on the user side (Checkout Page) ------------------------------------------//
-const applyCoupon = async(req, res)=>{
-
+const applyCoupon = async (req, res) => {
     try {
         const userId = req.session.user_id;
-       
-        const code = req.body.code         
-      
+        const code = req.body.code;
+        req.session.code = code;
 
-        req.session.code=code;
+        const cartData = await cartDb.findOne({ user: userId }).populate('products.productId');
 
-        const amount = Number(req.body.amount);
-       
-        const cartData = await cartDb.findOne({user:userId}).populate('products.productId');
-        
-
-        let totalPrice=0;
-
-        const userExist = await couponDb.findOne({ couponCode:code, usedUsers: {$in:[userId]} });
-        
+        let totalPrice = 0;
         if (cartData && cartData.products.length > 0) {
-            const products = cartData.products;
-            for (const product of products) {
+            cartData.products.forEach(product => {
                 totalPrice += product.quantity * product.price;
-            }
+            });
         }
 
-        if (!userExist) {
-            res.json({ user: true });
-        } else {
-            const couponData = await couponDb.findOne({ couponCode: code });
-
-            if (!couponData) {
-                res.json({ invalid: true });
-            } else {
-                const currentDate = new Date();
-
-                if (currentDate < couponData.validFrom || currentDate > couponData.validTo) {
-                    res.json({ dateExpired: true });
-                } else if (couponData.activationDate >= currentDate) {
-                    res.json({ notActivated: true });
-                } else if (couponData.minimumSpend > 0 && totalPrice < couponData.minimumSpend) {
-                    res.json({ insufficientAmount: true });
-                } else if (couponData.status === false) {
-                    res.json({ status: true });
-                } else {
-                    const disAmount = couponData.discountAmount;
-                    const disTotal = Math.round(totalPrice - disAmount);
-
-                    req.session.Amount = disTotal;
-                    const applied = await cartDb.updateOne(
-                        { userId: userId },
-                        { $set: { applied: 'applied' } });
-
-                    res.json({ amountOkay: true, disAmount, disTotal });
-                }
-            }
+        const userExist = await couponDb.findOne({ couponCode: code, usedUsers: { $in: [userId] } });
+        if (userExist) {
+            return res.json({ user: true });
         }
 
+        const couponData = await couponDb.findOne({ couponCode: code });
+        if (!couponData) {
+            return res.json({ invalid: true });
+        }
 
+        const currentDate = new Date();
+        if (currentDate < couponData.validFrom || currentDate > couponData.validTo) {
+            return res.json({ dateExpired: true });
+        }
+
+        if (couponData.activationDate && currentDate < couponData.activationDate) {
+            return res.json({ notActivated: true });
+        }
+
+        if (couponData.minimumSpend > 0 && totalPrice < couponData.minimumSpend) {
+            return res.json({ insufficientAmount: true });
+        }
+
+        if (couponData.status === false) {
+            return res.json({ status: true });
+        }
+
+        const disAmount = couponData.discountAmount;
+        const disTotal = Math.round(totalPrice - disAmount);
+        req.session.Amount = disTotal;
+
+        await cartDb.updateOne({ user: userId }, { $set: { applied: 'applied' } });
+        console.log("disAmount",disAmount)
+        console.log("disTotal",disTotal)
+
+
+        res.json({ amountOkay: true, disAmount, disTotal });
 
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: true });
     }
-}
+};
+
+
 
 
 // -----------------------------------------------------Delete Applied Coupon-----------------------------------------------------// 

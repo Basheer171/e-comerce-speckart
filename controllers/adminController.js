@@ -13,6 +13,7 @@ const {
     countSales,
     findSalesData,
     findSalesDataOfYear,
+    findSalesDataOfDay,
     findSalesDataOfMonth,
     formatNum,
     getTopSellingProducts,
@@ -258,7 +259,6 @@ const {
       "November",
       "December",
     ];
-  
     return monthNames[monthNumber - 1];
   }
 
@@ -563,7 +563,7 @@ const loadViewOrders = async (req, res) => {
                 // console.log("productData",productData)
                 const userDetails = await User.findOne({ firstName: order.userName });
         
-                if (productData) {
+                if (productData && productValue.orderStatus !== 'Failed') {
                     productsArray.push({
                         user: userDetails,
                         product: productData,

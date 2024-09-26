@@ -7,7 +7,6 @@ const findIncome = async (startDate = new Date('1990-01-01'), endDate = new Date
             $or: [
                 { "products.orderStatus": "Delivered" },
                 { "createdAt": { $gte: startDate, $lt: endDate } },
-                { "paymentStatus": "success" }
             ]
         });
 
@@ -17,13 +16,13 @@ const findIncome = async (startDate = new Date('1990-01-01'), endDate = new Date
             if (order.discount && order.discount > 0) {
                 // If a coupon was applied, calculate income using totalAmount after discount
                 for (const pdt of order.products) {
-                    if (pdt.orderStatus === 'Delivered' || pdt.paymentStatus === 'Complete') {
+                    if (pdt.orderStatus === 'Delivered') {
                         totalIncome += parseInt(order.totalAmount);
                     }
                 }  } else {
                 // If no coupon, sum the total prices of delivered products
                 for (const pdt of order.products) {
-                    if (pdt.orderStatus === 'Delivered' || pdt.paymentStatus === 'Complete') {
+                    if (pdt.orderStatus === 'Delivered' ) {
                         totalIncome += parseInt(pdt.totalPrice);
                     }
                 }
@@ -104,6 +103,46 @@ const findSalesData = async(startDate = new Date('1990-01-01'), endDate = new Da
         throw error
     }
 }
+
+const findSalesDataOfDay = async (startDate = new Date('1990-01-01'), endDate = new Date()) => {
+    try {
+        const pipeline = [
+            {
+                $match: {
+                    "products.orderStatus": 'Delivered',  // Filter for delivered products
+                    createdAt: {                          // Filter orders by date range
+                        $gte: startDate,
+                        $lt: endDate
+                    }
+                }
+            },
+            {
+                $unwind: "$products"  // Unwind the products array to process individual products
+            },
+            {
+                $match: {
+                    "products.orderStatus": 'Delivered'  // Ensure that only delivered products are considered
+                }
+            },
+            {
+                $group: {
+                    _id: { createdAt: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }}},  // Group by day
+                    totalSales: { $sum: '$products.totalPrice' },  // Sum up the total sales for each day
+                    salesCount: { $sum: '$products.quantity' } // Count the number of products sold
+                }
+            },
+            { $sort: { '_id.createdAt': 1 } }  // Sort by date in ascending order
+        ];
+
+        const orderData = await Orders.aggregate(pipeline);
+        return orderData;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 
 
@@ -351,6 +390,7 @@ module.exports = {
     countSales,
     findSalesData,  
     findSalesDataOfYear,
+    findSalesDataOfDay,
     findSalesDataOfMonth,
     getTopSellingProducts,
     getTopSellingCategories,

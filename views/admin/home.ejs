@@ -252,44 +252,56 @@
 
                   <div class="filterByYear mb-4">
                     <form action="" method="get">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="year" class="form-label">Year:</label>
-                                <select name="year" id="year" class="form-control">
-                                    <% displayYears.forEach(year => { %>
-                                    <option value="<%= year %>" <% if (salesYear == year) { %> selected <% } %>><%= year %>
-                                    </option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="month" class="form-label">Month:</label>
-                                <select name="month" id="month" class="form-control">
-                                    <option value=""> Click </option>
-                                    <option value="01">January</option>
-                                    <option value="02">February</option>
-                                    <option value="03">March</option>
-                                    <option value="04">April</option>
-                                    <option value="05">May</option>
-                                    <option value="06">June</option>
-                                    <option value="07">July</option>
-                                    <option value="08">August</option>
-                                    <option value="09">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                        </div>
-        
-                        <!-- Submit and Reset Buttons -->
-                        <div class="row justify-content-center">
-                            <div class="col-md-6 text-center">
-                                <button class="btn btn-success text-nowrap mt-3" type="submit">Submit</button>
-                                <a href="/admin" class="btn btn-danger mt-3 mx-2">Reset</a>
-                            </div>
-                        </div>
-                    </form>
+                      <div class="row">
+                          <!-- Year Selection -->
+                          <div class="col-md-4 mb-3">
+                              <label for="year" class="form-label">Year:</label>
+                              <select name="year" id="year" class="form-control">
+                                  <% displayYears.forEach(year => { %>
+                                  <option value="<%= year %>" <% if (salesYear == year) { %> selected <% } %>><%= year %></option>
+                                  <% }); %>
+                              </select>
+                          </div>
+                  
+                          <!-- Month Selection -->
+                          <div class="col-md-4 mb-3">
+                              <label for="month" class="form-label">Month:</label>
+                              <select name="month" id="month" class="form-control">
+                                  <option value="">Select Month</option>
+                                  <option value="01">January</option>
+                                  <option value="02">February</option>
+                                  <option value="03">March</option>
+                                  <option value="04">April</option>
+                                  <option value="05">May</option>
+                                  <option value="06">June</option>
+                                  <option value="07">July</option>
+                                  <option value="08">August</option>
+                                  <option value="09">September</option>
+                                  <option value="10">October</option>
+                                  <option value="11">November</option>
+                                  <option value="12">December</option>
+                              </select>
+                          </div>
+                  
+                          <!-- Day Selection -->
+                          <div class="col-md-4 mb-3">
+                              <label for="day" class="form-label">Day:</label>
+                              <select name="day" id="day" class="form-control">
+                                  <option value="">Select Day</option>
+                                  <!-- JavaScript will dynamically populate days based on selected month and year -->
+                              </select>
+                          </div>
+                      </div>
+                  
+                      <!-- Submit and Reset Buttons -->
+                      <div class="row justify-content-center">
+                          <div class="col-md-6 text-center">
+                              <button class="btn btn-success text-nowrap mt-3" type="submit">Submit</button>
+                              <a href="/admin" class="btn btn-danger mt-3 mx-2">Reset</a>
+                          </div>
+                      </div>
+                  </form>
+                  
                 </div>
                   <span id="salesData" hidden>
                     <%= sales %>
@@ -571,7 +583,40 @@
       </script>
 
       
-      
+      <script>
+        document.getElementById('month').addEventListener('change', updateDays);
+document.getElementById('year').addEventListener('change', updateDays);
+
+function updateDays() {
+    const month = parseInt(document.getElementById('month').value);
+    const year = parseInt(document.getElementById('year').value);
+
+    if (!month || !year) {
+        return;
+    }
+
+    // Calculate the number of days in the selected month and year
+    const daysInMonth = new Date(year, month, 0).getDate();
+    
+    const daySelect = document.getElementById('day');
+    daySelect.innerHTML = ''; // Clear existing options
+
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'Select Day';
+    daySelect.appendChild(defaultOption);
+
+    // Populate days dynamically
+    for (let i = 1; i <= daysInMonth; i++) {
+        const option = document.createElement('option');
+        option.value = i < 10 ? `0${i}` : i; // Add leading zero for single digit days
+        option.text = i;
+        daySelect.appendChild(option);
+    }
+}
+
+      </script>
 
 
 

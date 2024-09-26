@@ -19,10 +19,16 @@
         <div class="page-content">
             <div class="checkout">
                 <div class="container">
+                    <!-- Checkout Discount Form -->
                     <div class="checkout-discount">
                         <form action="#">
                             <input type="text" class="form-control" required id="checkout-discount-input">
-                            <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here
+                            <label for="checkout-discount-input" class="text-truncate">
+                                Have a coupon?
+                                <!-- Modal Trigger Link -->
+                                <a href="#" class="badge bg-success rounded-pill" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">Click here</a>
+                            </label>
                         </form>
                     </div><!-- End .checkout-discount -->
 
@@ -348,8 +354,77 @@
         <!--------------------------- Modal avialabel coupon ------------------------------------>
 
 
+        <!-- Modal Structure -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Available Coupons</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <% if (couponData.length> 0) { %>
+                                <% couponData.forEach((coupon)=> { %>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card mb-3 p-3" style="background-color: #f5f5f5;">
+                                                <div class="badge badge-sm bg-gradient-danger"
+                                                    onclick="setCouponCode('<%= coupon.couponCode %>')"
+                                                    data-coupon-code="<%= coupon.couponCode %>">
+                                                    <a href="#" class="text-danger">
+                                                        <div class="cared-body">
+                                                            <div class="rectangle-box">
+                                                                <div class="coupon-details">
+                                                                    <h6 class="d-flex align-items-center">Available
+                                                                        Coupons</h6>
+                                                                    <small class="Valid-to">Valid till : <%=
+                                                                            coupon.validTo.toLocaleDateString('en-US', {
+                                                                            day: 'numeric' , month: 'short' ,
+                                                                            year: 'numeric' }) %></small>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="coupon-code d-flex justify-content-between">
+                                                                    <p class="coupon-body d-flex mb-0">Coupon Code:</p>
+                                                                    <i class="text-danger">
+                                                                        <%= coupon.couponCode %>
+                                                                    </i>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <i
+                                                                        class="h6 material-icons text-info mr-2 text-danger">Discount:
+                                                                        ₹ <%= coupon.discountAmount %></i>
+                                                                    <i
+                                                                        class="h6 material-icons text-info mr-2 text-dark">Min-spend:
+                                                                        ₹ <%= coupon.minimumSpend %></i><br>
+                                                                </div>
+                                                            </div>
+                                                            <div class="img-body">
+                                                                <!-- <img src="/images/coupon_3.png" alt=""> -->
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } %>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         </div>
     </main><!-- End .main -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <!-- Include necessary scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -407,91 +482,93 @@
 
         $(document).ready(function () {
             $('#placeOrderBtn').on('click', function (event) {
-    event.preventDefault(); // Prevent the form from submitting by default
+                event.preventDefault(); // Prevent the form from submitting by default
 
-    var selectedAddress = $('.address-checkbox:checked').val();
-    var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
-    var totalAmount = parseFloat('<%= Total %>') || 0;  // Ensure totalAmount is a number
-    var totalAmount1 = parseFloat(document.getElementById('newTotal').textContent) || 0;  // Ensure totalAmount1 is a number
+                var selectedAddress = $('.address-checkbox:checked').val();
+                var selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+                var totalAmount = parseFloat('<%= Total %>') || 0;  // Ensure totalAmount is a number
+                var totalAmount1 = parseFloat(document.getElementById('newTotal').textContent) || 0;  // Ensure totalAmount1 is a number
 
-    console.log("totalAmount", totalAmount);
+                console.log("totalAmount", totalAmount);
 
-    // Check if the payment method is COD and total amount is less than ₹1000
-    if (selectedPaymentMethod === "COD" && (totalAmount <=999 && totalAmount1 <=999)) {
-        // Prevent form submission if COD is selected and amount is less than ₹1000
-        Swal.fire({
-            icon: 'warning',
-            title: 'Cash on Delivery Unavailable',
-            text: 'Cash on Delivery is available only for purchases above ₹1000.',
-        });
-        return; // Exit the function to stop further execution
-    }
 
-    // Validate the selected address
-    if (!selectedAddress) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Address Missing',
-            text: 'Please select an address.',
-        });
-        return;
-    }
+                // Check if the payment method is COD and total amount is less than ₹1000
+                if (selectedPaymentMethod === "COD" && (totalAmount >= 1001 || totalAmount1 >= 1001)) {
+                    // Prevent form submission if COD is selected and amount is less than ₹1000
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cash on Delivery Unavailable',
+                        text: 'Cash on Delivery is available only for purchases below ₹1000.',
+                    });
+                    return; // Exit the function to stop further execution
+                }
 
-    // Validate the selected payment method
-    if (!selectedPaymentMethod) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Payment Method Missing',
-            text: 'Please select a payment method.',
-        });
-        return;
-    }
+                // Validate the selected address
+                if (!selectedAddress) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Address Missing',
+                        text: 'Please select an address.',
+                    });
+                    return;
+                }
 
-    var dataToSend = {
-        address: selectedAddress,
-        paymentMethod: selectedPaymentMethod,
-        totalAmount: totalAmount,
-        totalAmount1: totalAmount1
-    };
+                // Validate the selected payment method
+                if (!selectedPaymentMethod) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Payment Method Missing',
+                        text: 'Please select a payment method.',
+                    });
+                    return;
+                }
 
-    // Send AJAX request to place the order
-    $.ajax({
-        type: "POST",
-        url: "/placeOrder",
-        data: dataToSend,
-        success: function (response) {
-            if (response.success === true) {
-                Swal.fire({
-                    title: "Your order has been successfully completed.",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500,
-                    didClose: () => {
-                        window.location.href = `orderPlace/${response.orderid}`;
+                var dataToSend = {
+                    address: selectedAddress,
+                    paymentMethod: selectedPaymentMethod,
+                    totalAmount: totalAmount,
+                    totalAmount1: totalAmount1
+                };
+
+                // Send AJAX request to place the order
+                $.ajax({
+                    type: "POST",
+                    url: "/placeOrder",
+                    data: dataToSend,
+                    success: function (response) {
+                        if (response.success === true) {
+                            Swal.fire({
+                                title: "Your order has been successfully completed.",
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                didClose: () => {
+                                    window.location.href = `orderPlace/${response.orderid}`;
+                                }
+                            });
+                        } else if (response.walletFailed === true) {
+                            Swal.fire({
+                                icon: "error",
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        } else if (response.success === false) {
+                            $('#placeOrderBtn').prop('disabled', true); // Disable the button
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                            });
+                        } else {
+                            razorPayment(response.order);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error placing order:', error);
                     }
                 });
-            } else if (response.walletFailed === true) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Insufficient Balance In Your Wallet",
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
-            } else if (response.message) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message,
-                });
-            } else {
-                razorPayment(response.order);
-            }
-        },
-        error: function (error) {
-            console.error('Error placing order:', error);
-        }
-    });
-});
+            });
 
 
             function razorPayment(order) {
@@ -650,6 +727,22 @@
                     });
                 },
             });
+        }
+    </script>
+
+    <script>
+        // Function to set coupon code in the input field
+        function setCouponCode(code) {
+
+            document.getElementById('code').value = code;
+
+            // Optional: Close the modal after setting the coupon code
+            $('#couponInputContainer').show();  // Show the coupon input container if it was hidden
+            // Optional: Close the modal after setting the coupon code
+            $('#exampleModal').modal('hide');
+
+            // Prevent the default behavior of the link
+            return false;
         }
     </script>
 
